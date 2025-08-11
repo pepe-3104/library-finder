@@ -83,3 +83,23 @@ body {
 #root {
   min-height: 100vh;
 }
+
+/* 検索状態表示 */
+.search-status {
+  margin-top: 1.5rem;
+  padding: 1rem;
+  background: #fff3cd;
+  border: 1px solid #ffeaa7;
+  border-radius: 8px;
+  color: #856404;
+}
+
+.search-status h4 {
+  margin: 0 0 0.5rem 0;
+  color: #856404;
+}
+
+.search-status p {
+  margin: 0;
+  font-size: 0.9rem;
+}

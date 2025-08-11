@@ -1,0 +1,297 @@
+.library-list-container {
+  margin-top: 1.5rem;
+}
+
+/* ヘッダー */
+.library-list-header {
+  margin-bottom: 1rem;
+}
+
+.library-list-header h4 {
+  margin: 0 0 0.25rem 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.library-list-header p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #6c757d;
+}
+
+/* 図書館リスト */
+.library-list {
+  display: grid;
+  gap: 1rem;
+}
+
+.library-item {
+  background: #fff;
+  border: 1px solid #e9ecef;
+  border-radius: 12px;
+  padding: 1.25rem;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+.library-item:hover {
+  border-color: #667eea;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  transform: translateY(-2px);
+}
+
+/* 図書館ヘッダー */
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1rem;
+  gap: 1rem;
+}
+
+.library-name {
+  margin: 0;
+  color: #2c3e50;
+  font-size: 1.1rem;
+  font-weight: 600;
+  line-height: 1.3;
+  flex: 1;
+}
+
+.library-distance {
+  background: #e3f2fd;
+  color: #1565c0;
+  padding: 0.25rem 0.75rem;
+  border-radius: 15px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+/* 図書館詳細情報 */
+.library-details {
+  margin-bottom: 1rem;
+  display: grid;
+  gap: 0.5rem;
+}
+
+.library-address,
+.library-tel,
+.library-category {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.5rem;
+  font-size: 0.9rem;
+  line-height: 1.4;
+}
+
+.detail-icon {
+  flex-shrink: 0;
+  width: 20px;
+  text-align: center;
+}
+
+.library-address span:last-child,
+.library-tel a,
+.library-category span:last-child {
+  color: #495057;
+}
+
+.library-tel a {
+  color: #007bff;
+  text-decoration: none;
+}
+
+.library-tel a:hover {
+  text-decoration: underline;
+}
+
+.category-tag {
+  background: #f8f9fa;
+  color: #6c757d;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  border: 1px solid #dee2e6;
+}
+
+/* アクション */
+.library-actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.library-link,
+.map-button {
+  padding: 0.5rem 1rem;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  text-decoration: none;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.library-link {
+  background: #007bff;
+  color: white;
+}
+
+.library-link:hover {
+  background: #0056b3;
+  text-decoration: none;
+  transform: translateY(-1px);
+}
+
+.map-button {
+  background: #28a745;
+  color: white;
+}
+
+.map-button:hover {
+  background: #1e7e34;
+  transform: translateY(-1px);
+}
+
+/* ローディング状態 */
+.library-loading {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+.loading-spinner {
+  display: inline-block;
+  width: 32px;
+  height: 32px;
+  border: 3px solid #f3f3f3;
+  border-top: 3px solid #667eea;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.library-loading p {
+  margin: 0 0 0.5rem 0;
+  font-size: 1.1rem;
+  font-weight: 500;
+  color: #495057;
+}
+
+.loading-note {
+  font-size: 0.9rem;
+  color: #868e96;
+}
+
+/* エラー状態 */
+.library-error {
+  text-align: center;
+  padding: 2rem 1rem;
+  background: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+  border-radius: 12px;
+}
+
+.library-error .error-icon {
+  font-size: 2rem;
+  margin-bottom: 1rem;
+}
+
+.library-error h4 {
+  margin: 0 0 0.5rem 0;
+  color: #721c24;
+}
+
+.library-error p {
+  margin: 0 0 1rem 0;
+}
+
+.retry-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.75rem 1.5rem;
+  border-radius: 25px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.2s ease;
+}
+
+.retry-button:hover {
+  background: #c82333;
+  transform: translateY(-1px);
+}
+
+/* 空の状態 */
+.library-empty {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: #6c757d;
+}
+
+.library-empty .empty-icon {
+  font-size: 3rem;
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.library-empty h4 {
+  margin: 0 0 0.5rem 0;
+  color: #495057;
+}
+
+.library-empty p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .library-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+  
+  .library-distance {
+    align-self: flex-start;
+  }
+  
+  .library-actions {
+    justify-content: flex-start;
+  }
+  
+  .library-link,
+  .map-button {
+    flex: 1;
+    justify-content: center;
+    min-width: 120px;
+  }
+}
+
+@media (max-width: 480px) {
+  .library-item {
+    padding: 1rem;
+  }
+  
+  .library-actions {
+    flex-direction: column;
+  }
+  
+  .library-link,
+  .map-button {
+    width: 100%;
+  }
+}
