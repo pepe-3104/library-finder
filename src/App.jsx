@@ -5,6 +5,11 @@ import MapSection from './components/map/MapSection';
 import BookSearch from './components/book/BookSearch';
 import './App.css';
 
+// 開発環境でのみコンソールテスト機能を読み込み
+if (import.meta.env.DEV) {
+  import('./utils/consoleTest.js');
+}
+
 function App() {
   const [userLocation, setUserLocation] = useState(null);
   const [libraries, setLibraries] = useState([]);

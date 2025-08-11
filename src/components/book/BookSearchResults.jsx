@@ -88,9 +88,35 @@ const BookResultItem = ({ book }) => {
   return (
     <div className="book-result-item">
       <div className="book-header">
+        {/* 書籍画像 */}
+        {book.imageUrl && (
+          <div className="book-image">
+            <img 
+              src={book.imageUrl} 
+              alt={book.title}
+              onError={(e) => e.target.style.display = 'none'}
+            />
+          </div>
+        )}
+        
         <div className="book-info">
           <h4 className="book-title">{book.title || 'タイトル不明'}</h4>
           <p className="book-isbn">📖 ISBN: {book.isbn}</p>
+          
+          {/* 書籍の詳細情報 */}
+          {book.author && <p className="book-author">👤 著者: {book.author}</p>}
+          {book.publisher && <p className="book-publisher">🏢 出版社: {book.publisher}</p>}
+          {(book.pubdate || book.publishDate) && (
+            <p className="book-pubdate">📅 出版日: {book.pubdate || book.publishDate}</p>
+          )}
+          
+          {/* 楽天Books情報 */}
+          {book.reviewAverage && (
+            <p className="book-review">⭐ 評価: {book.reviewAverage} ({book.reviewCount}件)</p>
+          )}
+          {book.price && (
+            <p className="book-price">💰 価格: ¥{book.price.toLocaleString()}</p>
+          )}
           <div className="availability-summary">
             <span className="total-libraries">
               🏢 {getTotalLibrariesCount(book.systems)}館中
@@ -99,6 +125,20 @@ const BookResultItem = ({ book }) => {
               ✅ {getAvailableCount(book.systems)}館で貸出可
             </span>
           </div>
+          
+          {/* 楽天Books購入リンク */}
+          {book.itemUrl && (
+            <div className="book-actions">
+              <a 
+                href={book.itemUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="rakuten-link"
+              >
+                🛒 楽天で購入
+              </a>
+            </div>
+          )}
         </div>
       </div>
 
