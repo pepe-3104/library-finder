@@ -1,35 +1,42 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import React from 'react';
+import Layout from './components/layout/Layout';
+import LibrarySearchSection from './components/common/LibrarySearchSection';
+import MapSection from './components/common/MapSection';
+import './App.css';
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <Layout>
+      <div className="content-grid">
+        <LibrarySearchSection />
+        <MapSection />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      
+      <div className="content-section" style={{ marginTop: '2rem' }}>
+        <h2 className="section-title">📚 蔵書検索</h2>
+        <div className="placeholder-content">
+          <p>ISBNまたは書籍名で図書館の蔵書を検索できます。</p>
+          <input 
+            type="text" 
+            placeholder="書籍名またはISBNを入力（実装予定）" 
+            className="placeholder-input"
+            disabled
+          />
+        </div>
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+      
+      <div className="development-info">
+        <h3>🚧 開発状況</h3>
+        <ul>
+          <li>✅ 基本的なレイアウト構造</li>
+          <li>✅ コンポーネント設計</li>
+          <li>⏳ 位置情報取得機能（次の実装）</li>
+          <li>⏳ カーリルAPI連携</li>
+          <li>⏳ 地図表示機能</li>
+        </ul>
+      </div>
+    </Layout>
+  );
 }
 
-export default App
+export default App;
