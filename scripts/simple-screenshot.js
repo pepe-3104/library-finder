@@ -19,7 +19,7 @@ async function takeScreenshot() {
   
   try {
     await page.setViewport({ width: 1280, height: 800 });
-    await page.goto('http://localhost:5175', { 
+    await page.goto('http://localhost:5178', { 
       waitUntil: 'networkidle0',
       timeout: 30000 
     });
