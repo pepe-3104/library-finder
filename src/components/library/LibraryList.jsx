@@ -1,7 +1,7 @@
 import React from 'react';
 import './LibraryList.css';
 
-const LibraryList = ({ libraries, loading, error, onRetry }) => {
+const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) => {
   if (loading) {
     return (
       <div className="library-list-container">
@@ -98,7 +98,7 @@ const LibraryList = ({ libraries, loading, error, onRetry }) => {
               )}
               <button 
                 className="map-button"
-                onClick={() => showOnMap(library)}
+                onClick={() => handleShowOnMap(library)}
                 title="地図で表示"
               >
                 🗺️ 地図
@@ -111,13 +111,23 @@ const LibraryList = ({ libraries, loading, error, onRetry }) => {
   );
 };
 
-// 地図表示機能（今後実装予定）
-const showOnMap = (library) => {
-  if (library.geocode) {
-    console.log('🗺️ 地図表示予定:', library);
-    // TODO: React Leaflet マップとの連携
-    alert(`地図機能は次のステップで実装予定です。\n\n図書館: ${library.name}\n住所: ${library.address || '住所情報なし'}`);
-  }
-};
+  // 地図表示機能
+  const handleShowOnMap = (library) => {
+    if (library.geocode && onLibrarySelect) {
+      console.log('🗺️ 地図で表示:', library);
+      onLibrarySelect(library);
+      
+      // 地図セクションまでスムーズスクロール
+      const mapSection = document.querySelector('[data-section="map"]');
+      if (mapSection) {
+        mapSection.scrollIntoView({ 
+          behavior: 'smooth',
+          block: 'start'
+        });
+      }
+    } else if (!library.geocode) {
+      alert('この図書館の位置情報が利用できません。');
+    }
+  };
 
 export default LibraryList;
