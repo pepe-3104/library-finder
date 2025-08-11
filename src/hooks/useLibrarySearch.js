@@ -29,6 +29,7 @@ export const useLibrarySearch = () => {
         if (response && response.length > 0) {
           const formattedLibraries = response.map((library) => ({
             id: library.systemid,
+            systemid: library.systemid,
             name: library.formal || library.short,
             shortName: library.short,
             address: library.address,

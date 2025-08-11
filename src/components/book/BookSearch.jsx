@@ -22,10 +22,20 @@ const BookSearch = ({ libraries = [] }) => {
     }
 
     // 図書館システムIDを抽出
-    const systemIds = libraries.map(lib => lib.systemid).filter(Boolean);
+    let systemIds = libraries.map(lib => lib.systemid).filter(Boolean);
+    
+    console.log('🔍 図書館データ詳細:', libraries);
+    console.log('📋 システムID抽出結果:', systemIds);
+    
+    // systemidがない場合はidをフォールバックとして使用
+    if (systemIds.length === 0) {
+      systemIds = libraries.map(lib => lib.id).filter(Boolean);
+      console.log('🔄 IDをsystemidとしてフォールバック:', systemIds);
+    }
     
     if (systemIds.length === 0) {
-      alert('利用可能な図書館システムが見つかりません');
+      console.error('❌ SystemID抽出失敗。図書館データ:', libraries);
+      alert('利用可能な図書館システムが見つかりません。図書館を再検索してください。');
       return;
     }
 
