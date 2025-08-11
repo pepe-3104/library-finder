@@ -133,3 +133,8 @@ body {
   transform: translateY(-2px);
   box-shadow: 0 4px 15px rgba(23, 162, 184, 0.4);
 }
+
+/* 蔵書検索コンテンツ */
+.book-search-content {
+  margin-top: 1rem;
+}

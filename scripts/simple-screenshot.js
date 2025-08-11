@@ -19,7 +19,7 @@ async function takeScreenshot() {
   
   try {
     await page.setViewport({ width: 1280, height: 800 });
-    await page.goto('http://localhost:5181', { 
+    await page.goto('http://localhost:5182', { 
       waitUntil: 'networkidle0',
       timeout: 30000 
     });
@@ -38,7 +38,8 @@ async function takeScreenshot() {
           distance: 1.2,
           category: "LARGE",
           geocode: "139.7594,35.6741",
-          isil: "JP-1000001"
+          isil: "JP-1000001",
+          systemid: "Tokyo_Chiyoda"
         },
         {
           id: "Chuo_Kyoboshi_Library",
@@ -50,7 +51,8 @@ async function takeScreenshot() {
           distance: 0.7,
           category: "MEDIUM",
           geocode: "139.7709,35.6751",
-          isil: "JP-1000002"
+          isil: "JP-1000002",
+          systemid: "Tokyo_Chuo"
         },
         {
           id: "Chuo_Chuo_Library",
@@ -62,7 +64,8 @@ async function takeScreenshot() {
           distance: 1.8,
           category: "LARGE",
           geocode: "139.7735,35.6694",
-          isil: "JP-1000003"
+          isil: "JP-1000003",
+          systemid: "Tokyo_Chuo"
         },
         {
           id: "National_Diet_Library",
@@ -74,7 +77,8 @@ async function takeScreenshot() {
           distance: 2.1,
           category: "SPECIAL",
           geocode: "139.7431,35.6782",
-          isil: "JP-1000004"
+          isil: "JP-1000004",
+          systemid: "National_Diet"
         },
         {
           id: "Chiyoda_Kanda_Library",
@@ -86,7 +90,8 @@ async function takeScreenshot() {
           distance: 1.1,
           category: "SMALL",
           geocode: "139.7632,35.6916",
-          isil: "JP-1000005"
+          isil: "JP-1000005",
+          systemid: "Tokyo_Chiyoda"
         },
         {
           id: "Minato_Akasaka_Library", 
@@ -98,7 +103,8 @@ async function takeScreenshot() {
           distance: 2.3,
           category: "MEDIUM",
           geocode: "139.7364,35.6779",
-          isil: "JP-1000006"
+          isil: "JP-1000006",
+          systemid: "Tokyo_Minato"
         }
       ];
       
