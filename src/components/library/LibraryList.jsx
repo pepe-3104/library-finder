@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Warning,
   Refresh,
@@ -14,6 +15,8 @@ import {
 import './LibraryList.css';
 
 const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) => {
+  const navigate = useNavigate();
+  
   // 一意なキーを生成する関数
   const generateUniqueKey = (library, index) => {
     const parts = [
@@ -24,6 +27,17 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
       index
     ];
     return parts.join('-').replace(/\s+/g, '-');
+  };
+
+  // 地図表示機能
+  const handleShowOnMap = (library) => {
+    console.log('🗺️ 地図で表示:', library);
+    // 図書館を選択状態にする
+    if (onLibrarySelect) {
+      onLibrarySelect(library);
+    }
+    // mapページにナビゲート
+    navigate('/map');
   };
   if (loading) {
     return (
@@ -150,24 +164,5 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
     </div>
   );
 };
-
-  // 地図表示機能
-  const handleShowOnMap = (library) => {
-    if (library.geocode && onLibrarySelect) {
-      console.log('🗺️ 地図で表示:', library);
-      onLibrarySelect(library);
-      
-      // 地図セクションまでスムーズスクロール
-      const mapSection = document.querySelector('[data-section="map"]');
-      if (mapSection) {
-        mapSection.scrollIntoView({ 
-          behavior: 'smooth',
-          block: 'start'
-        });
-      }
-    } else if (!library.geocode) {
-      alert('この図書館の位置情報が利用できません。');
-    }
-  };
 
 export default LibraryList;
