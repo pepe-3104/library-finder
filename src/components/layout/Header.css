@@ -31,6 +31,18 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 1rem;
+}
+
+.nav-left {
+  justify-self: start;
+}
+
+.nav-right {
+  justify-self: end;
 }
 
 .header-left {
@@ -195,14 +207,48 @@
   opacity: 1;
 }
 
+/* 距離フィルタボタン（ナビゲーション内） */
+.nav-distance-filter {
+  position: relative;
+}
+
+.distance-filter-btn-nav {
+  background: rgba(255, 255, 255, 0.15);
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  color: white;
+  border-radius: 25px;
+  padding: 0.6rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  transition: all 0.2s ease;
+}
+
+.distance-filter-btn-nav:hover {
+  background: rgba(255, 255, 255, 0.25);
+  border-color: rgba(255, 255, 255, 0.4);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+.distance-filter-btn-nav .filter-label {
+  font-weight: 600;
+  margin-left: 0.25rem;
+}
+
 /* ホバーアニメーションの最適化 */
 @media (prefers-reduced-motion: reduce) {
-  .nav-link {
+  .nav-link,
+  .distance-filter-btn-nav {
     transition: none;
   }
   
   .nav-link:hover,
-  .nav-link.active {
+  .nav-link.active,
+  .distance-filter-btn-nav:hover {
     transform: none;
   }
 }

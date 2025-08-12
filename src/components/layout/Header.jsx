@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LocationStatus from '../common/LocationStatus';
-import { LibraryBooks, Search, Map, MenuBook } from '@mui/icons-material';
+import DistanceFilterPopup from '../common/DistanceFilterPopup';
+import { LibraryBooks, Search, Map, MenuBook, Tune } from '@mui/icons-material';
 import './Header.css';
+
+const DistanceFilterComponent = ({ distanceFilter, onDistanceFilterChange, libraries }) => {
+  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
+
+  return (
+    <div className="nav-distance-filter">
+      <button 
+        onClick={() => setIsFilterPopupOpen(true)}
+        className="distance-filter-btn-nav"
+        title="距離フィルタ設定"
+      >
+        <Tune fontSize="small" />
+        <span className="filter-label">{distanceFilter}km</span>
+      </button>
+      
+      <DistanceFilterPopup
+        selectedDistance={distanceFilter}
+        onDistanceChange={onDistanceFilterChange}
+        libraryCount={libraries.length}
+        isOpen={isFilterPopupOpen}
+        onClose={() => setIsFilterPopupOpen(false)}
+      />
+    </div>
+  );
+};
 
 const Header = ({ 
   userLocation, 
@@ -22,9 +48,6 @@ const Header = ({
             <LocationStatus 
               userLocation={userLocation} 
               onLocationRefresh={onLocationRefresh}
-              libraries={libraries}
-              distanceFilter={distanceFilter}
-              onDistanceFilterChange={onDistanceFilterChange} 
             />
           </div>
           
@@ -47,6 +70,18 @@ const Header = ({
       {/* 下部: ナビゲーション */}
       <div className="header-nav-section">
         <div className="nav-container">
+          {/* 左側: 距離フィルタ */}
+          <div className="nav-left">
+            {libraries.length > 0 && (
+              <DistanceFilterComponent
+                distanceFilter={distanceFilter}
+                onDistanceFilterChange={onDistanceFilterChange}
+                libraries={libraries}
+              />
+            )}
+          </div>
+          
+          {/* 中央: ナビゲーション */}
           <nav className="header-nav">
             <ul>
               <li>
@@ -78,6 +113,10 @@ const Header = ({
               </li>
             </ul>
           </nav>
+          
+          {/* 右側: 予備 */}
+          <div className="nav-right">
+          </div>
         </div>
       </div>
     </header>

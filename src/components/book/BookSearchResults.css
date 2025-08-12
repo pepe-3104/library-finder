@@ -90,9 +90,6 @@
 }
 
 .book-header {
-  margin-bottom: 1.5rem;
-  padding-bottom: 1rem;
-  border-bottom: 1px solid #e9ecef;
   display: flex;
   gap: 1rem;
   align-items: flex-start;
@@ -137,10 +134,14 @@
   margin: 0;
   color: #6c757d;
   font-size: 0.9rem;
-  font-family: 'Courier New', monospace;
+  font-family: "Courier New", monospace;
 }
 
-.book-author, .book-publisher, .book-pubdate, .book-review, .book-price {
+.book-author,
+.book-publisher,
+.book-pubdate,
+.book-review,
+.book-price {
   margin: 0;
   color: #495057;
   font-size: 0.85rem;
@@ -194,7 +195,8 @@
   margin-top: 0.5rem;
 }
 
-.total-libraries, .available-libraries {
+.total-libraries,
+.available-libraries {
   padding: 0.25rem 0.75rem;
   border-radius: 12px;
   font-size: 0.8rem;
@@ -413,7 +415,6 @@
   box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
 }
 
-
 .load-more-description {
   margin: 0.75rem 0 0 0;
   color: #6c757d;
@@ -459,7 +460,6 @@
   color: #6c757d;
   font-size: 0.8rem;
 }
-
 
 /* 個別図書館表示スタイル */
 .individual-library {
@@ -575,7 +575,8 @@
   flex-wrap: wrap;
 }
 
-.library-address, .library-tel {
+.library-address,
+.library-tel {
   margin: 0;
   color: #6c757d;
   font-size: 0.7rem;
@@ -597,35 +598,36 @@
   .book-result-item {
     padding: 1rem;
   }
-  
+
   .book-title {
     font-size: 1.1rem;
   }
-  
+
   .availability-summary {
     gap: 0.5rem;
   }
-  
-  .total-libraries, .available-libraries {
+
+  .total-libraries,
+  .available-libraries {
     font-size: 0.75rem;
     padding: 0.2rem 0.6rem;
   }
-  
+
   .branch-item {
     flex-direction: column;
     align-items: flex-start;
     gap: 0.25rem;
     padding: 0.5rem;
   }
-  
+
   .branch-status {
     align-self: flex-end;
   }
-  
+
   .library-systems {
     gap: 1rem;
   }
-  
+
   .library-system {
     padding: 0.75rem;
   }
@@ -671,7 +673,8 @@
     padding: 0.1rem 0.3rem;
   }
 
-  .library-address, .library-tel {
+  .library-address,
+  .library-tel {
     font-size: 0.65rem;
     margin-bottom: 0.1rem;
   }

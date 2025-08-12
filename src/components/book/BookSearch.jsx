@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useBookSearch } from '../../hooks/useBookSearch';
 import BookSearchResults from './BookSearchResults';
-import { Search, MenuBook, Clear, Business, Error, Close } from '@mui/icons-material';
+import { Search, MenuBook, Business, Error, Close } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
 import './BookSearch.css';
 
@@ -13,45 +13,7 @@ const BookSearch = ({ libraries = [], userLocation }) => {
   
   const suggestions = [];
 
-  const handleSearch = (e) => {
-    e.preventDefault();
-    
-    if (!searchQuery.trim()) {
-      alert('検索キーワードを入力してください');
-      return;
-    }
 
-    if (libraries.length === 0) {
-      alert('先に図書館を検索してください');
-      return;
-    }
-
-    // 図書館システムIDを抽出
-    let systemIds = libraries.map(lib => lib.systemid).filter(Boolean);
-    
-    console.log('🔍 図書館データ詳細:', libraries);
-    console.log('📋 システムID抽出結果:', systemIds);
-    
-    // systemidがない場合はidをフォールバックとして使用
-    if (systemIds.length === 0) {
-      systemIds = libraries.map(lib => lib.id).filter(Boolean);
-      console.log('🔄 IDをsystemidとしてフォールバック:', systemIds);
-    }
-    
-    if (systemIds.length === 0) {
-      console.error('❌ SystemID抽出失敗。図書館データ:', libraries);
-      alert('利用可能な図書館システムが見つかりません。図書館を再検索してください。');
-      return;
-    }
-
-    console.log('📚 書籍検索開始:', { searchQuery, searchType, systemIds });
-    searchBooks(searchQuery, searchType, systemIds);
-  };
-
-  const handleClear = () => {
-    setSearchQuery('');
-    clearResults();
-  };
 
   const isISBN = (query) => {
     // ISBN-10: 10桁の数字またはハイフン付き
@@ -86,12 +48,29 @@ const BookSearch = ({ libraries = [], userLocation }) => {
   const handleInputBlur = () => {
     // 少し遅延させて候補クリックを可能にする
     setTimeout(() => setShowSuggestions(false), 200);
+    
+    // フォーカスが外れた時点で自動検索
+    if (searchQuery.trim() && libraries.length > 0) {
+      console.log('🔍 フォーカスアウト時の自動検索開始:', { searchQuery, searchType });
+      
+      // 図書館システムIDを抽出
+      let systemIds = libraries.map(lib => lib.systemid).filter(Boolean);
+      
+      // systemidがない場合はidをフォールバックとして使用
+      if (systemIds.length === 0) {
+        systemIds = libraries.map(lib => lib.id).filter(Boolean);
+      }
+      
+      if (systemIds.length > 0) {
+        searchBooks(searchQuery, searchType, systemIds);
+      }
+    }
   };
 
   return (
     <div className="book-search-container">
       <div className="search-form-container">
-        <form onSubmit={handleSearch} className="book-search-form">
+        <div className="book-search-form">
           <div className="search-input-group">
             <div className="input-container">
               <input
@@ -100,7 +79,13 @@ const BookSearch = ({ libraries = [], userLocation }) => {
                 onChange={handleQueryChange}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder={searchType === 'isbn' ? 'ISBN (例: 9784334926946)' : 'キーワード検索 (例: 星の王子さま、村上春樹)'}
+                placeholder={
+                  searchType === 'isbn' 
+                    ? 'ISBN (例: 9784334926946)' 
+                    : searchType === 'author'
+                    ? '著者名検索 (例: 村上春樹、夏目漱石)'
+                    : 'タイトル検索 (例: 星の王子さま、吾輩は猫である)'
+                }
                 className="search-input"
                 disabled={loading}
               />
@@ -130,7 +115,17 @@ const BookSearch = ({ libraries = [], userLocation }) => {
                   onChange={(e) => setSearchType(e.target.value)}
                   disabled={loading}
                 />
-                キーワード検索
+                タイトル検索
+              </label>
+              <label className="search-type-option">
+                <input
+                  type="radio"
+                  value="author"
+                  checked={searchType === 'author'}
+                  onChange={(e) => setSearchType(e.target.value)}
+                  disabled={loading}
+                />
+                著者検索
               </label>
               <label className="search-type-option">
                 <input
@@ -145,37 +140,7 @@ const BookSearch = ({ libraries = [], userLocation }) => {
             </div>
           </div>
           
-          <div className="search-buttons">
-            <button
-              type="submit"
-              className="search-button"
-              disabled={loading || !searchQuery.trim()}
-            >
-              {loading ? (
-                <>
-                  <CircularProgress size={16} sx={{ mr: 1, color: 'white' }} />
-                  検索中...
-                </>
-              ) : (
-                <>
-                  <MenuBook fontSize="small" style={{ marginRight: '6px' }} />
-                  蔵書検索
-                </>
-              )}
-            </button>
-            {(searchQuery || results.length > 0) && (
-              <button
-                type="button"
-                onClick={handleClear}
-                className="clear-button"
-                disabled={loading}
-              >
-                <Clear fontSize="small" style={{ marginRight: '6px' }} />
-                クリア
-              </button>
-            )}
-          </div>
-        </form>
+        </div>
 
 
 

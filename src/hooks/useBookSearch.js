@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { searchISBNsByTitle, getBookInfoFromISBN, getAvailableTitles } from '../utils/openBD';
-import { searchBooksByKeyword, extractValidISBNs, isRakutenAPIAvailable, searchBookByISBN } from '../utils/rakutenBooks';
+import { searchBooksByTitle, searchBooksByAuthor, extractValidISBNs, isRakutenAPIAvailable, searchBookByISBN } from '../utils/rakutenBooks';
 
 // カーリルAPIのアプリケーションキー（環境変数から取得）
 const CALIL_API_KEY = import.meta.env.VITE_CALIL_API_KEY;
@@ -31,18 +31,20 @@ export const useBookSearch = () => {
   };
 
   // キーワード検索の実装（楽天Books API統合版）
-  const searchByTitle = async (keyword, systemIds) => {
-    console.log('🔍 キーワード検索開始:', keyword);
+  const searchByTitle = async (keyword, systemIds, searchType = 'title') => {
+    console.log(`🔍 ${searchType === 'title' ? 'タイトル' : '著者'}検索開始:`, keyword);
     
     try {
       let searchResults = [];
       
       // 1. 楽天Books APIが利用可能な場合はAPIを使用
       if (isRakutenAPIAvailable()) {
-        console.log('📚 楽天Books APIでキーワード検索中...');
+        console.log(`📚 楽天Books APIで${searchType === 'title' ? 'タイトル' : '著者'}検索中...`);
         
         try {
-          const rakutenBooks = await searchBooksByKeyword(keyword, 15);
+          const rakutenBooks = searchType === 'title' 
+            ? await searchBooksByTitle(keyword, 15)
+            : await searchBooksByAuthor(keyword, 15);
           
           if (rakutenBooks.length > 0) {
             console.log(`🎯 楽天Books APIで ${rakutenBooks.length} 件の書籍が見つかりました`);
@@ -417,8 +419,8 @@ export const useBookSearch = () => {
         setCachedSystemIds(systemIds);
         
       } else {
-        // タイトル検索は複数結果を返す可能性がある
-        const titleResults = await searchByTitle(query, systemIds);
+        // タイトル・著者検索は複数結果を返す可能性がある
+        const titleResults = await searchByTitle(query, systemIds, searchType);
         searchResults = Array.isArray(titleResults) ? titleResults : [titleResults];
       }
 

@@ -1,18 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useGeolocation } from '../../hooks/useGeolocation';
-import { LocationOn, Refresh, Tune } from '@mui/icons-material';
-import DistanceFilterPopup from './DistanceFilterPopup';
+import { LocationOn, Refresh } from '@mui/icons-material';
 import './LocationStatus.css';
 
 const LocationStatus = ({ 
   userLocation, 
-  onLocationRefresh,
-  libraries = [],
-  distanceFilter,
-  onDistanceFilterChange 
+  onLocationRefresh
 }) => {
   const { loading, error, getCurrentLocation } = useGeolocation();
-  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 
   const handleRefresh = () => {
     getCurrentLocation();
@@ -44,17 +39,6 @@ const LocationStatus = ({
             <LocationOn fontSize="small" />
           )}
         </button>
-        
-        {libraries.length > 0 && (
-          <button 
-            onClick={() => setIsFilterPopupOpen(true)}
-            className="distance-filter-btn"
-            title="距離フィルタ設定"
-          >
-            <Tune fontSize="small" />
-            <span className="filter-label">{distanceFilter}km</span>
-          </button>
-        )}
       </div>
       
       <div className="location-info">
@@ -88,15 +72,6 @@ const LocationStatus = ({
           </div>
         )}
       </div>
-      
-      {/* 距離フィルタポップアップ */}
-      <DistanceFilterPopup
-        selectedDistance={distanceFilter}
-        onDistanceChange={onDistanceFilterChange}
-        libraryCount={libraries.length}
-        isOpen={isFilterPopupOpen}
-        onClose={() => setIsFilterPopupOpen(false)}
-      />
     </div>
   );
 };
