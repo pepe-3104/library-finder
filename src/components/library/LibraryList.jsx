@@ -89,7 +89,7 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
               {library.distance && (
                 <span className="library-distance">
                   <Straighten fontSize="small" style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
-                  約 {library.distance}km
+                  約 {typeof library.distance === 'number' ? library.distance.toFixed(2) : library.distance}km
                 </span>
               )}
             </div>

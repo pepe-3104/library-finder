@@ -165,7 +165,7 @@ const LibraryMap = ({
                     </p>
                   )}
                   {library.distance && (
-                    <p className="popup-distance">📏 約 {library.distance}km</p>
+                    <p className="popup-distance">📏 約 {typeof library.distance === 'number' ? library.distance.toFixed(2) : library.distance}km</p>
                   )}
                   {library.category && (
                     <p className="popup-category">
