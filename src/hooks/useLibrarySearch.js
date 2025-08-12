@@ -6,7 +6,7 @@ export const useLibrarySearch = () => {
   const [error, setError] = useState(null);
 
   const searchNearbyLibraries = useCallback(
-    async (latitude, longitude, limit = 20) => {
+    async (latitude, longitude, maxDistance = 10) => {
       setLoading(true);
       setError(null);
       setLibraries([]);
@@ -21,29 +21,52 @@ export const useLibrarySearch = () => {
         }
 
         // カーリルAPIの図書館検索エンドポイント（位置情報ベース）
-        const apiUrl = `https://api.calil.jp/library?appkey=${apiKey}&geocode=${longitude},${latitude}&limit=${limit}&format=json&callback=?`;
+        // 距離ベース制限のため、大きめのlimitで取得してから距離でフィルタリング
+        const apiUrl = `https://api.calil.jp/library?appkey=${apiKey}&geocode=${longitude},${latitude}&limit=100&format=json&callback=?`;
 
         // JSONPリクエストを作成
         const response = await makeJsonpRequest(apiUrl);
 
         if (response && response.length > 0) {
-          const formattedLibraries = response.map((library) => ({
-            id: library.systemid,
-            systemid: library.systemid,
-            name: library.formal || library.short,
-            shortName: library.short,
-            address: library.address,
-            tel: library.tel,
-            url: library.url_pc,
-            distance: library.distance,
-            category: library.category,
-            geocode: library.geocode,
-            isil: library.isil,
-          }));
+          const formattedLibraries = response
+            .map((library) => ({
+              id: library.systemid,
+              systemid: library.systemid,
+              name: library.formal || library.short,
+              shortName: library.short,
+              address: library.address,
+              tel: library.tel,
+              url: library.url_pc,
+              distance: library.distance,
+              category: library.category,
+              geocode: library.geocode,
+              isil: library.isil,
+            }))
+            // 距離ベースでフィルタリング
+            .filter((library) => {
+              // distance プロパティがある場合はそれを使用
+              if (library.distance !== undefined && library.distance !== null) {
+                return library.distance <= maxDistance;
+              }
+              
+              // distance がない場合は geocode から計算
+              if (library.geocode) {
+                const [lng, lat] = library.geocode.split(',').map(Number);
+                if (!isNaN(lat) && !isNaN(lng)) {
+                  const calculatedDistance = calculateDistance(latitude, longitude, lat, lng);
+                  library.distance = calculatedDistance; // 計算した距離を設定
+                  return calculatedDistance <= maxDistance;
+                }
+              }
+              
+              return false; // 距離が計算できない場合は除外
+            })
+            // 距離でソート（近い順）
+            .sort((a, b) => (a.distance || 0) - (b.distance || 0));
 
           setLibraries(formattedLibraries);
           console.log(
-            `📚 ${formattedLibraries.length}件の図書館が見つかりました:`,
+            `📚 ${maxDistance}km以内で${formattedLibraries.length}件の図書館が見つかりました:`,
             formattedLibraries
           );
         } else {
@@ -73,6 +96,20 @@ export const useLibrarySearch = () => {
     searchNearbyLibraries,
     clearResults,
   };
+};
+
+// Haversine公式による距離計算関数（km単位）
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // 地球の半径 (km)
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c;
+  return parseFloat(distance.toFixed(2)); // 小数点以下2桁で四捨五入
 };
 
 // JSONP リクエストを処理するユーティリティ関数

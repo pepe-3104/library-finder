@@ -6,7 +6,6 @@ import MapPage from './pages/MapPage';
 import BookSearchPage from './pages/BookSearchPage';
 import { useGeolocation } from './hooks/useGeolocation';
 import { useLibrarySearch } from './hooks/useLibrarySearch';
-import { useDistanceFilter } from './hooks/useDistanceFilter';
 import './App.css';
 import './pages/Pages.css';
 
@@ -19,15 +18,9 @@ function App() {
   const [userLocation, setUserLocation] = useState(null);
   const [libraries, setLibraries] = useState([]);
   const [selectedLibrary, setSelectedLibrary] = useState(null);
+  const [maxDistance, setMaxDistance] = useState(5); // デフォルト5km
   const { location, getCurrentLocation } = useGeolocation();
   const { libraries: searchedLibraries, searchNearbyLibraries } = useLibrarySearch();
-  
-  // 距離フィルタリング機能
-  const {
-    filteredLibraries,
-    maxDistance,
-    setDistanceFilter
-  } = useDistanceFilter(libraries);
 
   // 位置情報をuserLocationに同期
   useEffect(() => {
@@ -40,9 +33,10 @@ function App() {
   useEffect(() => {
     if (location) {
       console.log('🔍 App: 位置情報取得、図書館検索を開始:', location);
-      searchNearbyLibraries(location.latitude, location.longitude);
+      // 距離フィルタの現在値で検索（デフォルト10km）
+      searchNearbyLibraries(location.latitude, location.longitude, maxDistance);
     }
-  }, [location, searchNearbyLibraries]);
+  }, [location, searchNearbyLibraries, maxDistance]);
 
   // 図書館検索結果をlibrariesに同期
   useEffect(() => {
@@ -77,6 +71,16 @@ function App() {
     getCurrentLocation();
   };
 
+  // 距離フィルタが変更された時の図書館再検索
+  const handleDistanceFilterChange = (newDistance) => {
+    setMaxDistance(newDistance);
+    // 現在位置がある場合は新しい距離で再検索
+    if (userLocation) {
+      console.log(`🔄 距離フィルタ変更: ${newDistance}km で図書館を再検索`);
+      searchNearbyLibraries(userLocation.latitude, userLocation.longitude, newDistance);
+    }
+  };
+
   return (
     <Router>
       <Layout 
@@ -84,7 +88,7 @@ function App() {
         onLocationRefresh={handleLocationRefresh}
         libraries={libraries}
         distanceFilter={maxDistance}
-        onDistanceFilterChange={setDistanceFilter}
+        onDistanceFilterChange={handleDistanceFilterChange}
       >
         <Routes>
           <Route 
@@ -92,7 +96,7 @@ function App() {
             element={
               <LibrarySearchPage 
                 userLocation={userLocation}
-                libraries={filteredLibraries}
+                libraries={libraries}
                 onLibrarySelect={handleLibrarySelect}
               />
             } 
@@ -102,7 +106,7 @@ function App() {
             element={
               <MapPage 
                 userLocation={userLocation}
-                libraries={filteredLibraries}
+                libraries={libraries}
                 selectedLibrary={selectedLibrary}
                 onLibrarySelect={handleLibrarySelect}
               />
@@ -112,7 +116,7 @@ function App() {
             path="/books" 
             element={
               <BookSearchPage 
-                libraries={filteredLibraries}
+                libraries={libraries}
               />
             } 
           />
