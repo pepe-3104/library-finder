@@ -29,6 +29,18 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
     return parts.join('-').replace(/\s+/g, '-');
   };
 
+  // カテゴリを日本語表記に変換する関数（マップ凡例と統一）
+  const getCategoryDisplayName = (category) => {
+    switch (category) {
+      case 'LARGE': return '大規模図書館';
+      case 'MEDIUM': return '中規模図書館';
+      case 'SMALL': return '小規模図書館';
+      case 'UNIV': return '大学図書館';
+      case 'SPECIAL': return '専門図書館';
+      default: return 'その他';
+    }
+  };
+
   // 地図表示機能
   const handleShowOnMap = (library) => {
     console.log('🗺️ 地図で表示:', library);
@@ -132,7 +144,7 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
                   <span className="detail-icon">
                     <Category fontSize="small" />
                   </span>
-                  <span className="category-tag">{library.category}</span>
+                  <span className="category-tag">{getCategoryDisplayName(library.category)}</span>
                 </div>
               )}
             </div>

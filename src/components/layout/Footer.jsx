@@ -17,6 +17,11 @@ const Footer = () => {
                 カーリル図書館API
               </a>
             </p>
+            <p>
+              <a href="https://webservice.rakuten.co.jp/" target="_blank" rel="noopener noreferrer">
+                Supported by Rakuten Developers
+              </a>
+            </p>
           </div>
           <div className="footer-section">
             <h4>リンク</h4>

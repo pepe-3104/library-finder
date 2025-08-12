@@ -471,6 +471,27 @@ const BookResultItem = ({ book, onLoadLibraryData, userLocation, libraries }) =>
           })()}
         </div>
       )}
+
+      {/* 楽天ブックスAPI クレジット表記 */}
+      {results && results.length > 0 && (
+        <div className="api-credit" style={{ 
+          textAlign: 'center', 
+          marginTop: '20px', 
+          padding: '10px', 
+          borderTop: '1px solid #e0e0e0',
+          fontSize: '12px',
+          color: '#666'
+        }}>
+          <a 
+            href="https://webservice.rakuten.co.jp/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            style={{ color: '#666', textDecoration: 'none' }}
+          >
+            Supported by Rakuten Developers
+          </a>
+        </div>
+      )}
     </div>
   );
 };

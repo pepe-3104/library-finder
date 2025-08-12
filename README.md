@@ -4,10 +4,35 @@
 
 ## ✨ 機能
 
-- 📍 **位置情報取得**: GPS を使った現在位置の取得
-- 🔍 **図書館検索**: カーリル API による周辺図書館の検索
-- 🗺️ **地図表示**: React Leaflet による図書館位置のマップ表示（実装予定）
-- 📖 **蔵書検索**: ISBN や書名による蔵書検索（実装予定）
+### 📍 位置情報機能
+- GPS による現在位置の自動取得
+- 手動での住所入力による位置指定
+- 位置情報取得エラーハンドリング
+
+### 🔍 図書館検索機能  
+- カーリル API による全国図書館データの検索
+- 現在位置からの距離順表示
+- 図書館カテゴリ別分類（大規模・中規模・小規模・大学・専門・その他）
+- 距離フィルタリング機能（1km、3km、5km、10km）
+
+### 🗺️ インタラクティブ地図表示
+- React Leaflet による高機能マップ
+- 図書館位置のカテゴリ別カラーマーカー表示
+- 現在位置とターゲット図書館の視覚的表示
+- マーカークリックによる詳細情報ポップアップ
+- 地図凡例による色分け説明
+
+### 📖 蔵書検索機能
+- ISBN・書名・著者名による書籍検索
+- 楽天ブックス API との連携による書籍情報取得
+- 書籍詳細情報（表紙画像、価格、発売日など）の表示
+- 各図書館での蔵書有無確認
+
+### 📱 PWA対応
+- オフライン対応（Service Worker）
+- ホーム画面への追加可能
+- レスポンシブデザイン（PC・タブレット・スマートフォン対応）
+- プッシュ通知準備完了
 
 ## 🚀 セットアップ
 
@@ -55,57 +80,152 @@ npm run dev
 
 ## 🛠️ 技術スタック
 
-- **Frontend**: React 18 + Vite
-- **UI**: CSS3 (レスポンシブデザイン)
-- **API連携**: カーリル図書館API (JSONP)
-- **地図表示**: React Leaflet（実装予定）
+### フロントエンド
+- **Framework**: React 19 + Vite 7
+- **ルーティング**: React Router DOM 7
+- **UI Framework**: Material-UI (MUI) 7 + Emotion
+- **スタイリング**: CSS3 + Material-UI System
 - **状態管理**: React Hooks (useState, useCallback, useEffect)
+
+### 地図・位置情報
+- **地図ライブラリ**: React Leaflet 5 + Leaflet
+- **地図データ**: OpenStreetMap
+- **位置情報**: Geolocation API
+
+### API連携
+- **図書館検索**: カーリル図書館API (JSONP)
+- **書籍検索**: 楽天ブックス API
+- **API キャッシング**: Service Worker + Workbox
+
+### PWA・開発支援
+- **PWA**: Vite PWA Plugin + Service Worker
+- **テスト**: Vitest + React Testing Library + jsdom
+- **リンター**: ESLint 9
+- **自動化**: Puppeteer (スクリーンショット自動生成)
+- **開発サーバー**: Vite Dev Server (ホットリロード対応)
 
 ## 📁 プロジェクト構造
 
 ```
 src/
 ├── components/
+│   ├── book/             # 書籍検索関連
+│   │   ├── BookSearch.jsx
+│   │   └── BookSearchResults.jsx
 │   ├── common/           # 共通コンポーネント
+│   │   ├── DistanceFilterPopup.jsx
+│   │   ├── LibrarySearchSection.jsx
 │   │   ├── LocationInput.jsx
-│   │   └── LibrarySearchSection.jsx
+│   │   ├── LocationStatus.jsx
+│   │   └── MapSection.jsx
 │   ├── layout/           # レイアウトコンポーネント
+│   │   ├── Footer.jsx
 │   │   ├── Header.jsx
-│   │   ├── Layout.jsx
-│   │   └── Footer.jsx
-│   └── library/          # 図書館関連コンポーネント
-│       └── LibraryList.jsx
+│   │   └── Layout.jsx
+│   ├── library/          # 図書館関連コンポーネント
+│   │   └── LibraryList.jsx
+│   └── map/              # 地図関連コンポーネント
+│       ├── LibraryMap.jsx
+│       ├── LibraryMap.css
+│       └── MapSection.jsx
 ├── hooks/                # カスタムフック
+│   ├── useBookSearch.js
 │   ├── useGeolocation.js
 │   └── useLibrarySearch.js
-└── App.jsx
+├── pages/                # ページコンポーネント
+│   ├── BookSearchPage.jsx
+│   ├── LibrarySearchPage.jsx
+│   └── MapPage.jsx
+├── utils/                # ユーティリティ
+│   └── mockData.js
+├── App.jsx
+└── main.jsx
+```
+
+### スクリプト・設定ファイル
+```
+scripts/                 # 自動化スクリプト
+├── screenshot-system.js  # 統合スクリーンショット
+├── screenshot-all-pages.js
+└── simple-screenshot.js
 ```
 
 ## 🔧 主要コンポーネント
 
-### useGeolocation
-位置情報取得のカスタムフック
-- GPS による現在位置取得
-- エラーハンドリング
-- ローディング状態管理
+### カスタムフック
 
-### useLibrarySearch  
+#### useGeolocation
+位置情報取得のカスタムフック
+- GPS による現在位置の自動取得
+- 位置情報許可状態の管理
+- エラーハンドリングとリトライ機能
+
+#### useLibrarySearch  
 図書館検索のカスタムフック
 - カーリル API との JSONP 通信
-- 検索結果のフォーマット
+- 検索結果のフォーマットと距離計算
 - エラーハンドリングとタイムアウト処理
+- 距離フィルタリング機能
 
-### LibraryList
-図書館検索結果の表示
-- 図書館詳細情報の表示
-- 距離順ソート
-- レスポンシブデザイン
+#### useBookSearch
+書籍検索のカスタムフック
+- 楽天ブックス API との通信
+- ISBN・書名・著者名による多様な検索
+- 蔵書確認機能との連携
 
-## 📝 開発ログ
+### UI コンポーネント
 
-開発の進捗は以下のファイルで確認できます：
-- `work-log.md` - 作業ログ
-- `cli-conversation-log.md` - CLI 会話ログ
+#### LibraryMap
+インタラクティブ地図コンポーネント
+- React Leaflet による地図表示
+- カテゴリ別カラーマーカー表示
+- ポップアップによる詳細情報表示
+- 地図凡例とコントロール機能
+
+#### LibraryList
+図書館検索結果の一覧表示
+- MUI アイコンを使用した視認性の高いデザイン
+- 距離順ソートと詳細情報表示
+- 地図連携機能とレスポンシブデザイン
+
+#### BookSearchResults
+書籍検索結果の表示
+- 書籍詳細情報（表紙・価格・発売日）
+- 各図書館での蔵書有無確認
+- 外部サイトへのリンク機能
+
+## 🧪 テスト・品質管理
+
+### テスト環境
+```bash
+# 単体テスト実行
+npm test
+
+# テストUI起動
+npm test:ui
+
+# テスト実行（CI用）
+npm test:run
+```
+
+### 品質管理ツール
+```bash
+# ESLint によるコード品質チェック
+npm run lint
+
+# 全ページスクリーンショット生成
+npm run screenshot:all
+
+# レスポンシブ対応スクリーンショット
+npm run screenshot:responsive
+```
+
+## 📝 開発ログ・ドキュメント
+
+プロジェクトの開発進捗と技術的な詳細は以下のファイルで管理されています：
+- `CLAUDE.md` - 開発ガイドラインと品質管理ルール
+- `development-log.md` - 技術的な開発ログ
+- `cli-conversation-log.md` - CLI 操作と会話ログ
 
 ## 🤝 Contributing
 
@@ -122,5 +242,9 @@ src/
 ## 🙏 謝辞
 
 - [カーリル](https://calil.jp/) - 図書館検索API提供
+- [楽天ブックス API](https://webservice.rakuten.co.jp/document/books/) - 書籍検索API提供
 - [React](https://reactjs.org/) - UI フレームワーク  
-- [Vite](https://vitejs.dev/) - ビルドツール
+- [Vite](https://vitejs.dev/) - 高速ビルドツール
+- [Material-UI](https://mui.com/) - UI コンポーネントライブラリ
+- [React Leaflet](https://react-leaflet.js.org/) - 地図表示ライブラリ
+- [OpenStreetMap](https://www.openstreetmap.org/) - 地図データ提供

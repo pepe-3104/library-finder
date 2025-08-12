@@ -1,9 +1,7 @@
 import React, { useState } from 'react';
 import { useBookSearch } from '../../hooks/useBookSearch';
 import BookSearchResults from './BookSearchResults';
-import { getAvailableTitles } from '../../utils/openBD';
-import { isRakutenAPIAvailable } from '../../utils/rakutenBooks';
-import { Search, MenuBook, Clear, RocketLaunch, Business, Error, Close } from '@mui/icons-material';
+import { Search, MenuBook, Clear, Business, Error, Close } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
 import './BookSearch.css';
 
@@ -13,13 +11,7 @@ const BookSearch = ({ libraries = [], userLocation }) => {
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { results, loading, error, searchBooks, loadLibraryDataForBook, clearResults } = useBookSearch();
   
-  // タイトル候補を取得
-  const availableTitles = getAvailableTitles();
-  const suggestions = searchType === 'title' && searchQuery.length >= 2 
-    ? availableTitles.filter(title => 
-        title.toLowerCase().includes(searchQuery.toLowerCase())
-      ).slice(0, 8) // 最大8件表示
-    : [];
+  const suggestions = [];
 
   const handleSearch = (e) => {
     e.preventDefault();
@@ -108,7 +100,7 @@ const BookSearch = ({ libraries = [], userLocation }) => {
                 onChange={handleQueryChange}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
-                placeholder={searchType === 'isbn' ? 'ISBN (例: 9784334926946)' : isRakutenAPIAvailable() ? 'キーワード検索 (例: 星の王子さま、村上春樹)' : '書籍タイトル (例: 星の王子さま)'}
+                placeholder={searchType === 'isbn' ? 'ISBN (例: 9784334926946)' : 'キーワード検索 (例: 星の王子さま、村上春樹)'}
                 className="search-input"
                 disabled={loading}
               />
@@ -138,7 +130,7 @@ const BookSearch = ({ libraries = [], userLocation }) => {
                   onChange={(e) => setSearchType(e.target.value)}
                   disabled={loading}
                 />
-                {isRakutenAPIAvailable() ? 'キーワード検索' : 'タイトル検索'}
+                キーワード検索
               </label>
               <label className="search-type-option">
                 <input
@@ -186,26 +178,6 @@ const BookSearch = ({ libraries = [], userLocation }) => {
         </form>
 
 
-        {/* API状況とヘルプ情報 */}
-        <div className="api-status-info">
-          {isRakutenAPIAvailable() ? (
-            <div className="api-status enabled">
-              <p>
-                <RocketLaunch fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
-                <strong>楽天Books API</strong> 有効 - 豊富な書籍データベースから検索可能
-              </p>
-              <p className="api-detail">タイトル、著者名、キーワードで幅広い検索ができます</p>
-            </div>
-          ) : (
-            <div className="api-status limited">
-              <p>
-                <MenuBook fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
-                <strong>限定検索モード</strong> - 楽天APIキー未設定
-              </p>
-              <p className="api-detail">現在{getAvailableTitles().length}冊の書籍に対応しています</p>
-            </div>
-          )}
-        </div>
 
         {/* 検索対象の図書館情報 */}
         {libraries.length > 0 && (

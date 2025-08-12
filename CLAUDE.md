@@ -1,4 +1,14 @@
-# 開発セッション後リマインダー 🚀
+# Library Finder Project - Development Guidelines
+
+## プロジェクト概要
+図書館蔵書検索システム - 複数の図書館APIを統合したNext.js Webアプリケーション
+
+## 🔧 開発環境ルール
+
+### **サーバー起動ポート**
+- **標準**: サーバー起動時はport 5173を使用する（Viteデフォルト）
+- **設定**: vite.config.jsで固定済み
+- **実行**: `npm run dev`
 
 ## 🎯 セッション終了前の必須チェックリスト
 
@@ -110,14 +120,14 @@ git status && git log --oneline -5
 - 解決に至るまでのプロセス記録
 - 今後の予防策
 
----
-
-**最終更新:** 2025-08-12  
-**作成者:** Claude Code (Sonnet 4)  
-**用途:** 開発セッション品質向上とプロジェクト継続性確保
-
 ## 📚 関連ファイル
 - `development-log.md` - 技術的な開発ログ
 - `cli-conversation-log.md` - 会話・操作ログ
 - `scripts/screenshot-*.js` - スクリーンショット自動化
 - `.git/logs/` - Git操作履歴
+
+---
+
+**最終更新:** 2025-08-12  
+**作成者:** Claude Code (Sonnet 4)  
+**用途:** 開発セッション品質向上とプロジェクト継続性確保
