@@ -2,7 +2,7 @@ import React from 'react';
 import LibraryList from '../components/library/LibraryList';
 import { LocationOn, Assessment } from '@mui/icons-material';
 
-const LibrarySearchPage = ({ userLocation, libraries, onLibrarySelect }) => {
+const LibrarySearchPage = ({ libraries, onLibrarySelect }) => {
   return (
     <div className="page-container">
       <div className="library-search-page-content">
