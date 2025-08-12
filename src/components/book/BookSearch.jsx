@@ -6,11 +6,11 @@ import { isRakutenAPIAvailable } from '../../utils/rakutenBooks';
 import { Search, MenuBook, Clear, RocketLaunch, Business, Error, Close } from '@mui/icons-material';
 import './BookSearch.css';
 
-const BookSearch = ({ libraries = [] }) => {
+const BookSearch = ({ libraries = [], userLocation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState('title'); // 'title' or 'isbn'
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const { results, loading, error, searchBooks, clearResults } = useBookSearch();
+  const { results, loading, error, searchBooks, loadLibraryDataForBook, clearResults } = useBookSearch();
   
   // タイトル候補を取得
   const availableTitles = getAvailableTitles();
@@ -252,6 +252,9 @@ const BookSearch = ({ libraries = [] }) => {
         loading={loading}
         searchQuery={searchQuery}
         searchType={searchType}
+        onLoadLibraryData={loadLibraryDataForBook}
+        userLocation={userLocation}
+        libraries={libraries}
       />
     </div>
   );

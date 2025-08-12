@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { searchISBNsByTitle, getBookInfoFromISBN, getAvailableTitles } from '../utils/openBD';
-import { searchBooksByKeyword, extractValidISBNs, isRakutenAPIAvailable } from '../utils/rakutenBooks';
+import { searchBooksByKeyword, extractValidISBNs, isRakutenAPIAvailable, searchBookByISBN } from '../utils/rakutenBooks';
 
 // カーリルAPIのアプリケーションキー（環境変数から取得）
 const CALIL_API_KEY = import.meta.env.VITE_CALIL_API_KEY;
@@ -10,6 +10,11 @@ export const useBookSearch = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentSession, setCurrentSession] = useState(null);
+  const [hasMore, setHasMore] = useState(false);
+  const [currentBatch, setCurrentBatch] = useState(0);
+  const [cachedBooks, setCachedBooks] = useState([]);
+  const [cachedSystemIds, setCachedSystemIds] = useState([]);
+  const [loadingMore, setLoadingMore] = useState(false);
 
   // 図書館システムIDからシステム名を取得するマッピング
   const getSystemName = (systemId) => {
@@ -53,11 +58,10 @@ export const useBookSearch = () => {
               throw new Error('検索結果からISBNを取得できませんでした。');
             }
             
-            console.log(`📖 ${validISBNs.length} 件のISBNで蔵書検索を実行`);
+            console.log(`📖 ${validISBNs.length} 件の書籍を表示、蔵書検索は段階的に実行`);
             
-            // 最初の3冊について蔵書検索を実行（パフォーマンス考慮）
-            const isbnBatch = validISBNs.slice(0, 3);
-            const bookSearchPromises = isbnBatch.map(async (isbn, index) => {
+            // 楽天Books APIの結果をすべて表示用に変換（蔵書情報なし）
+            const bookResults = validISBNs.map(isbn => {
               const rakutenBook = rakutenBooks.find(book => {
                 const normalizedIsbn = normalizeISBN(isbn);
                 const normalizedBookIsbn = normalizeISBN(book.isbn || '');
@@ -69,18 +73,32 @@ export const useBookSearch = () => {
                        normalizedBookIsbn === normalizedIsbn;
               });
               
-              try {
-                console.log(`📚 [${index + 1}/${isbnBatch.length}] "${rakutenBook?.title || isbn}" の蔵書検索中...`);
-                console.log(`🔍 検索ISBN: ${isbn}, マッチした書籍: ${rakutenBook?.title || '見つかりませんでした'}`);
-                return await searchByISBN(isbn, systemIds, rakutenBook?.title, rakutenBook);
-              } catch (error) {
-                console.warn(`⚠️ ISBN ${isbn} の蔵書検索に失敗:`, error.message);
-                return null;
-              }
+              return {
+                isbn,
+                title: rakutenBook?.title || `書籍 (ISBN: ${isbn})`,
+                systems: {}, // 最初は蔵書情報なし
+                isLibraryDataLoaded: false, // 蔵書情報が読み込まれているかのフラグ
+                ...(rakutenBook && {
+                  author: rakutenBook.author,
+                  publisher: rakutenBook.publisher,
+                  publishDate: rakutenBook.publishDate,
+                  imageUrl: rakutenBook.largeImageUrl || rakutenBook.mediumImageUrl,
+                  reviewAverage: rakutenBook.reviewAverage,
+                  reviewCount: rakutenBook.reviewCount,
+                  itemCaption: rakutenBook.itemCaption,
+                  itemUrl: rakutenBook.itemUrl
+                })
+              };
             });
             
-            const results = await Promise.all(bookSearchPromises);
-            searchResults = results.filter(result => result !== null);
+            // 蔵書検索用データをキャッシュ
+            setCachedBooks(bookResults);
+            setCachedSystemIds(systemIds);
+            setCurrentBatch(0);
+            setHasMore(validISBNs.length > 0);
+            
+            // 最初に全書籍を蔵書情報なしで表示
+            searchResults = bookResults;
             
           } else {
             console.log('📭 楽天Books APIで検索結果が見つかりませんでした');
@@ -154,12 +172,12 @@ export const useBookSearch = () => {
           setCurrentSession(data.session);
           
           // 初回応答の処理
-          const processedResults = processBookSearchResults(data, bookTitle, rakutenBookInfo);
+          const processedResults = processBookSearchResults(data, bookTitle, rakutenBookInfo, isbn);
           
           // continue=1の場合、継続的に確認
           if (data.continue === 1) {
             console.log('🔄 検索継続中... セッション:', data.session);
-            await pollForResults(data.session, normalizedISBN, systemIdParam, processedResults, bookTitle, resolve, reject, rakutenBookInfo);
+            await pollForResults(data.session, normalizedISBN, systemIdParam, processedResults, bookTitle, resolve, reject, rakutenBookInfo, isbn);
           } else {
             console.log('✅ 蔵書検索完了');
             resolve(processedResults);
@@ -226,7 +244,7 @@ export const useBookSearch = () => {
   };
 
   // 継続検索のポーリング
-  const pollForResults = async (sessionId, isbn, systemIds, currentResults, bookTitle, resolve, reject, rakutenBookInfo = null) => {
+  const pollForResults = async (sessionId, isbn, systemIds, currentResults, bookTitle, resolve, reject, rakutenBookInfo = null, searchedISBN = null) => {
     const pollUrl = `https://api.calil.jp/check?appkey=${CALIL_API_KEY}&session=${sessionId}&format=json&callback=?`;
     
     const poll = () => {
@@ -252,7 +270,7 @@ export const useBookSearch = () => {
         try {
           console.log('🔄 継続検索応答:', data);
           
-          const updatedResults = processBookSearchResults(data, bookTitle, rakutenBookInfo);
+          const updatedResults = processBookSearchResults(data, bookTitle, rakutenBookInfo, searchedISBN);
           
           if (data.continue === 1) {
             // まだ続きがある場合、2秒後に再ポーリング
@@ -303,7 +321,7 @@ export const useBookSearch = () => {
   };
 
   // カーリルAPI応答を処理して結果配列に変換
-  const processBookSearchResults = (apiData, bookTitle, rakutenBookInfo = null) => {
+  const processBookSearchResults = (apiData, bookTitle, rakutenBookInfo = null, searchedISBN = null) => {
     const results = [];
     
     if (!apiData.books) {
@@ -311,6 +329,17 @@ export const useBookSearch = () => {
     }
     
     Object.entries(apiData.books).forEach(([isbn, systemsData]) => {
+      // ISBN検索の場合は完全一致のみを処理
+      if (searchedISBN) {
+        const normalizedSearchedISBN = normalizeISBN(searchedISBN);
+        const normalizedResultISBN = normalizeISBN(isbn);
+        
+        // 完全一致しない場合はスキップ
+        if (normalizedResultISBN !== normalizedSearchedISBN) {
+          console.log(`📋 ISBN不一致のためスキップ: 検索=${normalizedSearchedISBN}, 結果=${normalizedResultISBN}`);
+          return;
+        }
+      }
       const bookResult = {
         isbn,
         title: bookTitle || `書籍 (ISBN: ${isbn})`,
@@ -360,8 +389,40 @@ export const useBookSearch = () => {
       let searchResults = [];
       
       if (searchType === 'isbn') {
-        const singleResult = await searchByISBN(query, systemIds);
-        searchResults = [singleResult];
+        console.log('📖 ISBN検索モード:', query);
+        
+        // 1. 楽天Books APIで書籍情報を取得
+        let rakutenBookInfo = null;
+        if (isRakutenAPIAvailable()) {
+          console.log('🔍 楽天Books APIでISBN検索中...');
+          try {
+            rakutenBookInfo = await searchBookByISBN(query);
+          } catch (error) {
+            console.warn('⚠️ 楽天Books ISBN検索エラー:', error.message);
+          }
+        }
+        
+        // 2. カーリルAPIで蔵書情報を取得
+        const bookTitle = rakutenBookInfo?.title || `書籍 (ISBN: ${query})`;
+        const libraryResults = await searchByISBN(query, systemIds, bookTitle, rakutenBookInfo);
+        
+        console.log('📚 ISBN検索結果:', libraryResults);
+        
+        // searchByISBNは配列を返すので、各結果にisLibraryDataLoadedフラグを追加
+        if (libraryResults && Array.isArray(libraryResults) && libraryResults.length > 0) {
+          searchResults = libraryResults.map(result => ({
+            ...result,
+            isLibraryDataLoaded: true // ISBN検索では蔵書情報が既に読み込まれている
+          }));
+          console.log('✅ ISBN検索結果を変換:', searchResults);
+        } else {
+          console.error('❌ ISBN検索結果が空または配列でない:', libraryResults);
+          throw new Error(`ISBN ${query} の蔵書情報が見つかりませんでした`);
+        }
+        
+        // システムIDをキャッシュ（個別読み込み用）
+        setCachedSystemIds(systemIds);
+        
       } else {
         // タイトル検索は複数結果を返す可能性がある
         const titleResults = await searchByTitle(query, systemIds);
@@ -385,11 +446,97 @@ export const useBookSearch = () => {
     }
   }, []);
 
+  // 個別書籍の蔵書情報読み込み
+  const loadLibraryDataForBook = useCallback(async (isbn) => {
+    if (!cachedSystemIds.length) {
+      throw new Error('図書館システム情報が見つかりません');
+    }
+
+    console.log(`📚 ISBN ${isbn} の蔵書情報読み込み開始`);
+    
+    // 該当する書籍を取得
+    const bookIndex = results.findIndex(book => book.isbn === isbn);
+    if (bookIndex === -1) {
+      throw new Error('書籍が見つかりません');
+    }
+
+    const book = results[bookIndex];
+    
+    // 書籍の読み込み状態を更新
+    setResults(prevResults => {
+      const newResults = [...prevResults];
+      newResults[bookIndex] = { ...book, isLibraryDataLoading: true };
+      return newResults;
+    });
+
+    try {
+      const libraryDataArray = await searchByISBN(isbn, cachedSystemIds, book.title, book);
+      
+      console.log(`📚 ISBN ${isbn} 蔵書検索結果:`, libraryDataArray);
+      
+      // searchByISBNは配列を返すので、最初の要素を取得
+      if (libraryDataArray && libraryDataArray.length > 0) {
+        const libraryData = libraryDataArray[0];
+        
+        // 結果を更新
+        setResults(prevResults => {
+          const newResults = [...prevResults];
+          newResults[bookIndex] = { 
+            ...book, 
+            ...libraryData, 
+            isLibraryDataLoaded: true, 
+            isLibraryDataLoading: false 
+          };
+          return newResults;
+        });
+        
+        console.log(`✅ ISBN ${isbn} の蔵書情報読み込み完了:`, libraryData);
+      } else {
+        // 蔵書情報が見つからない場合
+        setResults(prevResults => {
+          const newResults = [...prevResults];
+          newResults[bookIndex] = { 
+            ...book, 
+            systems: {}, // 空の蔵書情報
+            isLibraryDataLoaded: true, 
+            isLibraryDataLoading: false,
+            libraryDataError: '蔵書情報が見つかりませんでした'
+          };
+          return newResults;
+        });
+        
+        console.log(`📭 ISBN ${isbn} の蔵書情報が見つかりませんでした`);
+      }
+      
+    } catch (error) {
+      console.error(`❌ ISBN ${isbn} の蔵書検索エラー:`, error);
+      
+      // エラー状態を更新
+      setResults(prevResults => {
+        const newResults = [...prevResults];
+        newResults[bookIndex] = { 
+          ...book, 
+          isLibraryDataLoaded: true, 
+          isLibraryDataLoading: false,
+          libraryDataError: error.message 
+        };
+        return newResults;
+      });
+      
+      throw error;
+    }
+  }, [results, cachedSystemIds]);
+
   // 検索結果クリア
   const clearResults = useCallback(() => {
     setResults([]);
     setError(null);
     setCurrentSession(null);
+    setHasMore(false);
+    setCurrentBatch(0);
+    setCachedBooks([]);
+    setCachedSystemIds([]);
+    setLoadingMore(false);
   }, []);
 
   return {
@@ -398,6 +545,7 @@ export const useBookSearch = () => {
     error,
     searchBooks,
     clearResults,
-    currentSession
+    currentSession,
+    loadLibraryDataForBook
   };
 };

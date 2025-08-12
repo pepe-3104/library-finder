@@ -2,7 +2,7 @@ import React from 'react';
 import BookSearch from '../components/book/BookSearch';
 import { LibraryBooks } from '@mui/icons-material';
 
-const BookSearchPage = ({ libraries }) => {
+const BookSearchPage = ({ libraries, userLocation }) => {
   return (
     <div className="page-container">
       <div className="book-search-page-content">
@@ -19,7 +19,7 @@ const BookSearchPage = ({ libraries }) => {
           )}
         </div>
         
-        <BookSearch libraries={libraries} />
+        <BookSearch libraries={libraries} userLocation={userLocation} />
       </div>
     </div>
   );

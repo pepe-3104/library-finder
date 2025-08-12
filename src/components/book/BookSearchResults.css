@@ -260,11 +260,29 @@
   padding: 1rem;
 }
 
+.system-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.75rem;
+}
+
 .system-name {
-  margin: 0 0 0.75rem 0;
+  margin: 0;
   color: #495057;
   font-size: 1rem;
   font-weight: 600;
+}
+
+.system-distance {
+  display: inline-flex;
+  align-items: center;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
 }
 
 .reserve-link {
@@ -390,6 +408,241 @@
   animation: spin 1s linear infinite;
 }
 
+.library-data-pending {
+  background: #fff3cd;
+  color: #856404;
+  padding: 0.25rem 0.75rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  border: 1px solid #ffeaa7;
+}
+
+.load-more-section {
+  margin-top: 2rem;
+  padding: 1.5rem;
+  background: #f8f9fa;
+  border: 1px solid #dee2e6;
+  border-radius: 8px;
+  text-align: center;
+}
+
+.load-more-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.5rem;
+  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.load-more-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+}
+
+.load-more-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+}
+
+.load-more-button .mini-spinner {
+  border-color: rgba(255, 255, 255, 0.3);
+  border-top-color: white;
+}
+
+.load-more-description {
+  margin: 0.75rem 0 0 0;
+  color: #6c757d;
+  font-size: 0.8rem;
+  line-height: 1.4;
+}
+
+.load-library-data-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  margin-top: 0.5rem;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease-in-out;
+  box-shadow: 0 1px 3px rgba(40, 167, 69, 0.2);
+}
+
+.load-library-data-button:hover:not(:disabled) {
+  background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+  transform: translateY(-1px);
+  box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+}
+
+.load-library-data-button:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: 0 1px 3px rgba(40, 167, 69, 0.2);
+}
+
+.loading-library-data {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  color: #6c757d;
+  font-size: 0.8rem;
+}
+
+.loading-library-data .mini-spinner {
+  border-color: rgba(108, 117, 125, 0.3);
+  border-top-color: #6c757d;
+}
+
+/* 個別図書館表示スタイル */
+.individual-library {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 6px;
+  padding: 0.5rem;
+  margin-bottom: 0.5rem;
+  transition: box-shadow 0.15s ease-in-out;
+  max-width: 100%; /* 幅を最大に */
+}
+
+.individual-library:hover {
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.library-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 0.3rem;
+  gap: 1rem;
+}
+
+.library-info {
+  flex: 1;
+  min-width: 0;
+  max-width: 70%;
+}
+
+.library-name {
+  margin: 0 0 0.15rem 0;
+  color: #495057;
+  font-size: 0.9rem;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+.library-system {
+  color: #6c757d;
+  font-size: 0.7rem;
+  background: #e9ecef;
+  padding: 0.15rem 0.4rem;
+  border-radius: 10px;
+  display: inline-block;
+}
+
+.library-status-distance {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+.library-status {
+  padding: 0.15rem 0.5rem;
+  border-radius: 10px;
+  font-size: 0.7rem;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.15rem;
+  white-space: nowrap;
+}
+
+/* 貸出状況別の色分け - より薄い色に調整 */
+.library-status.available {
+  background: #e8f5e8;
+  color: #2e7d2e;
+  border: 1px solid #d4edda;
+}
+
+.library-status.unavailable {
+  background: #fdeaea;
+  color: #a94442;
+  border: 1px solid #f8d7da;
+}
+
+.library-status.in-library {
+  background: #fffbf0;
+  color: #856404;
+  border: 1px solid #fff3cd;
+}
+
+.library-status.reservable {
+  background: #e8f4f8;
+  color: #0c5460;
+  border: 1px solid #d1ecf1;
+}
+
+.library-status.unknown {
+  background: #f1f3f4;
+  color: #495057;
+  border: 1px solid #e2e3e5;
+}
+
+.library-distance {
+  display: inline-flex;
+  align-items: center;
+  background: #e3f2fd;
+  color: #1976d2;
+  padding: 0.15rem 0.35rem;
+  border-radius: 8px;
+  font-size: 0.65rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.library-details {
+  margin-bottom: 0.3rem;
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.library-address, .library-tel {
+  margin: 0;
+  color: #6c757d;
+  font-size: 0.7rem;
+  line-height: 1.3;
+  flex: 1;
+  min-width: 200px;
+}
+
+.library-actions {
+  margin-top: 0.3rem;
+}
+
+.library-actions .reserve-link {
+  margin-bottom: 0;
+}
+
 /* レスポンシブデザイン */
 @media (max-width: 768px) {
   .book-result-item {
@@ -426,5 +679,59 @@
   
   .library-system {
     padding: 0.75rem;
+  }
+
+  /* 個別図書館のモバイル対応 */
+  .individual-library {
+    padding: 0.4rem;
+    max-width: 100%;
+    margin-bottom: 0.4rem;
+  }
+
+  .library-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 0.3rem;
+    margin-bottom: 0.25rem;
+  }
+
+  .library-status-distance {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .library-name {
+    font-size: 0.85rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .library-system {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.3rem;
+  }
+
+  .library-status {
+    font-size: 0.65rem;
+    padding: 0.1rem 0.4rem;
+  }
+
+  .library-distance {
+    font-size: 0.6rem;
+    padding: 0.1rem 0.3rem;
+  }
+
+  .library-address, .library-tel {
+    font-size: 0.65rem;
+    margin-bottom: 0.1rem;
+  }
+
+  .library-details {
+    margin-bottom: 0.25rem;
+  }
+
+  .library-actions {
+    margin-top: 0.25rem;
   }
 }

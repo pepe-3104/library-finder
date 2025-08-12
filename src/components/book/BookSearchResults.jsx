@@ -1,13 +1,52 @@
 import React from 'react';
+import { 
+  LibraryBooks, 
+  Business, 
+  CheckCircle, 
+  MenuBook, 
+  Home, 
+  CalendarToday, 
+  HelpOutline,
+  ShoppingCart,
+  Star,
+  AttachMoney,
+  Link,
+  CloudDownload,
+  Error,
+  Person,
+  Domain,
+  LocationOn,
+  Phone
+} from '@mui/icons-material';
 import './BookSearchResults.css';
 
-const BookSearchResults = ({ results, loading, searchQuery, searchType }) => {
+// 最大表示距離（km）
+const MAX_DISPLAY_DISTANCE = 10;
+
+// Haversine公式による距離計算関数（km単位）
+const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // 地球の半径 (km)
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLon = (lon2 - lon1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLon/2) * Math.sin(dLon/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  const distance = R * c;
+  return parseFloat(distance.toFixed(2)); // 小数点以下2桁で四捨五入
+};
+
+const BookSearchResults = ({ results, loading, searchQuery, searchType, onLoadLibraryData, userLocation, libraries }) => {
   if (loading) {
     return (
       <div className="search-results loading">
         <div className="loading-spinner">
           <div className="spinner"></div>
-          <p>📚 蔵書情報を検索中...</p>
+          <p>
+            <LibraryBooks fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+            蔵書情報を検索中...
+          </p>
           <p className="loading-detail">複数の図書館システムから情報を取得しています</p>
         </div>
       </div>
@@ -19,12 +58,18 @@ const BookSearchResults = ({ results, loading, searchQuery, searchType }) => {
       return (
         <div className="search-results empty">
           <div className="empty-state">
-            <p>📭 検索結果が見つかりませんでした</p>
+            <p>
+              <Error fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              検索結果が見つかりませんでした
+            </p>
             <p className="empty-detail">
               {searchType === 'isbn' ? 'ISBN' : 'タイトル'}: "{searchQuery}"
             </p>
             <div className="search-tips">
-              <h4>🔍 検索のコツ</h4>
+              <h4>
+                <HelpOutline fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+                検索のコツ
+              </h4>
               <ul>
                 <li>ISBNは正確な13桁または10桁の数字を入力してください</li>
                 <li>タイトル検索では一部のキーワードでも検索できます</li>
@@ -41,7 +86,10 @@ const BookSearchResults = ({ results, loading, searchQuery, searchType }) => {
   return (
     <div className="search-results">
       <div className="results-header">
-        <h3>📚 蔵書検索結果</h3>
+        <h3>
+          <LibraryBooks fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+          蔵書検索結果
+        </h3>
         <p className="results-info">
           "{searchQuery}" の検索結果: {results.length}冊
         </p>
@@ -49,40 +97,130 @@ const BookSearchResults = ({ results, loading, searchQuery, searchType }) => {
 
       <div className="results-list">
         {results.map((book, index) => (
-          <BookResultItem key={`${book.isbn}-${index}`} book={book} />
+          <BookResultItem 
+            key={`${book.isbn}-${index}`} 
+            book={book} 
+            onLoadLibraryData={onLoadLibraryData}
+            userLocation={userLocation}
+            libraries={libraries}
+          />
         ))}
       </div>
+
     </div>
   );
 };
 
-const BookResultItem = ({ book }) => {
+const BookResultItem = ({ book, onLoadLibraryData, userLocation, libraries }) => {
   const getAvailabilityStatus = (status) => {
     switch (status) {
       case '貸出可':
-        return { icon: '✅', text: '貸出可', class: 'available' };
+        return { 
+          icon: <CheckCircle fontSize="small" />, 
+          text: '貸出可', 
+          class: 'available' 
+        };
       case '貸出中':
-        return { icon: '📖', text: '貸出中', class: 'unavailable' };
+        return { 
+          icon: <MenuBook fontSize="small" />, 
+          text: '貸出中', 
+          class: 'unavailable' 
+        };
       case '館内のみ':
-        return { icon: '🏢', text: '館内のみ', class: 'in-library' };
+        return { 
+          icon: <Home fontSize="small" />, 
+          text: '館内のみ', 
+          class: 'in-library' 
+        };
       case '予約可':
-        return { icon: '📅', text: '予約可', class: 'reservable' };
+        return { 
+          icon: <CalendarToday fontSize="small" />, 
+          text: '予約可', 
+          class: 'reservable' 
+        };
       default:
-        return { icon: '❓', text: status || '不明', class: 'unknown' };
+        return { 
+          icon: <HelpOutline fontSize="small" />, 
+          text: status || '不明', 
+          class: 'unknown' 
+        };
     }
   };
 
-  const getTotalLibrariesCount = (systems) => {
-    return Object.values(systems).reduce((total, system) => {
-      return total + (system.libkey ? Object.keys(system.libkey).length : 0);
-    }, 0);
+  const getTotalLibrariesCount = (systems, libraries, userLocation) => {
+    let count = 0;
+    Object.entries(systems).forEach(([systemId, systemData]) => {
+      if (!systemData.libkey) return;
+      
+      Object.entries(systemData.libkey).forEach(([branchName, status]) => {
+        // 蔵書がある場合のみカウント
+        if (status === '貸出可' || status === '館内のみ' || status === '予約可' || status === '貸出中') {
+          // 対応する個別図書館を検索
+          const individualLibrary = libraries.find(lib => {
+            const systemMatch = lib.systemid === systemId || lib.id === systemId;
+            const nameMatch = lib.name === branchName || lib.shortName === branchName;
+            return systemMatch && (nameMatch || branchName.includes(lib.shortName) || lib.shortName.includes(branchName));
+          });
+
+          let distance = null;
+          if (individualLibrary && userLocation) {
+            const [lng, lat] = individualLibrary.geocode.split(',').map(Number);
+            if (!isNaN(lat) && !isNaN(lng)) {
+              distance = calculateDistance(
+                userLocation.latitude, 
+                userLocation.longitude, 
+                lat, 
+                lng
+              );
+            }
+          }
+
+          // 位置情報があり、指定距離内の場合のみカウント
+          if (distance !== null && distance <= MAX_DISPLAY_DISTANCE) {
+            count++;
+          }
+        }
+      });
+    });
+    return count;
   };
 
-  const getAvailableCount = (systems) => {
-    return Object.values(systems).reduce((total, system) => {
-      if (!system.libkey) return total;
-      return total + Object.values(system.libkey).filter(status => status === '貸出可').length;
-    }, 0);
+  const getAvailableCount = (systems, libraries, userLocation) => {
+    let count = 0;
+    Object.entries(systems).forEach(([systemId, systemData]) => {
+      if (!systemData.libkey) return;
+      
+      Object.entries(systemData.libkey).forEach(([branchName, status]) => {
+        // 貸出可の場合のみ処理
+        if (status === '貸出可') {
+          // 対応する個別図書館を検索
+          const individualLibrary = libraries.find(lib => {
+            const systemMatch = lib.systemid === systemId || lib.id === systemId;
+            const nameMatch = lib.name === branchName || lib.shortName === branchName;
+            return systemMatch && (nameMatch || branchName.includes(lib.shortName) || lib.shortName.includes(branchName));
+          });
+
+          let distance = null;
+          if (individualLibrary && userLocation) {
+            const [lng, lat] = individualLibrary.geocode.split(',').map(Number);
+            if (!isNaN(lat) && !isNaN(lng)) {
+              distance = calculateDistance(
+                userLocation.latitude, 
+                userLocation.longitude, 
+                lat, 
+                lng
+              );
+            }
+          }
+
+          // 位置情報があり、指定距離内の場合のみカウント
+          if (distance !== null && distance <= MAX_DISPLAY_DISTANCE) {
+            count++;
+          }
+        }
+      });
+    });
+    return count;
   };
 
   return (
@@ -101,29 +239,80 @@ const BookResultItem = ({ book }) => {
         
         <div className="book-info">
           <h4 className="book-title">{book.title || 'タイトル不明'}</h4>
-          <p className="book-isbn">📖 ISBN: {book.isbn}</p>
+          <p className="book-isbn">
+            <MenuBook fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+            ISBN: {book.isbn}
+          </p>
           
           {/* 書籍の詳細情報 */}
-          {book.author && <p className="book-author">👤 著者: {book.author}</p>}
-          {book.publisher && <p className="book-publisher">🏢 出版社: {book.publisher}</p>}
+          {book.author && (
+            <p className="book-author">
+              <Person fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              著者: {book.author}
+            </p>
+          )}
+          {book.publisher && (
+            <p className="book-publisher">
+              <Domain fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              出版社: {book.publisher}
+            </p>
+          )}
           {(book.pubdate || book.publishDate) && (
-            <p className="book-pubdate">📅 出版日: {book.pubdate || book.publishDate}</p>
+            <p className="book-pubdate">
+              <CalendarToday fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              出版日: {book.pubdate || book.publishDate}
+            </p>
           )}
           
           {/* 楽天Books情報 */}
           {book.reviewAverage && (
-            <p className="book-review">⭐ 評価: {book.reviewAverage} ({book.reviewCount}件)</p>
+            <p className="book-review">
+              <Star fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              評価: {book.reviewAverage} ({book.reviewCount}件)
+            </p>
           )}
           {book.price && (
-            <p className="book-price">💰 価格: ¥{book.price.toLocaleString()}</p>
+            <p className="book-price">
+              <AttachMoney fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              価格: ¥{book.price.toLocaleString()}
+            </p>
           )}
           <div className="availability-summary">
-            <span className="total-libraries">
-              🏢 {getTotalLibrariesCount(book.systems)}館中
-            </span>
-            <span className="available-libraries">
-              ✅ {getAvailableCount(book.systems)}館で貸出可
-            </span>
+            {book.isLibraryDataLoaded ? (
+              <>
+                <span className="total-libraries">
+                  <Business fontSize="small" style={{ marginRight: '4px' }} />
+                  {getTotalLibrariesCount(book.systems, libraries, userLocation)}館中
+                </span>
+                <span className="available-libraries">
+                  <CheckCircle fontSize="small" style={{ marginRight: '4px' }} />
+                  {getAvailableCount(book.systems, libraries, userLocation)}館で貸出可
+                </span>
+              </>
+            ) : (
+              <>
+                <span className="library-data-pending">
+                  <LibraryBooks fontSize="small" style={{ marginRight: '4px' }} />
+                  蔵書情報は「もっと読み込む」で確認できます
+                </span>
+                {!book.isLibraryDataLoading && (
+                  <button
+                    className="load-library-data-button"
+                    onClick={() => onLoadLibraryData(book.isbn)}
+                    disabled={book.isLibraryDataLoading}
+                  >
+                    <CloudDownload fontSize="small" style={{ marginRight: '4px' }} />
+                    蔵書情報を読み込む
+                  </button>
+                )}
+                {book.isLibraryDataLoading && (
+                  <div className="loading-library-data">
+                    <div className="mini-spinner"></div>
+                    <span>蔵書情報を取得中...</span>
+                  </div>
+                )}
+              </>
+            )}
           </div>
           
           {/* 楽天Books購入リンク */}
@@ -135,54 +324,141 @@ const BookResultItem = ({ book }) => {
                 rel="noopener noreferrer"
                 className="rakuten-link"
               >
-                🛒 楽天で購入
+                <ShoppingCart fontSize="small" style={{ marginRight: '4px' }} />
+                楽天で購入
               </a>
             </div>
           )}
         </div>
       </div>
 
-      <div className="library-systems">
-        {Object.entries(book.systems).map(([systemId, systemData]) => (
-          <div key={systemId} className="library-system">
-            <h5 className="system-name">{systemData.systemName || systemId}</h5>
-            
-            {systemData.reserveurl && (
-              <a 
-                href={systemData.reserveurl} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="reserve-link"
-              >
-                🔗 予約・詳細を見る
-              </a>
-            )}
+      {book.isLibraryDataLoaded && Object.keys(book.systems).length > 0 && (
+        <div className="library-systems">
+          {(() => {
+            // 個々の図書館レベルで蔵書情報を展開し、距離順にソート
+            const individualLibrariesWithBooks = [];
 
-            {systemData.libkey && (
-              <div className="library-branches">
-                {Object.entries(systemData.libkey).map(([branchName, status]) => {
-                  const statusInfo = getAvailabilityStatus(status);
-                  return (
-                    <div key={branchName} className={`branch-item ${statusInfo.class}`}>
-                      <span className="branch-name">{branchName}</span>
-                      <span className="branch-status">
+            Object.entries(book.systems).forEach(([systemId, systemData]) => {
+              if (!systemData.libkey) return;
+
+              // 各図書館支店の蔵書情報を個別に処理
+              Object.entries(systemData.libkey).forEach(([branchName, status]) => {
+                // 蔵書がある場合のみ処理
+                if (status === '貸出可' || status === '館内のみ' || status === '予約可' || status === '貸出中') {
+                  // 対応する個別図書館を検索
+                  const individualLibrary = libraries.find(lib => {
+                    // systemidの一致をチェック
+                    const systemMatch = lib.systemid === systemId || lib.id === systemId;
+                    // 図書館名の一致もチェック（より正確なマッチング）
+                    const nameMatch = lib.name === branchName || lib.shortName === branchName;
+                    return systemMatch && (nameMatch || branchName.includes(lib.shortName) || lib.shortName.includes(branchName));
+                  });
+
+                  let distance = null;
+                  if (individualLibrary && userLocation) {
+                    const [lng, lat] = individualLibrary.geocode.split(',').map(Number);
+                    if (!isNaN(lat) && !isNaN(lng)) {
+                      distance = calculateDistance(
+                        userLocation.latitude, 
+                        userLocation.longitude, 
+                        lat, 
+                        lng
+                      );
+                    }
+                  }
+
+                  // 距離が計算できない場合（位置情報がない場合）は除外
+                  if (distance === null) {
+                    return; // 位置情報がない図書館は除外
+                  }
+
+                  // 最大表示距離を超える場合は除外
+                  if (distance > MAX_DISPLAY_DISTANCE) {
+                    return; // 距離外の図書館は除外
+                  }
+
+                  individualLibrariesWithBooks.push({
+                    systemId,
+                    systemData,
+                    branchName,
+                    status,
+                    library: individualLibrary,
+                    distance,
+                    systemName: systemData.systemName || systemId
+                  });
+                }
+              });
+            });
+
+            // 距離順にソート（すべて距離が設定されているため、シンプルなソート）
+            individualLibrariesWithBooks.sort((a, b) => a.distance - b.distance);
+
+            return individualLibrariesWithBooks.map(({ 
+              systemId, 
+              systemData, 
+              branchName, 
+              status, 
+              library, 
+              distance, 
+              systemName 
+            }, index) => {
+              const statusInfo = getAvailabilityStatus(status);
+              const uniqueKey = `${systemId}-${branchName}-${index}`;
+
+              return (
+                <div key={uniqueKey} className="individual-library">
+                  <div className="library-header">
+                    <div className="library-info">
+                      <h5 className="library-name">{branchName}</h5>
+                      <span className="library-system">{systemName}</span>
+                    </div>
+                    <div className="library-status-distance">
+                      <span className={`library-status ${statusInfo.class}`}>
                         {statusInfo.icon} {statusInfo.text}
                       </span>
+                      <span className="library-distance">
+                        <LocationOn fontSize="small" style={{ marginRight: '2px' }} />
+                        {distance}km
+                      </span>
                     </div>
-                  );
-                })}
-              </div>
-            )}
+                  </div>
 
-            {systemData.status === 'Running' && (
-              <div className="system-loading">
-                <div className="mini-spinner"></div>
-                <span>データ取得中...</span>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+                  {library && (
+                    <div className="library-details">
+                      {library.address && (
+                        <p className="library-address">
+                          <LocationOn fontSize="small" style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
+                          {library.address}
+                        </p>
+                      )}
+                      {library.tel && (
+                        <p className="library-tel">
+                          <Phone fontSize="small" style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
+                          {library.tel}
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {systemData.reserveurl && (
+                    <div className="library-actions">
+                      <a 
+                        href={systemData.reserveurl} 
+                        target="_blank" 
+                        rel="noopener noreferrer"
+                        className="reserve-link"
+                      >
+                        <Link fontSize="small" style={{ marginRight: '4px' }} />
+                        予約・詳細を見る
+                      </a>
+                    </div>
+                  )}
+                </div>
+              );
+            });
+          })()}
+        </div>
+      )}
     </div>
   );
 };

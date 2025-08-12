@@ -117,6 +117,7 @@ function App() {
             element={
               <BookSearchPage 
                 libraries={libraries}
+                userLocation={userLocation}
               />
             } 
           />

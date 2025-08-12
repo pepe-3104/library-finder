@@ -88,6 +88,71 @@ export const searchBooksByKeyword = async (keyword, hits = 10) => {
   }
 };
 
+// ISBN検索専用関数
+export const searchBookByISBN = async (isbn) => {
+  const RAKUTEN_API_KEY = import.meta.env.VITE_RAKUTEN_API_KEY;
+  
+  if (!RAKUTEN_API_KEY) {
+    console.warn('⚠️ 楽天Books APIキーが設定されていません');
+    return null;
+  }
+
+  try {
+    console.log(`🔍 楽天Books API - ISBN検索: ${isbn}`);
+    
+    const apiUrl = 'https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404';
+    const params = new URLSearchParams({
+      format: 'json',
+      applicationId: RAKUTEN_API_KEY,
+      isbn: isbn.replace(/[-\s]/g, ''), // ハイフンと空白を削除
+      hits: '1' // ISBN検索は通常1件のみ
+    });
+
+    const response = await fetch(`${apiUrl}?${params}`);
+    
+    if (!response.ok) {
+      throw new Error(`楽天Books API HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    console.log('📚 楽天Books API - ISBN検索応答:', data);
+
+    if (!data.Items || data.Items.length === 0) {
+      console.log('📭 ISBN検索結果が見つかりませんでした');
+      return null;
+    }
+
+    const book = data.Items[0].Item;
+    const bookInfo = {
+      isbn: book.jan || book.isbn, // ISBN-13を優先、なければISBN-10
+      title: book.title,
+      titleKana: book.titleKana,
+      author: book.author,
+      authorKana: book.authorKana,
+      publisher: book.publisherName,
+      publishDate: book.salesDate,
+      smallImageUrl: book.smallImageUrl,
+      mediumImageUrl: book.mediumImageUrl,
+      largeImageUrl: book.largeImageUrl,
+      reviewCount: book.reviewCount,
+      reviewAverage: book.reviewAverage,
+      itemCaption: book.itemCaption,
+      contents: book.contents,
+      seriesName: book.seriesName,
+      size: book.size,
+      isbn10: book.isbn,    // ISBN-10
+      isbn13: book.jan      // ISBN-13 (JAN/EAN)
+    };
+
+    console.log(`✅ 楽天Books API - ISBN検索成功:`, bookInfo);
+    return bookInfo;
+
+  } catch (error) {
+    console.error('❌ 楽天Books API - ISBN検索エラー:', error);
+    return null;
+  }
+};
+
 /**
  * 楽天Books APIで著者名検索
  * @param {string} author - 著者名
