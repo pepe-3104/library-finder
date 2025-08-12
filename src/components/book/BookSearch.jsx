@@ -132,22 +132,22 @@ const BookSearch = ({ libraries = [] }) => {
               <label className="search-type-option">
                 <input
                   type="radio"
-                  value="isbn"
-                  checked={searchType === 'isbn'}
-                  onChange={(e) => setSearchType(e.target.value)}
-                  disabled={loading}
-                />
-                ISBN検索
-              </label>
-              <label className="search-type-option">
-                <input
-                  type="radio"
                   value="title"
                   checked={searchType === 'title'}
                   onChange={(e) => setSearchType(e.target.value)}
                   disabled={loading}
                 />
                 {isRakutenAPIAvailable() ? 'キーワード検索' : 'タイトル検索'}
+              </label>
+              <label className="search-type-option">
+                <input
+                  type="radio"
+                  value="isbn"
+                  checked={searchType === 'isbn'}
+                  onChange={(e) => setSearchType(e.target.value)}
+                  disabled={loading}
+                />
+                ISBN検索
               </label>
             </div>
           </div>
