@@ -194,8 +194,8 @@ const BookSearch = ({ libraries = [] }) => {
               🏢 検索対象: {libraries.length}件の図書館システム
             </p>
             <div className="library-chips">
-              {libraries.slice(0, 5).map(lib => (
-                <span key={lib.id} className="library-chip">
+              {libraries.slice(0, 5).map((lib, index) => (
+                <span key={`${lib.id}-${lib.name}-${index}`} className="library-chip">
                   {lib.shortName || lib.name}
                 </span>
               ))}

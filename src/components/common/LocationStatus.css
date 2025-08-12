@@ -1,0 +1,134 @@
+.location-status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem;
+}
+
+.location-refresh-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  font-size: 1.2rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+}
+
+.location-refresh-btn:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+}
+
+.location-refresh-btn:active {
+  transform: scale(0.95);
+}
+
+.location-refresh-btn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.location-refresh-btn.loading {
+  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+}
+
+.refresh-spinner {
+  animation: spin-refresh 1s linear infinite;
+  display: inline-block;
+}
+
+@keyframes spin-refresh {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.location-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0; /* flex-shrinkを有効にする */
+}
+
+.location-text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.125rem;
+}
+
+.location-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #495057;
+  line-height: 1.2;
+}
+
+.location-detail {
+  font-size: 0.7rem;
+  color: #6c757d;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* 状態別スタイル */
+.success-text .location-label {
+  color: #28a745;
+}
+
+.success-text .location-detail {
+  color: #155724;
+  font-weight: 500;
+}
+
+.loading-text .location-label {
+  color: #6c757d;
+}
+
+.loading-text .location-detail {
+  color: #adb5bd;
+}
+
+.error-text .location-label {
+  color: #dc3545;
+}
+
+.error-text .location-detail {
+  color: #721c24;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .location-status {
+    gap: 0.5rem;
+    padding: 0.25rem;
+  }
+  
+  .location-refresh-btn {
+    width: 36px;
+    height: 36px;
+    font-size: 1.1rem;
+  }
+  
+  .location-label {
+    font-size: 0.7rem;
+  }
+  
+  .location-detail {
+    font-size: 0.65rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .location-info {
+    display: none; /* 小さい画面ではボタンのみ表示 */
+  }
+}

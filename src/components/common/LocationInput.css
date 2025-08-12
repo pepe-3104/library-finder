@@ -2,12 +2,22 @@
   width: 100%;
 }
 
-.location-controls {
+/* 自動取得中の表示 */
+.location-loading {
   display: flex;
-  gap: 1rem;
   align-items: center;
   justify-content: center;
+  gap: 0.75rem;
+  padding: 1rem;
+  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+  border: 2px solid #dee2e6;
+  border-radius: 12px;
   margin-bottom: 1rem;
+}
+
+.loading-message {
+  color: #495057;
+  font-weight: 500;
 }
 
 .location-button {
@@ -57,33 +67,57 @@
   100% { transform: rotate(360deg); }
 }
 
-.clear-button {
-  background: #dc3545;
+.refresh-button {
+  background: #28a745;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
   border-radius: 20px;
   cursor: pointer;
   font-size: 0.9rem;
+  font-weight: 500;
   transition: all 0.2s ease;
 }
 
-.clear-button:hover {
-  background: #c82333;
+.refresh-button:hover:not(:disabled) {
+  background: #218838;
   transform: translateY(-1px);
+}
+
+.refresh-button:disabled {
+  background: #6c757d;
+  cursor: not-allowed;
+  transform: none;
 }
 
 /* エラー表示 */
 .location-error {
-  background: #f8d7da;
+  background: linear-gradient(135deg, #f8d7da 0%, #f5c6cb 100%);
   color: #721c24;
-  border: 1px solid #f5c6cb;
+  border: 2px solid #f5c6cb;
   border-radius: 8px;
   padding: 1rem;
   margin: 1rem 0;
   display: flex;
-  align-items: flex-start;
-  gap: 0.5rem;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.retry-button {
+  background: #dc3545;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+  margin-left: auto;
+}
+
+.retry-button:hover {
+  background: #c82333;
 }
 
 .error-icon {
@@ -102,12 +136,19 @@
 }
 
 .location-success {
-  background: #d4edda;
+  background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
   color: #155724;
-  border: 1px solid #c3e6cb;
+  border: 2px solid #c3e6cb;
   border-radius: 8px;
   padding: 1rem;
   margin-bottom: 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.location-success > div:first-child {
   display: flex;
   align-items: center;
   gap: 0.5rem;

@@ -2,6 +2,17 @@ import React from 'react';
 import './LibraryList.css';
 
 const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) => {
+  // 一意なキーを生成する関数
+  const generateUniqueKey = (library, index) => {
+    const parts = [
+      library.id || 'unknown',
+      library.name || 'unnamed', 
+      library.address || 'no-address',
+      library.distance || 'no-distance',
+      index
+    ];
+    return parts.join('-').replace(/\s+/g, '-');
+  };
   if (loading) {
     return (
       <div className="library-list-container">
@@ -51,8 +62,8 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
       </div>
       
       <div className="library-list">
-        {libraries.map((library) => (
-          <div key={library.id} className="library-item">
+        {libraries.map((library, index) => (
+          <div key={generateUniqueKey(library, index)} className="library-item">
             <div className="library-header">
               <h5 className="library-name">{library.name}</h5>
               {library.distance && (

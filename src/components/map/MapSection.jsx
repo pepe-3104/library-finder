@@ -1,7 +1,7 @@
 import React from 'react';
 import LibraryMap from './LibraryMap';
 
-const MapSection = ({ userLocation, libraries, selectedLibrary, onLibrarySelect }) => {
+const MapSection = ({ userLocation, libraries, selectedLibrary, onLibrarySelect, fullscreen = false }) => {
   if (!userLocation && libraries.length === 0) {
     return (
       <div className="content-section">
@@ -17,13 +17,13 @@ const MapSection = ({ userLocation, libraries, selectedLibrary, onLibrarySelect 
   }
 
   return (
-    <div className="content-section">
-      <h2 className="section-title">🗺️ 地図表示</h2>
+    <div className={fullscreen ? "map-section-fullscreen" : "content-section"}>
+      {!fullscreen && <h2 className="section-title">🗺️ 地図表示</h2>}
       <div className="search-content">
-        {userLocation && (
+        {!fullscreen && userLocation && (
           <p>📍 現在位置と周辺図書館をマップで確認できます。</p>
         )}
-        {libraries.length > 0 && (
+        {!fullscreen && libraries.length > 0 && (
           <p>📚 {libraries.length}件の図書館が表示されています。マーカーをクリックして詳細を確認してください。</p>
         )}
         
@@ -32,10 +32,11 @@ const MapSection = ({ userLocation, libraries, selectedLibrary, onLibrarySelect 
           libraries={libraries}
           selectedLibrary={selectedLibrary}
           onLibrarySelect={onLibrarySelect}
-          height="450px"
+          height={fullscreen ? "100%" : "450px"}
+          fullscreen={fullscreen}
         />
         
-        {libraries.length > 0 && (
+        {!fullscreen && libraries.length > 0 && (
           <div className="map-info">
             <h4>🎯 地図の使い方</h4>
             <ul>

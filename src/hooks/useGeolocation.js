@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
 /**
  * 位置情報取得用のカスタムフック
@@ -79,6 +79,11 @@ export const useGeolocation = () => {
     setLocation(null);
     setError(null);
   }, []);
+
+  // 自動的に位置情報を取得（コンポーネントマウント時）
+  useEffect(() => {
+    getCurrentLocation();
+  }, [getCurrentLocation]);
 
   return {
     location,

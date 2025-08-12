@@ -14,40 +14,25 @@ const LocationInput = ({ onLocationChange }) => {
 
   return (
     <div className="location-input">
-      <div className="location-controls">
-        <button 
-          onClick={getCurrentLocation} 
-          disabled={loading}
-          className={`location-button ${loading ? 'loading' : ''}`}
-        >
-          {loading ? (
-            <>
-              <span className="spinner"></span>
-              位置情報を取得中...
-            </>
-          ) : (
-            <>
-              📍 現在位置を取得
-            </>
-          )}
-        </button>
-        
-        {location && (
-          <button 
-            onClick={clearLocation}
-            className="clear-button"
-            title="位置情報をクリア"
-          >
-            🗑️ クリア
-          </button>
-        )}
-      </div>
+      {/* 自動取得中の表示 */}
+      {loading && (
+        <div className="location-loading">
+          <span className="spinner"></span>
+          <span className="loading-message">位置情報を自動取得中...</span>
+        </div>
+      )}
 
       {/* エラー表示 */}
       {error && (
         <div className="location-error">
           <span className="error-icon">⚠️</span>
           <span className="error-message">{error}</span>
+          <button 
+            onClick={getCurrentLocation} 
+            className="retry-button"
+          >
+            🔄 再試行
+          </button>
         </div>
       )}
 
@@ -55,8 +40,18 @@ const LocationInput = ({ onLocationChange }) => {
       {location && (
         <div className="location-result">
           <div className="location-success">
-            <span className="success-icon">✅</span>
-            <span className="success-message">位置情報を取得しました</span>
+            <div>
+              <span className="success-icon">✅</span>
+              <span className="success-message">位置情報を取得しました</span>
+            </div>
+            <button 
+              onClick={getCurrentLocation}
+              className="refresh-button"
+              title="位置情報を再取得"
+              disabled={loading}
+            >
+              🔄 再取得
+            </button>
           </div>
           
           <div className="location-details">
@@ -73,10 +68,10 @@ const LocationInput = ({ onLocationChange }) => {
         </div>
       )}
 
-      {/* 使用方法の説明 */}
+      {/* 初期状態の説明 */}
       {!location && !error && !loading && (
         <div className="location-help">
-          <p>📱 「現在位置を取得」ボタンをクリックして、最寄りの図書館を検索しましょう</p>
+          <p>📱 位置情報を自動取得しています...</p>
           <div className="help-note">
             ※ 位置情報の利用を許可するダイアログが表示される場合があります
           </div>

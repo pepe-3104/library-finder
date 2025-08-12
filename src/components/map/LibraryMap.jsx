@@ -133,16 +133,19 @@ const LibraryMap = ({
         )}
 
         {/* 図書館マーカー */}
-        {libraries.map((library) => {
+        {libraries.map((library, index) => {
           if (!library.geocode) return null;
           
           // カーリルAPIのgeocode形式: "経度,緯度" (longitude,latitude)
           const [lng, lat] = library.geocode.split(',').map(Number);
           if (isNaN(lat) || isNaN(lng)) return null;
           
+          // 一意なキーを生成
+          const uniqueKey = `${library.id}-${library.name}-${lat}-${lng}-${index}`;
+          
           return (
             <Marker
-              key={library.id}
+              key={uniqueKey}
               position={[lat, lng]}
               icon={createLibraryIcon(library.category)}
               libraryId={library.id}
