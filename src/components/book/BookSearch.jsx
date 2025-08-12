@@ -4,6 +4,7 @@ import BookSearchResults from './BookSearchResults';
 import { getAvailableTitles } from '../../utils/openBD';
 import { isRakutenAPIAvailable } from '../../utils/rakutenBooks';
 import { Search, MenuBook, Clear, RocketLaunch, Business, Error, Close } from '@mui/icons-material';
+import { CircularProgress } from '@mui/material';
 import './BookSearch.css';
 
 const BookSearch = ({ libraries = [], userLocation }) => {
@@ -160,7 +161,7 @@ const BookSearch = ({ libraries = [], userLocation }) => {
             >
               {loading ? (
                 <>
-                  <Search fontSize="small" style={{ marginRight: '6px' }} />
+                  <CircularProgress size={16} sx={{ mr: 1, color: 'white' }} />
                   検索中...
                 </>
               ) : (

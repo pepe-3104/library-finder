@@ -2,43 +2,7 @@
   margin-top: 1rem;
 }
 
-.search-results.loading {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 3rem 1rem;
-}
-
-.loading-spinner {
-  text-align: center;
-  color: #6c757d;
-}
-
-.spinner {
-  width: 40px;
-  height: 40px;
-  margin: 0 auto 1rem;
-  border: 4px solid #f3f3f3;
-  border-top: 4px solid #007bff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.loading-spinner p {
-  margin: 0.5rem 0 0 0;
-  font-weight: 500;
-}
-
-.loading-detail {
-  font-size: 0.9rem;
-  color: #868e96 !important;
-  font-weight: normal !important;
-}
+/* MUIのCircularProgressを使用するため、カスタムスピナーは削除 */
 
 .search-results.empty {
   background: #f8f9fa;
@@ -399,14 +363,7 @@
   padding: 0.5rem 0;
 }
 
-.mini-spinner {
-  width: 16px;
-  height: 16px;
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #007bff;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
+/* MUIのCircularProgressを使用するため、mini-spinnerは削除 */
 
 .library-data-pending {
   background: #fff3cd;
@@ -456,10 +413,6 @@
   box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
 }
 
-.load-more-button .mini-spinner {
-  border-color: rgba(255, 255, 255, 0.3);
-  border-top-color: white;
-}
 
 .load-more-description {
   margin: 0.75rem 0 0 0;
@@ -507,10 +460,6 @@
   font-size: 0.8rem;
 }
 
-.loading-library-data .mini-spinner {
-  border-color: rgba(108, 117, 125, 0.3);
-  border-top-color: #6c757d;
-}
 
 /* 個別図書館表示スタイル */
 .individual-library {

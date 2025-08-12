@@ -18,6 +18,7 @@ import {
   LocationOn,
   Phone
 } from '@mui/icons-material';
+import { CircularProgress, Box, Typography } from '@mui/material';
 import './BookSearchResults.css';
 
 // 最大表示距離（km）
@@ -40,16 +41,25 @@ const calculateDistance = (lat1, lon1, lat2, lon2) => {
 const BookSearchResults = ({ results, loading, searchQuery, searchType, onLoadLibraryData, userLocation, libraries }) => {
   if (loading) {
     return (
-      <div className="search-results loading">
-        <div className="loading-spinner">
-          <div className="spinner"></div>
-          <p>
-            <LibraryBooks fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+      <Box 
+        display="flex" 
+        flexDirection="column" 
+        alignItems="center" 
+        justifyContent="center" 
+        py={6}
+        px={2}
+      >
+        <CircularProgress size={48} color="primary" sx={{ mb: 3 }} />
+        <Box display="flex" alignItems="center" mb={1}>
+          <LibraryBooks fontSize="small" sx={{ mr: 1, color: 'primary.main' }} />
+          <Typography variant="h6" color="text.primary">
             蔵書情報を検索中...
-          </p>
-          <p className="loading-detail">複数の図書館システムから情報を取得しています</p>
-        </div>
-      </div>
+          </Typography>
+        </Box>
+        <Typography variant="body2" color="text.secondary" textAlign="center">
+          複数の図書館システムから情報を取得しています
+        </Typography>
+      </Box>
     );
   }
 
@@ -306,10 +316,12 @@ const BookResultItem = ({ book, onLoadLibraryData, userLocation, libraries }) =>
                   </button>
                 )}
                 {book.isLibraryDataLoading && (
-                  <div className="loading-library-data">
-                    <div className="mini-spinner"></div>
-                    <span>蔵書情報を取得中...</span>
-                  </div>
+                  <Box display="flex" alignItems="center" mt={1}>
+                    <CircularProgress size={16} sx={{ mr: 1 }} />
+                    <Typography variant="body2" color="text.secondary">
+                      蔵書情報を取得中...
+                    </Typography>
+                  </Box>
                 )}
               </>
             )}
