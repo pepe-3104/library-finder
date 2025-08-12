@@ -11,7 +11,10 @@
     "screenshot": "node scripts/screenshot-system.js basic",
     "screenshot:flow": "node scripts/screenshot-system.js flow",
     "screenshot:responsive": "node scripts/screenshot-system.js responsive",
-    "screenshot:all": "node scripts/screenshot-system.js all"
+    "screenshot:all": "node scripts/screenshot-system.js all",
+    "test": "vitest --config vite.config.test.js",
+    "test:ui": "vitest --ui --config vite.config.test.js",
+    "test:run": "vitest run --config vite.config.test.js"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -27,13 +30,20 @@
   },
   "devDependencies": {
     "@eslint/js": "^9.32.0",
+    "@testing-library/jest-dom": "^6.6.4",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@types/react": "^19.1.9",
     "@types/react-dom": "^19.1.7",
+    "@vite-pwa/assets-generator": "^1.0.0",
     "@vitejs/plugin-react": "^4.7.0",
     "eslint": "^9.32.0",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-refresh": "^0.4.20",
     "globals": "^16.3.0",
-    "vite": "^7.1.0"
+    "jsdom": "^26.1.0",
+    "vite": "^7.1.0",
+    "vite-plugin-pwa": "^1.0.2",
+    "vitest": "^3.2.4"
   }
 }

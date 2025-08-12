@@ -1,3 +1,4 @@
+/* eslint-env node */
 // 楽天Books APIの動作テストスクリプト
 import puppeteer from 'puppeteer';
 
@@ -123,7 +124,7 @@ async function testRakutenBooksAPI() {
         console.log('エラー内容:', errorText);
       }
       
-    } catch (timeoutError) {
+    } catch {
       console.log('⏰ 検索タイムアウト - APIの応答を確認中...');
     }
     

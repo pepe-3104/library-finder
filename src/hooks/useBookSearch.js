@@ -10,11 +10,7 @@ export const useBookSearch = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [currentSession, setCurrentSession] = useState(null);
-  const [hasMore, setHasMore] = useState(false);
-  const [currentBatch, setCurrentBatch] = useState(0);
-  const [cachedBooks, setCachedBooks] = useState([]);
   const [cachedSystemIds, setCachedSystemIds] = useState([]);
-  const [loadingMore, setLoadingMore] = useState(false);
 
   // 図書館システムIDからシステム名を取得するマッピング
   const getSystemName = (systemId) => {
@@ -92,10 +88,7 @@ export const useBookSearch = () => {
             });
             
             // 蔵書検索用データをキャッシュ
-            setCachedBooks(bookResults);
             setCachedSystemIds(systemIds);
-            setCurrentBatch(0);
-            setHasMore(validISBNs.length > 0);
             
             // 最初に全書籍を蔵書情報なしで表示
             searchResults = bookResults;
@@ -532,11 +525,7 @@ export const useBookSearch = () => {
     setResults([]);
     setError(null);
     setCurrentSession(null);
-    setHasMore(false);
-    setCurrentBatch(0);
-    setCachedBooks([]);
     setCachedSystemIds([]);
-    setLoadingMore(false);
   }, []);
 
   return {

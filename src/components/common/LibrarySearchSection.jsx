@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import LibraryList from '../library/LibraryList';
 import { LocationOn } from '@mui/icons-material';
 
-const LibrarySearchSection = ({ userLocation, libraries, onLibrarySelect }) => {
+const LibrarySearchSection = ({ libraries, onLibrarySelect }) => {
   const [mockLibraries, setMockLibraries] = useState([]);
 
   // スクリーンショット用モックデータのイベントリスナー

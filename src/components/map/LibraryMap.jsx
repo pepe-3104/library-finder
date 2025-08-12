@@ -47,7 +47,7 @@ const getIconColor = (category) => {
 };
 
 // マップの中心とズームを制御するコンポーネント
-const MapController = ({ center, libraries, selectedLibrary }) => {
+const MapController = ({ center, selectedLibrary }) => {
   const map = useMap();
 
   useEffect(() => {
@@ -106,7 +106,6 @@ const LibraryMap = ({
       >
         <MapController 
           center={center} 
-          libraries={libraries}
           selectedLibrary={selectedLibrary}
         />
         

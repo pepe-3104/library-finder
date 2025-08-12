@@ -1,3 +1,4 @@
+/* eslint-env node */
 // シンプルな楽天Books API動作確認
 
 async function testRakutenAPI() {

@@ -3,7 +3,7 @@ import { useGeolocation } from '../../hooks/useGeolocation';
 import './LocationInput.css';
 
 const LocationInput = ({ onLocationChange }) => {
-  const { location, error, loading, getCurrentLocation, clearLocation } = useGeolocation();
+  const { location, error, loading, getCurrentLocation } = useGeolocation();
 
   // 位置情報が更新されたら親コンポーネントに通知
   React.useEffect(() => {

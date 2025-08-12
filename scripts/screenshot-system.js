@@ -1,3 +1,4 @@
+/* eslint-env node */
 import puppeteer from 'puppeteer';
 import fs from 'fs';
 import path from 'path';
@@ -114,7 +115,7 @@ class LibraryAppScreenshotSystem {
           result = await this.capturePageState(page, '02-location-obtained');
           screenshots.push(result);
         }
-      } catch (error) {
+      } catch {
         console.log('ℹ️ 位置情報ボタンが見つからないか、まだ実装されていません');
       }
 
@@ -125,7 +126,7 @@ class LibraryAppScreenshotSystem {
         
         result = await this.capturePageState(page, '03-library-list');
         screenshots.push(result);
-      } catch (error) {
+      } catch {
         console.log('ℹ️ 図書館リストの表示を待機中にタイムアウト');
       }
 
@@ -136,7 +137,7 @@ class LibraryAppScreenshotSystem {
         
         result = await this.capturePageState(page, '04-map-view');
         screenshots.push(result);
-      } catch (error) {
+      } catch {
         console.log('ℹ️ 地図表示の待機中にタイムアウト');
       }
 
@@ -151,7 +152,7 @@ class LibraryAppScreenshotSystem {
           result = await this.capturePageState(page, '05-book-search');
           screenshots.push(result);
         }
-      } catch (error) {
+      } catch {
         console.log('ℹ️ 蔵書検索機能がまだ実装されていません');
       }
 

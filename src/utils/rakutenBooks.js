@@ -7,7 +7,7 @@
  * @param {number} hits - 取得件数（デフォルト: 10, 最大: 30）
  * @returns {Promise<Object[]>} 書籍情報配列
  */
-export const searchBooksByKeyword = async (keyword, hits = 10) => {
+export const searchBooksByKeyword = async (keyword) => {
   try {
     // 楽天APIのアプリケーションID（環境変数から取得）
     const appId = import.meta.env.VITE_RAKUTEN_API_KEY;
@@ -159,7 +159,7 @@ export const searchBookByISBN = async (isbn) => {
  * @param {number} hits - 取得件数
  * @returns {Promise<Object[]>} 書籍情報配列
  */
-export const searchBooksByAuthor = async (author, hits = 10) => {
+export const searchBooksByAuthor = async (author) => {
   try {
     const appId = import.meta.env.VITE_RAKUTEN_API_KEY;
     

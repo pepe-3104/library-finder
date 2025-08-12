@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>PWAアイコン生成</title>
+    <style>
+        canvas { border: 1px solid #ccc; margin: 10px; }
+        .icon-container { text-align: center; margin: 20px; }
+    </style>
+</head>
+<body>
+    <div class="icon-container">
+        <h2>図書館検索アプリ PWAアイコン</h2>
+        <canvas id="icon192" width="192" height="192"></canvas>
+        <canvas id="icon512" width="512" height="512"></canvas>
+        <br>
+        <button onclick="downloadIcons()">アイコンをダウンロード</button>
+    </div>
+
+    <script>
+        function drawIcon(canvas) {
+            const ctx = canvas.getContext('2d');
+            const size = canvas.width;
+            
+            // 背景
+            ctx.fillStyle = '#007bff';
+            ctx.fillRect(0, 0, size, size);
+            
+            // 図書館の建物
+            const buildingWidth = size * 0.8;
+            const buildingHeight = size * 0.6;
+            const buildingX = (size - buildingWidth) / 2;
+            const buildingY = size * 0.3;
+            
+            ctx.fillStyle = '#ffffff';
+            ctx.fillRect(buildingX, buildingY, buildingWidth, buildingHeight);
+            
+            // 本棚を表現する縦線
+            ctx.fillStyle = '#007bff';
+            const shelfCount = 4;
+            const shelfWidth = buildingWidth / shelfCount;
+            
+            for (let i = 0; i < shelfCount; i++) {
+                const x = buildingX + i * shelfWidth + shelfWidth * 0.1;
+                const width = shelfWidth * 0.8;
+                ctx.fillRect(x, buildingY + buildingHeight * 0.1, width, buildingHeight * 0.8);
+            }
+            
+            // 屋根
+            ctx.fillStyle = '#495057';
+            ctx.beginPath();
+            ctx.moveTo(buildingX - size * 0.05, buildingY);
+            ctx.lineTo(size / 2, buildingY - size * 0.1);
+            ctx.lineTo(buildingX + buildingWidth + size * 0.05, buildingY);
+            ctx.closePath();
+            ctx.fill();
+            
+            // タイトル
+            ctx.fillStyle = '#ffffff';
+            ctx.font = `${size * 0.08}px Arial`;
+            ctx.textAlign = 'center';
+            ctx.fillText('図書館検索', size / 2, size * 0.95);
+        }
+
+        // 両方のキャンバスにアイコンを描画
+        drawIcon(document.getElementById('icon192'));
+        drawIcon(document.getElementById('icon512'));
+
+        function downloadIcons() {
+            // 192x192アイコン
+            const canvas192 = document.getElementById('icon192');
+            const link192 = document.createElement('a');
+            link192.download = 'pwa-192x192.png';
+            link192.href = canvas192.toDataURL();
+            link192.click();
+
+            // 512x512アイコン
+            setTimeout(() => {
+                const canvas512 = document.getElementById('icon512');
+                const link512 = document.createElement('a');
+                link512.download = 'pwa-512x512.png';
+                link512.href = canvas512.toDataURL();
+                link512.click();
+            }, 100);
+        }
+    </script>
+</body>
+</html>
