@@ -1,4 +1,16 @@
 import React from 'react';
+import {
+  Warning,
+  Refresh,
+  LibraryBooks,
+  LocationOn,
+  Straighten,
+  Business,
+  Phone,
+  Category,
+  Language,
+  Map
+} from '@mui/icons-material';
 import './LibraryList.css';
 
 const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) => {
@@ -29,12 +41,15 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
     return (
       <div className="library-list-container">
         <div className="library-error">
-          <div className="error-icon">⚠️</div>
+          <div className="error-icon">
+            <Warning fontSize="large" style={{ color: '#dc3545' }} />
+          </div>
           <h4>図書館検索エラー</h4>
           <p>{error}</p>
           {onRetry && (
             <button onClick={onRetry} className="retry-button">
-              🔄 再試行
+              <Refresh fontSize="small" style={{ marginRight: '6px' }} />
+              再試行
             </button>
           )}
         </div>
@@ -46,7 +61,9 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
     return (
       <div className="library-list-container">
         <div className="library-empty">
-          <div className="empty-icon">📚</div>
+          <div className="empty-icon">
+            <LibraryBooks fontSize="large" style={{ color: '#6c757d' }} />
+          </div>
           <h4>図書館が見つかりませんでした</h4>
           <p>この地域には登録されている図書館がありません。</p>
         </div>
@@ -57,7 +74,10 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
   return (
     <div className="library-list-container">
       <div className="library-list-header">
-        <h4>📍 近隣の図書館 ({libraries.length}件)</h4>
+        <h4>
+          <LocationOn fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+          近隣の図書館 ({libraries.length}件)
+        </h4>
         <p>距離の近い順に表示しています</p>
       </div>
       
@@ -68,7 +88,8 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
               <h5 className="library-name">{library.name}</h5>
               {library.distance && (
                 <span className="library-distance">
-                  📏 約 {library.distance}km
+                  <Straighten fontSize="small" style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
+                  約 {library.distance}km
                 </span>
               )}
             </div>
@@ -76,21 +97,27 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
             <div className="library-details">
               {library.address && (
                 <div className="library-address">
-                  <span className="detail-icon">🏢</span>
+                  <span className="detail-icon">
+                    <Business fontSize="small" />
+                  </span>
                   <span>{library.address}</span>
                 </div>
               )}
               
               {library.tel && (
                 <div className="library-tel">
-                  <span className="detail-icon">📞</span>
+                  <span className="detail-icon">
+                    <Phone fontSize="small" />
+                  </span>
                   <a href={`tel:${library.tel}`}>{library.tel}</a>
                 </div>
               )}
               
               {library.category && (
                 <div className="library-category">
-                  <span className="detail-icon">📋</span>
+                  <span className="detail-icon">
+                    <Category fontSize="small" />
+                  </span>
                   <span className="category-tag">{library.category}</span>
                 </div>
               )}
@@ -104,7 +131,8 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
                   rel="noopener noreferrer"
                   className="library-link"
                 >
-                  🌐 公式サイト
+                  <Language fontSize="small" style={{ marginRight: '6px' }} />
+                  公式サイト
                 </a>
               )}
               <button 
@@ -112,7 +140,8 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
                 onClick={() => handleShowOnMap(library)}
                 title="地図で表示"
               >
-                🗺️ 地図
+                <Map fontSize="small" style={{ marginRight: '6px' }} />
+                地図
               </button>
             </div>
           </div>

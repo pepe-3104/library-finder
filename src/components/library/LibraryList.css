@@ -88,7 +88,10 @@
 .detail-icon {
   flex-shrink: 0;
   width: 20px;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #6c757d;
 }
 
 .library-address span:last-child,
@@ -205,8 +208,9 @@
 }
 
 .library-error .error-icon {
-  font-size: 2rem;
   margin-bottom: 1rem;
+  display: flex;
+  justify-content: center;
 }
 
 .library-error h4 {
@@ -242,9 +246,10 @@
 }
 
 .library-empty .empty-icon {
-  font-size: 3rem;
   margin-bottom: 1rem;
   opacity: 0.5;
+  display: flex;
+  justify-content: center;
 }
 
 .library-empty h4 {

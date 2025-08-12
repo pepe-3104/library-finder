@@ -1,9 +1,16 @@
 import React from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LocationStatus from '../common/LocationStatus';
+import { LibraryBooks } from '@mui/icons-material';
 import './Header.css';
 
-const Header = ({ userLocation, onLocationRefresh }) => {
+const Header = ({ 
+  userLocation, 
+  onLocationRefresh, 
+  libraries = [],
+  distanceFilter,
+  onDistanceFilterChange 
+}) => {
   const location = useLocation();
   
   return (
@@ -12,13 +19,19 @@ const Header = ({ userLocation, onLocationRefresh }) => {
         <div className="header-left">
           <LocationStatus 
             userLocation={userLocation} 
-            onLocationRefresh={onLocationRefresh} 
+            onLocationRefresh={onLocationRefresh}
+            libraries={libraries}
+            distanceFilter={distanceFilter}
+            onDistanceFilterChange={onDistanceFilterChange} 
           />
         </div>
         
         <div className="header-brand">
           <Link to="/" className="brand-link">
-            <h1>📚 Library Finder</h1>
+            <h1>
+              <LibraryBooks style={{ marginRight: '8px', verticalAlign: 'text-bottom' }} />
+              Library Finder
+            </h1>
             <p>あなたの近くの図書館と蔵書を見つけよう</p>
           </Link>
         </div>

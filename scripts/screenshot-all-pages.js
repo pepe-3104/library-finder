@@ -19,9 +19,9 @@ async function takeAllPagesScreenshots() {
   
   // 各ページのURLと名前
   const pages = [
-    { url: 'http://localhost:5186/', name: 'library-search', title: '図書館検索ページ' },
-    { url: 'http://localhost:5186/map', name: 'map-page', title: '地図表示ページ' },
-    { url: 'http://localhost:5186/books', name: 'book-search', title: '蔵書検索ページ' }
+    { url: 'http://localhost:5190/', name: 'library-search', title: '図書館検索ページ' },
+    { url: 'http://localhost:5190/map', name: 'map-page', title: '地図表示ページ' },
+    { url: 'http://localhost:5190/books', name: 'book-search', title: '蔵書検索ページ' }
   ];
 
   try {

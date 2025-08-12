@@ -1,9 +1,18 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useGeolocation } from '../../hooks/useGeolocation';
+import { LocationOn, Refresh, Tune } from '@mui/icons-material';
+import DistanceFilterPopup from './DistanceFilterPopup';
 import './LocationStatus.css';
 
-const LocationStatus = ({ userLocation, onLocationRefresh }) => {
+const LocationStatus = ({ 
+  userLocation, 
+  onLocationRefresh,
+  libraries = [],
+  distanceFilter,
+  onDistanceFilterChange 
+}) => {
   const { loading, error, getCurrentLocation } = useGeolocation();
+  const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 
   const handleRefresh = () => {
     getCurrentLocation();
@@ -22,18 +31,31 @@ const LocationStatus = ({ userLocation, onLocationRefresh }) => {
 
   return (
     <div className="location-status">
-      <button 
-        onClick={handleRefresh}
-        disabled={loading}
-        className={`location-refresh-btn ${loading ? 'loading' : ''}`}
-        title="位置情報を再取得"
-      >
-        {loading ? (
-          <span className="refresh-spinner">⟳</span>
-        ) : (
-          <span>📍</span>
+      <div className="location-buttons">
+        <button 
+          onClick={handleRefresh}
+          disabled={loading}
+          className={`location-refresh-btn ${loading ? 'loading' : ''}`}
+          title="位置情報を再取得"
+        >
+          {loading ? (
+            <Refresh className="refresh-spinner" fontSize="small" />
+          ) : (
+            <LocationOn fontSize="small" />
+          )}
+        </button>
+        
+        {libraries.length > 0 && (
+          <button 
+            onClick={() => setIsFilterPopupOpen(true)}
+            className="distance-filter-btn"
+            title="距離フィルタ設定"
+          >
+            <Tune fontSize="small" />
+            <span className="filter-label">{distanceFilter}km</span>
+          </button>
         )}
-      </button>
+      </div>
       
       <div className="location-info">
         {loading && (
@@ -51,7 +73,10 @@ const LocationStatus = ({ userLocation, onLocationRefresh }) => {
         
         {userLocation && !loading && !error && (
           <div className="location-text success-text">
-            <span className="location-label">📍 現在位置</span>
+            <span className="location-label">
+              <LocationOn fontSize="small" style={{ marginRight: '4px', verticalAlign: 'text-bottom' }} />
+              現在位置
+            </span>
             <span className="location-detail">{getLocationText(userLocation)}</span>
           </div>
         )}
@@ -63,6 +88,15 @@ const LocationStatus = ({ userLocation, onLocationRefresh }) => {
           </div>
         )}
       </div>
+      
+      {/* 距離フィルタポップアップ */}
+      <DistanceFilterPopup
+        selectedDistance={distanceFilter}
+        onDistanceChange={onDistanceFilterChange}
+        libraryCount={libraries.length}
+        isOpen={isFilterPopupOpen}
+        onClose={() => setIsFilterPopupOpen(false)}
+      />
     </div>
   );
 };

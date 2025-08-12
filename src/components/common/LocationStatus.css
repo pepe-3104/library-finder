@@ -5,6 +5,12 @@
   padding: 0.5rem;
 }
 
+.location-buttons {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
 .location-refresh-btn {
   display: flex;
   align-items: center;
@@ -40,9 +46,43 @@
   background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
 }
 
+.distance-filter-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  height: 40px;
+  padding: 0 12px;
+  border: none;
+  border-radius: 20px;
+  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+}
+
+.distance-filter-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+}
+
+.distance-filter-btn:active {
+  transform: scale(0.95);
+}
+
+.filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
 .refresh-spinner {
   animation: spin-refresh 1s linear infinite;
-  display: inline-block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @keyframes spin-refresh {
@@ -112,10 +152,24 @@
     padding: 0.25rem;
   }
   
+  .location-buttons {
+    gap: 0.4rem;
+  }
+  
   .location-refresh-btn {
     width: 36px;
     height: 36px;
     font-size: 1.1rem;
+  }
+  
+  .distance-filter-btn {
+    height: 36px;
+    padding: 0 10px;
+    font-size: 0.7rem;
+  }
+  
+  .filter-label {
+    font-size: 0.7rem;
   }
   
   .location-label {

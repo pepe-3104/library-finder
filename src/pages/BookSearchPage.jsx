@@ -1,11 +1,15 @@
 import React from 'react';
 import BookSearch from '../components/book/BookSearch';
+import { LibraryBooks } from '@mui/icons-material';
 
 const BookSearchPage = ({ libraries }) => {
   return (
     <div className="page-container">
       <div className="book-search-page-content">
-        <h2 className="section-title">📚 蔵書検索</h2>
+        <h2 className="section-title">
+          <LibraryBooks style={{ marginRight: '8px', verticalAlign: 'text-bottom' }} />
+          蔵書検索
+        </h2>
         <div className="page-description">
           <p>ISBNまたは書籍名で図書館の蔵書を検索できます。</p>
           {libraries.length > 0 ? (

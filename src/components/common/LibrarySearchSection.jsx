@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import LibraryList from '../library/LibraryList';
+import { LocationOn } from '@mui/icons-material';
 
 const LibrarySearchSection = ({ userLocation, libraries, onLibrarySelect }) => {
   const [mockLibraries, setMockLibraries] = useState([]);
@@ -23,7 +24,10 @@ const LibrarySearchSection = ({ userLocation, libraries, onLibrarySelect }) => {
 
   return (
     <div className="content-section" data-component="library-search">
-      <h2 className="section-title">📍 図書館検索</h2>
+      <h2 className="section-title">
+        <LocationOn style={{ marginRight: '8px', verticalAlign: 'text-bottom' }} />
+        図書館検索
+      </h2>
       <div className="search-content">
         <p>現在位置から最寄りの図書館を検索します。</p>
         

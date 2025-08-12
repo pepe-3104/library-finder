@@ -6,6 +6,7 @@ import MapPage from './pages/MapPage';
 import BookSearchPage from './pages/BookSearchPage';
 import { useGeolocation } from './hooks/useGeolocation';
 import { useLibrarySearch } from './hooks/useLibrarySearch';
+import { useDistanceFilter } from './hooks/useDistanceFilter';
 import './App.css';
 import './pages/Pages.css';
 
@@ -20,6 +21,13 @@ function App() {
   const [selectedLibrary, setSelectedLibrary] = useState(null);
   const { location, getCurrentLocation } = useGeolocation();
   const { libraries: searchedLibraries, searchNearbyLibraries } = useLibrarySearch();
+  
+  // 距離フィルタリング機能
+  const {
+    filteredLibraries,
+    maxDistance,
+    setDistanceFilter
+  } = useDistanceFilter(libraries);
 
   // 位置情報をuserLocationに同期
   useEffect(() => {
@@ -74,6 +82,9 @@ function App() {
       <Layout 
         userLocation={userLocation} 
         onLocationRefresh={handleLocationRefresh}
+        libraries={libraries}
+        distanceFilter={maxDistance}
+        onDistanceFilterChange={setDistanceFilter}
       >
         <Routes>
           <Route 
@@ -81,7 +92,7 @@ function App() {
             element={
               <LibrarySearchPage 
                 userLocation={userLocation}
-                libraries={libraries}
+                libraries={filteredLibraries}
                 onLibrarySelect={handleLibrarySelect}
               />
             } 
@@ -91,7 +102,7 @@ function App() {
             element={
               <MapPage 
                 userLocation={userLocation}
-                libraries={libraries}
+                libraries={filteredLibraries}
                 selectedLibrary={selectedLibrary}
                 onLibrarySelect={handleLibrarySelect}
               />
@@ -101,7 +112,7 @@ function App() {
             path="/books" 
             element={
               <BookSearchPage 
-                libraries={libraries}
+                libraries={filteredLibraries}
               />
             } 
           />

@@ -3,6 +3,7 @@ import { useBookSearch } from '../../hooks/useBookSearch';
 import BookSearchResults from './BookSearchResults';
 import { getAvailableTitles } from '../../utils/openBD';
 import { isRakutenAPIAvailable } from '../../utils/rakutenBooks';
+import { Search, MenuBook, Clear, RocketLaunch, Business, Error, Close } from '@mui/icons-material';
 import './BookSearch.css';
 
 const BookSearch = ({ libraries = [] }) => {
@@ -120,7 +121,8 @@ const BookSearch = ({ libraries = [] }) => {
                       className="suggestion-item"
                       onClick={() => handleSuggestionClick(suggestion)}
                     >
-                      📚 {suggestion}
+                      <MenuBook fontSize="small" style={{ marginRight: '6px' }} />
+                      {suggestion}
                     </div>
                   ))}
                 </div>
@@ -156,7 +158,17 @@ const BookSearch = ({ libraries = [] }) => {
               className="search-button"
               disabled={loading || !searchQuery.trim()}
             >
-              {loading ? '🔍 検索中...' : '📚 蔵書検索'}
+              {loading ? (
+                <>
+                  <Search fontSize="small" style={{ marginRight: '6px' }} />
+                  検索中...
+                </>
+              ) : (
+                <>
+                  <MenuBook fontSize="small" style={{ marginRight: '6px' }} />
+                  蔵書検索
+                </>
+              )}
             </button>
             {(searchQuery || results.length > 0) && (
               <button
@@ -165,7 +177,8 @@ const BookSearch = ({ libraries = [] }) => {
                 className="clear-button"
                 disabled={loading}
               >
-                🗑️ クリア
+                <Clear fontSize="small" style={{ marginRight: '6px' }} />
+                クリア
               </button>
             )}
           </div>
@@ -176,12 +189,18 @@ const BookSearch = ({ libraries = [] }) => {
         <div className="api-status-info">
           {isRakutenAPIAvailable() ? (
             <div className="api-status enabled">
-              <p>🚀 <strong>楽天Books API</strong> 有効 - 豊富な書籍データベースから検索可能</p>
+              <p>
+                <RocketLaunch fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+                <strong>楽天Books API</strong> 有効 - 豊富な書籍データベースから検索可能
+              </p>
               <p className="api-detail">タイトル、著者名、キーワードで幅広い検索ができます</p>
             </div>
           ) : (
             <div className="api-status limited">
-              <p>📚 <strong>限定検索モード</strong> - 楽天APIキー未設定</p>
+              <p>
+                <MenuBook fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+                <strong>限定検索モード</strong> - 楽天APIキー未設定
+              </p>
               <p className="api-detail">現在{getAvailableTitles().length}冊の書籍に対応しています</p>
             </div>
           )}
@@ -191,7 +210,8 @@ const BookSearch = ({ libraries = [] }) => {
         {libraries.length > 0 && (
           <div className="target-libraries-info">
             <p className="info-text">
-              🏢 検索対象: {libraries.length}件の図書館システム
+              <Business fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              検索対象: {libraries.length}件の図書館システム
             </p>
             <div className="library-chips">
               {libraries.slice(0, 5).map((lib, index) => (
@@ -213,10 +233,14 @@ const BookSearch = ({ libraries = [] }) => {
       {error && (
         <div className="search-error">
           <div className="error-content">
-            <h4>❌ 検索エラー</h4>
+            <h4>
+              <Error fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              検索エラー
+            </h4>
             <p>{error}</p>
             <button onClick={() => clearResults()} className="error-dismiss">
-              ✕ 閉じる
+              <Close fontSize="small" style={{ marginRight: '4px' }} />
+              閉じる
             </button>
           </div>
         </div>
