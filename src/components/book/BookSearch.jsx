@@ -8,7 +8,7 @@ import './BookSearch.css';
 
 const BookSearch = ({ libraries = [] }) => {
   const [searchQuery, setSearchQuery] = useState('');
-  const [searchType, setSearchType] = useState('isbn'); // 'isbn' or 'title'
+  const [searchType, setSearchType] = useState('title'); // 'title' or 'isbn'
   const [showSuggestions, setShowSuggestions] = useState(false);
   const { results, loading, error, searchBooks, clearResults } = useBookSearch();
   
