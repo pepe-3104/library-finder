@@ -256,18 +256,18 @@
   }
   
   .header-nav ul {
-    gap: 0.25rem;
+    gap: 0.15rem; /* 4つのアイテムに対応してギャップを狭める */
     flex-wrap: nowrap;
     align-items: center;
   }
   
   .nav-link {
     font-size: 0.7rem;
-    padding: 0.4rem;
-    border-radius: 12px;
+    padding: 0.3rem; /* パディングを縮小 */
+    border-radius: 10px;
     white-space: nowrap;
     flex-shrink: 0;
-    min-width: 44px; /* タッチターゲット確保 */
+    min-width: 40px; /* 4つのアイテムに対応してサイズ縮小 */
     justify-content: center;
   }
   

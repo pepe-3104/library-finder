@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import LocationStatus from '../common/LocationStatus';
 import DistanceFilterPopup from '../common/DistanceFilterPopup';
-import { LibraryBooks, Search, Map, MenuBook, Tune } from '@mui/icons-material';
+import { LibraryBooks, Search, Map, MenuBook, Tune, Whatshot } from '@mui/icons-material';
 import './Header.css';
 
 const DistanceFilterComponent = ({ distanceFilter, onDistanceFilterChange, libraries }) => {
@@ -109,6 +109,15 @@ const Header = ({
                 >
                   <Search className="nav-icon" fontSize="small" />
                   <span className="nav-text">蔵書検索</span>
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to="/popular" 
+                  className={`nav-link ${location.pathname === '/popular' ? 'active' : ''}`}
+                >
+                  <Whatshot className="nav-icon" fontSize="small" />
+                  <span className="nav-text">人気の本</span>
                 </Link>
               </li>
             </ul>

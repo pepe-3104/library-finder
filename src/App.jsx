@@ -4,6 +4,7 @@ import Layout from './components/layout/Layout';
 import LibrarySearchPage from './pages/LibrarySearchPage';
 import MapPage from './pages/MapPage';
 import BookSearchPage from './pages/BookSearchPage';
+import PopularBooksPage from './pages/PopularBooksPage';
 import { useGeolocation } from './hooks/useGeolocation';
 import { useLibrarySearch } from './hooks/useLibrarySearch';
 import './App.css';
@@ -116,6 +117,15 @@ function App() {
             path="/books" 
             element={
               <BookSearchPage 
+                libraries={libraries}
+                userLocation={userLocation}
+              />
+            } 
+          />
+          <Route 
+            path="/popular" 
+            element={
+              <PopularBooksPage 
                 libraries={libraries}
                 userLocation={userLocation}
               />

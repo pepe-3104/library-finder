@@ -9,7 +9,7 @@ import {
   HelpOutline,
   ShoppingCart,
   Star,
-  AttachMoney,
+  CurrencyYen,
   Link,
   CloudDownload,
   Error,
@@ -17,6 +17,7 @@ import {
   Domain,
   LocationOn,
   Phone,
+  Whatshot,
 } from "@mui/icons-material";
 import { CircularProgress, Box, Typography } from "@mui/material";
 import Pagination from "../common/Pagination";
@@ -123,15 +124,30 @@ const BookSearchResults = ({
     <div className="search-results">
       <div className="results-header">
         <h3>
-          <LibraryBooks
-            fontSize="small"
-            style={{ marginRight: "6px", verticalAlign: "text-bottom" }}
-          />
-          蔵書検索結果
+          {searchType === 'popular' ? (
+            <>
+              <Whatshot
+                fontSize="small"
+                style={{ marginRight: "6px", verticalAlign: "text-bottom" }}
+              />
+              人気の本一覧
+            </>
+          ) : (
+            <>
+              <LibraryBooks
+                fontSize="small"
+                style={{ marginRight: "6px", verticalAlign: "text-bottom" }}
+              />
+              蔵書検索結果
+            </>
+          )}
         </h3>
         <p className="results-info">
-          "{searchQuery}" の検索結果: 総数{totalCount || 0}冊中 {results.length}冊表示中
-          {pageInfo && ` (ページ ${pageInfo.page}/${pageInfo.pageCount || Math.ceil((totalCount || 0) / ITEMS_PER_PAGE)})`}
+          {searchType === 'popular' 
+            ? `${searchQuery}: 総数${totalCount || 0}冊中 ${results.length}冊表示中`
+            : `"${searchQuery}" の検索結果: 総数${totalCount || 0}冊中 ${results.length}冊表示中`
+          }
+          {pageInfo && searchType !== 'popular' && ` (ページ ${pageInfo.page}/${pageInfo.pageCount || Math.ceil((totalCount || 0) / ITEMS_PER_PAGE)})`}
         </p>
       </div>
 
@@ -143,12 +159,14 @@ const BookSearchResults = ({
             onLoadLibraryData={onLoadLibraryData}
             userLocation={userLocation}
             libraries={libraries}
+            searchType={searchType}
+            rankNumber={searchType === 'popular' ? ((pageInfo?.page || 1) - 1) * ITEMS_PER_PAGE + index + 1 : null}
           />
         ))}
       </div>
 
       {/* ページネーション（ISBN検索以外で複数ページがある場合のみ表示） */}
-      {searchType !== 'isbn' && totalCount > ITEMS_PER_PAGE && pageInfo && (
+      {searchType !== 'isbn' && totalCount > ITEMS_PER_PAGE && pageInfo && onPageChange && (
         <Pagination
           currentPage={pageInfo.page}
           totalItems={totalCount}
@@ -167,6 +185,8 @@ const BookResultItem = ({
   onLoadLibraryData,
   userLocation,
   libraries,
+  searchType,
+  rankNumber,
 }) => {
   const getAvailabilityStatus = (status) => {
     switch (status) {
@@ -300,6 +320,12 @@ const BookResultItem = ({
 
   return (
     <div className="book-result-item">
+      {/* ランキングバッジ（人気の本の場合のみ表示） */}
+      {searchType === 'popular' && rankNumber && (
+        <div className="rank-badge">
+          #{rankNumber}
+        </div>
+      )}
       <div className="book-header">
         {/* 書籍画像 */}
         {book.imageUrl && (
@@ -352,6 +378,15 @@ const BookResultItem = ({
           )}
 
           {/* 楽天Books情報 */}
+          {book.price && (
+            <p className="book-price">
+              <CurrencyYen
+                fontSize="small"
+                style={{ marginRight: "6px", verticalAlign: "text-bottom" }}
+              />
+              価格: ¥{book.price.toLocaleString()}
+            </p>
+          )}
           {book.reviewAverage && (
             <p className="book-review">
               <Star
@@ -359,15 +394,6 @@ const BookResultItem = ({
                 style={{ marginRight: "6px", verticalAlign: "text-bottom" }}
               />
               評価: {book.reviewAverage} ({book.reviewCount}件)
-            </p>
-          )}
-          {book.price && (
-            <p className="book-price">
-              <AttachMoney
-                fontSize="small"
-                style={{ marginRight: "6px", verticalAlign: "text-bottom" }}
-              />
-              価格: ¥{book.price.toLocaleString()}
             </p>
           )}
           <div className="availability-summary">

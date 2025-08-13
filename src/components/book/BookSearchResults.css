@@ -83,6 +83,23 @@
   padding: 1.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
   transition: box-shadow 0.15s ease-in-out;
+  position: relative; /* ランキングバッジの配置のため */
+}
+
+/* ランキングバッジスタイル */
+.rank-badge {
+  position: absolute;
+  top: 0.75rem;
+  right: 0.75rem;
+  background: linear-gradient(135deg, #ff6b35, #ff8a65);
+  color: white;
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  z-index: 10;
+  box-shadow: 0 2px 6px rgba(255, 107, 53, 0.3);
+  border: 2px solid white;
 }
 
 .book-result-item:hover {
@@ -140,7 +157,6 @@
 .book-author,
 .book-publisher,
 .book-pubdate,
-.book-review,
 .book-price {
   margin: 0;
   color: #495057;
@@ -149,13 +165,11 @@
 }
 
 .book-review {
+  margin: 0;
   color: #fd7e14;
+  font-size: 0.85rem;
   font-weight: 500;
-}
-
-.book-price {
-  color: #28a745;
-  font-weight: 600;
+  line-height: 1.4;
 }
 
 .book-actions {

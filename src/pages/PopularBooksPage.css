@@ -1,0 +1,278 @@
+/* 売れ筋本ページ全体のスタイル */
+.popular-books-page-content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1rem;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.8rem;
+  margin-bottom: 1rem;
+  color: #333;
+  border-bottom: 3px solid #ff6b35;
+  padding-bottom: 0.5rem;
+}
+
+.page-description {
+  margin-bottom: 2rem;
+  padding: 1rem;
+  background: #f8f9fa;
+  border-radius: 8px;
+  border-left: 4px solid #ff6b35;
+}
+
+.page-description p {
+  margin: 0.5rem 0;
+  color: #555;
+}
+
+/* ジャンル選択エリア */
+.genre-selector {
+  margin-bottom: 2rem;
+  padding: 1.5rem;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.genre-selector h3 {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.genre-buttons {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 0.75rem;
+}
+
+.genre-button {
+  padding: 0.75rem 1rem;
+  border: 2px solid #e9ecef;
+  background: white;
+  color: #495057;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-align: center;
+}
+
+.genre-button:hover {
+  border-color: #ff6b35;
+  background: #fff5f2;
+  transform: translateY(-1px);
+}
+
+.genre-button.active {
+  background: #ff6b35;
+  color: white;
+  border-color: #ff6b35;
+  font-weight: 600;
+}
+
+/* エラー・ローディング */
+.error-message {
+  padding: 1rem;
+  background: #f8d7da;
+  color: #721c24;
+  border-radius: 8px;
+  margin-bottom: 2rem;
+  text-align: center;
+}
+
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 3rem;
+  color: #6c757d;
+}
+
+.loading-spinner {
+  width: 40px;
+  height: 40px;
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #ff6b35;
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+  margin-bottom: 1rem;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* 売れ筋本リスト */
+.popular-books-list {
+  margin-bottom: 2rem;
+}
+
+.books-list-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.4rem;
+  margin-bottom: 1.5rem;
+  color: #333;
+  padding: 1rem;
+  background: linear-gradient(135deg, #ff6b35, #ff8a65);
+  color: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.3);
+}
+
+.books-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 1.5rem;
+  padding: 1rem 0;
+}
+
+/* 書籍カード */
+.book-card {
+  position: relative;
+  background: white;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+  transition: all 0.3s ease;
+  border: 1px solid #e9ecef;
+}
+
+.book-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+}
+
+.book-rank {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background: linear-gradient(135deg, #ff6b35, #ff8a65);
+  color: white;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  font-size: 0.8rem;
+  font-weight: bold;
+  z-index: 1;
+}
+
+.book-image {
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f9fa;
+  padding: 1rem;
+}
+
+.book-image img {
+  max-height: 100%;
+  max-width: 100%;
+  object-fit: contain;
+  border-radius: 4px;
+}
+
+.book-info {
+  padding: 1rem;
+}
+
+/* 書籍表示スタイルは BookSearchResults.css で定義済み */
+
+.review-stars {
+  color: #ffc107;
+  font-size: 0.9rem;
+}
+
+.review-text {
+  font-size: 0.8rem;
+  color: #6c757d;
+}
+
+.book-actions {
+  padding: 0 1rem 1rem 1rem;
+}
+
+.book-link {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 1rem;
+  background: linear-gradient(135deg, #007bff, #0056b3);
+  color: white;
+  text-decoration: none;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  width: 100%;
+  justify-content: center;
+}
+
+.book-link:hover {
+  background: linear-gradient(135deg, #0056b3, #004085);
+  transform: translateY(-1px);
+  text-decoration: none;
+  color: white;
+}
+
+/* 結果なし */
+.no-results {
+  text-align: center;
+  padding: 3rem;
+  color: #6c757d;
+  font-size: 1.1rem;
+}
+
+/* レスポンシブデザイン */
+@media (max-width: 768px) {
+  .popular-books-page-content {
+    padding: 1rem 0.5rem;
+  }
+
+  .section-title {
+    font-size: 1.5rem;
+  }
+
+  .genre-buttons {
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 0.5rem;
+  }
+
+  .genre-button {
+    padding: 0.6rem 0.8rem;
+    font-size: 0.8rem;
+  }
+
+  .books-grid {
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1rem;
+  }
+
+  .books-list-title {
+    font-size: 1.2rem;
+    padding: 0.75rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .books-grid {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .genre-buttons {
+    grid-template-columns: 1fr;
+  }
+
+  .book-image {
+    height: 180px;
+  }
+}
