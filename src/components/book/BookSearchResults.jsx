@@ -315,7 +315,6 @@ const BookResultItem = ({
 
       Object.entries(systemData.libkey).forEach(([branchName, status]) => {
         // ステータスを分類してカウント
-        const isNull = status === null || status === undefined;
         const isEmptyString = status === '';
         const noBookStatuses = ['No', 'なし', 'None', '蔵書なし', 'Not Found', 'EMPTY'];
         const isNoBook = noBookStatuses.includes(status);
