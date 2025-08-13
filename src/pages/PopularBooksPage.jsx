@@ -192,9 +192,12 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
     loadGenres();
   }, []);
 
-  // 選択ジャンル変更時: 書籍取得
+  // 選択ジャンル変更時: サブジャンル取得と書籍取得
   useEffect(() => {
     if (selectedGenre) {
+      // 初回ジャンル設定時もサブジャンルを読み込む
+      loadSubGenres(selectedGenre.id);
+      
       // 子ジャンルが選択されている場合は子ジャンルで検索、そうでなければメインジャンルで検索
       const targetGenreId = selectedSubGenre ? selectedSubGenre.id : selectedGenre.id;
       loadPopularBooks(targetGenreId);

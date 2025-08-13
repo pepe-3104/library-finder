@@ -948,6 +948,172 @@ id: library.systemid,  // systemidを id にマッピング
 - 動的距離調整（1km/2km/5km/10km選択可能）
 - 自動再検索機能
 
+---
+
+## 2025-08-13 継続セッション - カテゴリフィルタとバグ修正
+
+**👤 ユーザー:** フィルタ機能に検索図書館のフィルタ機能を追加したいです。その理由は大学の図書館は利用できる人が限られるため、デフォルトでは大学図書館を含めないようにしたいからです。距離フィルタのところに大学の種類でのフィルタ機能を実装してください
+
+**🤖 Claude:** 大学図書館の制限はユーザビリティ向上に重要な機能ですね。距離フィルタに統合したカテゴリフィルタを実装します。
+
+*[図書館データの調査開始]*
+
+**📋 実装計画:**
+1. 図書館データの種類（大学・公立・私立等）分析
+2. 図書館種別検出システム構築  
+3. 距離フィルタPopupに統合UI実装
+4. デフォルトで大学図書館除外設定
+
+**👤 ユーザー:** ちょっとまって、図書館の中にcategoryがあるでしょ、そのUNIVが大学で、categoryごとのフィルタ機能を作りたいだけだよ
+
+**🤖 Claude:** 理解しました！カーリルAPIの`category`フィールドを直接使用します。
+
+**📊 カーリルAPI categoryフィールド:**
+- `LARGE`: 大規模図書館
+- `MEDIUM`: 中規模図書館
+- `SMALL`: 小規模図書館  
+- `UNIV`: 大学図書館 ← デフォルト除外対象
+- `SPECIAL`: 専門図書館
+
+*[カテゴリフィルタ実装開始]*
+
+**🔧 実装したファイル:**
+1. **新規**: `src/utils/libraryCategoryFilter.js`
+   - カテゴリ別フィルタリング機能
+   - デフォルト設定（大学除外）
+   - 統計算出機能
+
+2. **改修**: `src/components/common/DistanceFilterPopup.jsx`
+   - 統合フィルタUI（距離+カテゴリ）
+   - チェックボックス式カテゴリ選択
+   - 統計表示機能
+
+3. **改修**: App.jsx, Header.jsx, Layout.jsx
+   - カテゴリフィルタstate管理
+   - プロップチェーン構築
+
+**👤 ユーザー:** フィルタのポップアップのUIを調整して、今だと上にはみ出ています
+
+**🤖 Claude:** z-indexとposition調整で修正します。
+
+*[UI調整実施]*
+
+**👤 ユーザー:** ヘッダー下部にポップアップが埋まってますよ
+
+**🤖 Claude:** overflow制限を解除します。
+
+*[Header.cssでoverflow: visible追加]*
+
+**👤 ユーザー:** そうじゃないです。ヘッダーの下のみに表示されてしまいLayout部分にポップアップが表示されていないのです
+
+**🤖 Claude:** 理解しました！React Portalを使用してポップアップをdocument.bodyに直接レンダリングします。
+
+*[React Portal実装]*
+
+**🔄 React Portal による根本的解決:**
+```jsx
+import { createPortal } from 'react-dom';
+
+return createPortal(
+  <div className="distance-filter-overlay">
+    {/* ポップアップ内容 */}
+  </div>,
+  document.body
+);
+```
+
+**✅ ポップアップ表示問題完全解決:**
+- コンテナ制約から完全に独立
+- 全画面でのz-index管理
+- レスポンシブ対応維持
+
+**👤 ユーザー:** いいですね、開発終了の手順を実施して下さい
+
+*[開発完了プロセス実行]*
+
+**📸 スクリーンショット撮影完了:**
+- 図書館検索ページ: library-search-2025-08-13T08-52-36.png
+- 地図表示ページ: map-page-2025-08-13T08-52-36.png  
+- 蔵書検索ページ: book-search-2025-08-13T08-52-36.png
+
+**📝 ドキュメント更新完了:**
+- development-log.md: カテゴリフィルタ実装記録
+- cli-conversation-log.md: 会話履歴更新
+
+**🔄 Git操作完了:**
+- 全変更をstaging
+- コミット: "図書館カテゴリフィルタ機能実装とUI表示問題修正"
+- リモートプッシュ完了
+
+---
+
+**👤 ユーザー:** バグを見つけました、人気の本初期表示時は漫画（コミック）カテゴリを表示していますがサブジャンルの設定項目が表示されません
+
+**🤖 Claude:** 問題を特定しました。初期表示時にサブジャンルの自動読み込みが実行されていませんでした。
+
+**🔍 バグ原因:**
+- `PopularBooksPage.jsx`の`useEffect`で、初回ジャンル設定時に`loadSubGenres`が呼び出されていない
+- ユーザー操作でのジャンル変更時のみサブジャンル読み込みが実行されている
+
+**🔧 修正内容:**
+```jsx
+// 選択ジャンル変更時: サブジャンル取得と書籍取得
+useEffect(() => {
+  if (selectedGenre) {
+    // 初回ジャンル設定時もサブジャンルを読み込む
+    loadSubGenres(selectedGenre.id);
+    
+    const targetGenreId = selectedSubGenre ? selectedSubGenre.id : selectedGenre.id;
+    loadPopularBooks(targetGenreId);
+  }
+}, [selectedGenre, selectedSubGenre]);
+```
+
+**✅ 修正完了:** 漫画カテゴリ初期表示時にもサブジャンル（少年・少女・青年・レディース等）が正常表示
+
+---
+
+**👤 ユーザー:** 楽天書籍APIで人気の本を取得時に、その本がすでに販売されている（出版日が未来日）のものを除外できますか
+
+**🤖 Claude:** はい、`salesDate`フィールドを使用して未発売書籍を除外できます。
+
+**📅 salesDateフォーマット:**
+- 実際の形式: "YYYY年MM月DD日頃", "YYYY年MM月DD日"
+- 日本語フォーマットのため特別な解析が必要
+
+*[未発売書籍除外機能実装]*
+
+**🔧 実装内容 (rakutenGenres.js):**
+```javascript
+.filter(book => {
+  if (book.publishDate) {
+    // 日本語の日付形式を解析 (例: "2024年12月25日頃", "2025年01月15日")
+    const match = dateStr.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+    
+    if (match) {
+      const [, year, month, day] = match;
+      const publishDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+      
+      if (publishDate > today) {
+        console.log(`📅 未発売書籍を除外: ${book.title} (発売日: ${book.publishDate})`);
+        return false;
+      }
+    }
+  }
+  return true;
+});
+```
+
+**✅ 機能完成:**
+- 日本語日付フォーマットの正確な解析
+- 未来日（未発売）書籍の自動除外
+- 「頃」などの接尾辞対応
+- 詳細なコンソールログ出力
+
+**👤 ユーザー:** OKです、開発完了の手順を取ってください
+
+*[最終開発完了プロセス実行中]*
+
 **👤 ユーザー:** いいですね、これでpushしましょう
 
 **🤖 Claude:** 承知しました！作業ログ更新、スクリーンショット記録、コミット、プッシュを実行します。

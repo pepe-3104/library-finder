@@ -124,39 +124,73 @@ export const getPopularBooksByGenre = async (genreId = '001', hits = 20, page = 
       };
     }
 
+    // 現在の日付を取得
+    const today = new Date();
+    
     // レスポンスデータを統一形式に変換（BookSearchResultsコンポーネントと互換性を保つ）
-    const books = data.Items.map(item => {
-      const book = item.Item;
-      return {
-        isbn: book.jan || book.isbn, // ISBN-13を優先
-        title: book.title,
-        titleKana: book.titleKana,
-        author: book.author,
-        authorKana: book.authorKana,
-        publisher: book.publisherName,
-        publishDate: book.salesDate,
-        pubdate: book.salesDate, // BookSearchResultsとの互換性
-        imageUrl: book.mediumImageUrl || book.largeImageUrl || book.smallImageUrl, // BookSearchResultsが期待するプロパティ名
-        smallImageUrl: book.smallImageUrl,
-        mediumImageUrl: book.mediumImageUrl,
-        largeImageUrl: book.largeImageUrl,
-        reviewCount: book.reviewCount,
-        reviewAverage: book.reviewAverage,
-        itemCaption: book.itemCaption,
-        contents: book.contents,
-        seriesName: book.seriesName,
-        size: book.size,
-        price: book.itemPrice,
-        itemUrl: book.itemUrl,
-        affiliateUrl: book.affiliateUrl,
-        isbn10: book.isbn,    // ISBN-10
-        isbn13: book.jan,     // ISBN-13 (JAN/EAN)
-        // BookSearchResultsとの互換性のため蔵書情報関連プロパティを追加
-        isLibraryDataLoaded: false,
-        isLibraryDataLoading: false,
-        systems: {}
-      };
-    });
+    const books = data.Items
+      .map(item => {
+        const book = item.Item;
+        return {
+          isbn: book.jan || book.isbn, // ISBN-13を優先
+          title: book.title,
+          titleKana: book.titleKana,
+          author: book.author,
+          authorKana: book.authorKana,
+          publisher: book.publisherName,
+          publishDate: book.salesDate,
+          pubdate: book.salesDate, // BookSearchResultsとの互換性
+          imageUrl: book.mediumImageUrl || book.largeImageUrl || book.smallImageUrl, // BookSearchResultsが期待するプロパティ名
+          smallImageUrl: book.smallImageUrl,
+          mediumImageUrl: book.mediumImageUrl,
+          largeImageUrl: book.largeImageUrl,
+          reviewCount: book.reviewCount,
+          reviewAverage: book.reviewAverage,
+          itemCaption: book.itemCaption,
+          contents: book.contents,
+          seriesName: book.seriesName,
+          size: book.size,
+          price: book.itemPrice,
+          itemUrl: book.itemUrl,
+          affiliateUrl: book.affiliateUrl,
+          isbn10: book.isbn,    // ISBN-10
+          isbn13: book.jan,     // ISBN-13 (JAN/EAN)
+          // BookSearchResultsとの互換性のため蔵書情報関連プロパティを追加
+          isLibraryDataLoaded: false,
+          isLibraryDataLoading: false,
+          systems: {}
+        };
+      })
+      .filter(book => {
+        // 販売日が未来日（まだ発売されていない）の書籍を除外
+        if (book.publishDate) {
+          try {
+            console.log(`📅 販売日チェック: ${book.title} (発売日: ${book.publishDate})`);
+            
+            // 日本語の日付形式を解析 (例: "2024年12月25日頃", "2025年01月15日")
+            const dateStr = book.publishDate;
+            const match = dateStr.match(/(\d{4})年(\d{1,2})月(\d{1,2})日/);
+            
+            if (match) {
+              const [, year, month, day] = match;
+              const publishDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+              
+              console.log(`📅 解析結果: ${book.title} - ${publishDate.toDateString()} vs 今日: ${today.toDateString()}`);
+              
+              if (publishDate > today) {
+                console.log(`📅 未発売書籍を除外: ${book.title} (発売日: ${book.publishDate})`);
+                return false;
+              }
+            } else {
+              console.warn(`⚠️ 日付フォーマットが不明: ${book.title} (${book.publishDate}) - 除外しません`);
+            }
+          } catch (error) {
+            console.warn(`⚠️ 発売日の解析に失敗: ${book.title} (${book.publishDate})`, error);
+            // 発売日の解析に失敗した場合は除外しない
+          }
+        }
+        return true;
+      });
 
     console.log(`🔥 売れ筋書籍結果: ${books.length}件の書籍が見つかりました（総数: ${data.count}件）`);
     
