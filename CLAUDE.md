@@ -1,7 +1,7 @@
-# Library Finder Project - Development Guidelines
+# としょみる Project - Development Guidelines
 
 ## プロジェクト概要
-図書館蔵書検索システム - 複数の図書館APIを統合したNext.js Webアプリケーション
+図書館蔵書検索システム「としょみる」 - 複数の図書館APIを統合したReact Webアプリケーション
 
 ## 🔧 開発環境ルール
 

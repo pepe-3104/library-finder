@@ -55,7 +55,7 @@ const Header = ({
             <Link to="/" className="brand-link">
               <h1>
                 <LibraryBooks style={{ marginRight: '8px', verticalAlign: 'text-bottom' }} />
-                Library Finder
+                としょみる
               </h1>
               <p>あなたの近くの図書館と蔵書を見つけよう</p>
             </Link>
