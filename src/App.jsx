@@ -7,6 +7,7 @@ import BookSearchPage from './pages/BookSearchPage';
 import PopularBooksPage from './pages/PopularBooksPage';
 import { useGeolocation } from './hooks/useGeolocation';
 import { useLibrarySearch } from './hooks/useLibrarySearch';
+import { getDefaultCategoryFilter, filterLibrariesByCategory } from './utils/libraryCategoryFilter';
 import './App.css';
 import './pages/Pages.css';
 
@@ -18,8 +19,10 @@ if (import.meta.env.DEV) {
 function App() {
   const [userLocation, setUserLocation] = useState(null);
   const [libraries, setLibraries] = useState([]);
+  const [allLibraries, setAllLibraries] = useState([]); // フィルタ前の全図書館データ
   const [selectedLibrary, setSelectedLibrary] = useState(null);
   const [maxDistance, setMaxDistance] = useState(5); // デフォルト5km
+  const [categoryFilter, setCategoryFilter] = useState(getDefaultCategoryFilter()); // カテゴリフィルタ
   const { location, getCurrentLocation } = useGeolocation();
   const { libraries: searchedLibraries, searchNearbyLibraries } = useLibrarySearch();
 
@@ -39,13 +42,27 @@ function App() {
     }
   }, [location, searchNearbyLibraries, maxDistance]);
 
-  // 図書館検索結果をlibrariesに同期
+  // 図書館検索結果をallLibrariesに保存し、フィルタリングして表示
   useEffect(() => {
     if (searchedLibraries && searchedLibraries.length > 0) {
       console.log('📚 App: 図書館検索結果を更新:', searchedLibraries.length, '件');
-      setLibraries(searchedLibraries);
+      setAllLibraries(searchedLibraries);
     }
   }, [searchedLibraries]);
+
+  // カテゴリフィルタが変更されたらlibrariesを更新
+  useEffect(() => {
+    if (allLibraries.length > 0) {
+      const filteredLibraries = filterLibrariesByCategory(allLibraries, categoryFilter);
+      console.log('🔍 App: カテゴリフィルタ適用:', filteredLibraries.length, '/', allLibraries.length, '件');
+      setLibraries(filteredLibraries);
+    }
+  }, [allLibraries, categoryFilter]);
+
+  // カテゴリフィルタ変更ハンドラ
+  const handleCategoryFilterChange = (newFilter) => {
+    setCategoryFilter(newFilter);
+  };
 
   // スクリーンショット用モックデータのイベントリスナー
   useEffect(() => {
@@ -88,8 +105,11 @@ function App() {
         userLocation={userLocation} 
         onLocationRefresh={handleLocationRefresh}
         libraries={libraries}
+        allLibraries={allLibraries}
         distanceFilter={maxDistance}
         onDistanceFilterChange={handleDistanceFilterChange}
+        categoryFilter={categoryFilter}
+        onCategoryFilterChange={handleCategoryFilterChange}
       >
         <Routes>
           <Route 

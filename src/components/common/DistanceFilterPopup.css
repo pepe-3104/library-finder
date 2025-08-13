@@ -6,21 +6,24 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   display: flex;
-  align-items: center;
+  align-items: flex-start;
   justify-content: center;
-  z-index: 1000;
+  z-index: 9999;
   backdrop-filter: blur(4px);
+  padding: 1rem 0;
+  overflow-y: auto;
 }
 
 .distance-filter-popup {
   background: white;
   border-radius: 16px;
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
-  width: 90%;
-  max-width: 400px;
-  max-height: 90vh;
-  overflow: hidden;
+  width: 95%;
+  max-width: 500px;
+  max-height: 85vh;
+  overflow-y: auto;
   animation: popupSlideIn 0.3s ease;
+  margin: 1rem;
 }
 
 @keyframes popupSlideIn {
@@ -68,7 +71,9 @@
 }
 
 .popup-content {
-  padding: 24px;
+  padding: 20px;
+  max-height: 70vh;
+  overflow-y: auto;
 }
 
 .filter-description {
@@ -167,9 +172,14 @@
 
 /* レスポンシブデザイン */
 @media (max-width: 480px) {
+  .distance-filter-overlay {
+    padding: 0.5rem 0;
+  }
+
   .distance-filter-popup {
-    width: 95%;
-    margin: 10px;
+    width: 98%;
+    margin: 0.5rem;
+    max-height: 90vh;
   }
   
   .popup-header {
@@ -181,7 +191,8 @@
   }
   
   .popup-content {
-    padding: 20px;
+    padding: 15px;
+    max-height: 75vh;
   }
   
   .distance-options {
@@ -196,5 +207,208 @@
   
   .current-status {
     padding: 10px 12px;
+  }
+}
+
+/* カテゴリフィルタセクション */
+.filter-section {
+  margin-bottom: 1.5rem;
+}
+
+.filter-section:last-child {
+  margin-bottom: 0;
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 0.75rem;
+  border-bottom: 2px solid #ff6b35;
+  padding-bottom: 0.4rem;
+}
+
+.category-filter-section {
+  border-top: 1px solid #e9ecef;
+  padding-top: 1rem;
+  margin-top: 1rem;
+}
+
+.category-stats {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.75rem;
+  padding: 0.5rem;
+  background: #f8f9fa;
+  border-radius: 6px;
+  font-size: 0.8rem;
+}
+
+.stats-label {
+  font-weight: 500;
+  color: #495057;
+}
+
+.category-stat {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  color: #6c757d;
+}
+
+.category-options {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-height: 250px;
+  overflow-y: auto;
+}
+
+.category-option {
+  display: block;
+  padding: 0.6rem;
+  border: 2px solid #e9ecef;
+  border-radius: 6px;
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.category-option:hover {
+  border-color: #ff6b35;
+  background: #fff5f2;
+}
+
+.category-option.enabled {
+  border-color: #28a745;
+  background: #f8fff9;
+}
+
+.category-option.disabled {
+  background: #f8f9fa;
+  opacity: 0.6;
+}
+
+.category-header {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.2rem;
+}
+
+.category-checkbox {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+}
+
+.category-icon {
+  font-size: 1.2rem;
+}
+
+.category-label {
+  font-weight: 500;
+  color: #333;
+  flex: 1;
+}
+
+.category-count {
+  font-size: 0.85rem;
+  color: #6c757d;
+  font-weight: normal;
+}
+
+.category-description {
+  margin: 0;
+  font-size: 0.75rem;
+  color: #6c757d;
+  margin-left: 2.2rem;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 0.5rem;
+  justify-content: center;
+  margin-top: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid #e9ecef;
+}
+
+.apply-button {
+  padding: 0.6rem 1.2rem;
+  background: linear-gradient(135deg, #28a745, #20c997);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.apply-button:hover {
+  background: linear-gradient(135deg, #218838, #1ea085);
+  transform: translateY(-1px);
+}
+
+.reset-button {
+  padding: 0.6rem 1.2rem;
+  background: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-weight: 500;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-button:hover {
+  background: #5a6268;
+  transform: translateY(-1px);
+}
+
+/* レスポンシブ対応 */
+@media (max-width: 768px) {
+  .distance-filter-overlay {
+    align-items: flex-start;
+    padding: 0.5rem;
+  }
+
+  .distance-filter-popup {
+    margin: 0;
+    max-height: 95vh;
+  }
+
+  .category-stats {
+    font-size: 0.8rem;
+    gap: 0.5rem;
+    padding: 0.5rem;
+  }
+
+  .category-option {
+    padding: 0.5rem;
+  }
+
+  .category-header {
+    gap: 0.5rem;
+  }
+
+  .category-description {
+    margin-left: 1.8rem;
+    font-size: 0.75rem;
+  }
+
+  .filter-actions {
+    flex-direction: column;
+  }
+
+  .apply-button,
+  .reset-button {
+    padding: 0.6rem 1rem;
+    font-size: 0.9rem;
   }
 }

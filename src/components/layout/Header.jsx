@@ -5,7 +5,14 @@ import DistanceFilterPopup from '../common/DistanceFilterPopup';
 import { LibraryBooks, Search, Map, MenuBook, Tune, Whatshot } from '@mui/icons-material';
 import './Header.css';
 
-const DistanceFilterComponent = ({ distanceFilter, onDistanceFilterChange, libraries }) => {
+const DistanceFilterComponent = ({ 
+  distanceFilter, 
+  onDistanceFilterChange, 
+  libraries,
+  allLibraries,
+  categoryFilter,
+  onCategoryFilterChange
+}) => {
   const [isFilterPopupOpen, setIsFilterPopupOpen] = useState(false);
 
   return (
@@ -13,7 +20,7 @@ const DistanceFilterComponent = ({ distanceFilter, onDistanceFilterChange, libra
       <button 
         onClick={() => setIsFilterPopupOpen(true)}
         className="distance-filter-btn-nav"
-        title="距離フィルタ設定"
+        title="表示フィルタ設定"
       >
         <Tune fontSize="small" />
         <span className="filter-label">{distanceFilter}km</span>
@@ -23,6 +30,9 @@ const DistanceFilterComponent = ({ distanceFilter, onDistanceFilterChange, libra
         selectedDistance={distanceFilter}
         onDistanceChange={onDistanceFilterChange}
         libraryCount={libraries.length}
+        categoryFilter={categoryFilter}
+        onCategoryFilterChange={onCategoryFilterChange}
+        allLibraries={allLibraries}
         isOpen={isFilterPopupOpen}
         onClose={() => setIsFilterPopupOpen(false)}
       />
@@ -34,8 +44,11 @@ const Header = ({
   userLocation, 
   onLocationRefresh, 
   libraries = [],
+  allLibraries = [],
   distanceFilter,
-  onDistanceFilterChange 
+  onDistanceFilterChange,
+  categoryFilter,
+  onCategoryFilterChange
 }) => {
   const location = useLocation();
   
@@ -77,6 +90,9 @@ const Header = ({
                 distanceFilter={distanceFilter}
                 onDistanceFilterChange={onDistanceFilterChange}
                 libraries={libraries}
+                allLibraries={allLibraries}
+                categoryFilter={categoryFilter}
+                onCategoryFilterChange={onCategoryFilterChange}
               />
             )}
           </div>

@@ -8,8 +8,11 @@ const Layout = ({
   userLocation, 
   onLocationRefresh, 
   libraries,
+  allLibraries,
   distanceFilter,
-  onDistanceFilterChange 
+  onDistanceFilterChange,
+  categoryFilter,
+  onCategoryFilterChange
 }) => {
   return (
     <div className="app-layout">
@@ -17,8 +20,11 @@ const Layout = ({
         userLocation={userLocation} 
         onLocationRefresh={onLocationRefresh}
         libraries={libraries}
+        allLibraries={allLibraries}
         distanceFilter={distanceFilter}
         onDistanceFilterChange={onDistanceFilterChange}
+        categoryFilter={categoryFilter}
+        onCategoryFilterChange={onCategoryFilterChange}
       />
       <main className="main-content">
         {children}
