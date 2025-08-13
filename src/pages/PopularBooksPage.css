@@ -45,6 +45,20 @@
   font-size: 1.2rem;
 }
 
+/* デスクトップではアコーディオンヘッダーを無効化 */
+.genre-selector-header {
+  display: block;
+  cursor: default;
+}
+
+.genre-selector-header .expand-icon {
+  display: none;
+}
+
+.selected-genre {
+  display: none;
+}
+
 .genre-buttons {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -398,5 +412,54 @@
   .selected-sub-genre {
     font-size: 0.8rem;
     margin-left: 4px;
+  }
+}
+
+/* モバイルサイズでのジャンル選択アコーディオン化 */
+@media (max-width: 768px) {
+  /* アコーディオンヘッダーを有効化 */
+  .genre-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    padding: 0.75rem;
+    margin: -0.75rem -0.75rem 0 -0.75rem;
+    user-select: none;
+    transition: background-color 0.2s ease;
+    border-radius: 8px;
+  }
+  
+  .genre-selector-header:hover {
+    background: rgba(0, 0, 0, 0.02);
+  }
+  
+  /* 展開アイコンを表示 */
+  .genre-selector-header .expand-icon {
+    display: flex;
+    align-items: center;
+    color: #6c757d;
+    transition: transform 0.2s ease;
+  }
+  
+  /* 現在選択されたジャンルを表示 */
+  .selected-genre {
+    display: inline;
+    font-size: 0.85rem;
+    font-weight: 400;
+    color: #6f42c1;
+    margin-left: 6px;
+  }
+  
+  /* ジャンル選択のh3を小さく */
+  .genre-selector h3 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
+  }
+  
+  /* ジャンルボタンエリアのスタイル調整 */
+  .genre-buttons {
+    margin-top: 1rem;
+    animation: slideDown 0.3s ease-out;
   }
 }

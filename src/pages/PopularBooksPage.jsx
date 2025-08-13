@@ -15,6 +15,7 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
   const [selectedSubGenre, setSelectedSubGenre] = useState(null);
   const [showSubGenres, setShowSubGenres] = useState(false);
   const [isSubGenresExpanded, setIsSubGenresExpanded] = useState(false);
+  const [isGenreSelectorExpanded, setIsGenreSelectorExpanded] = useState(true);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [genresLoading, setGenresLoading] = useState(true);
@@ -192,6 +193,23 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
     loadGenres();
   }, []);
 
+  // 画面サイズに応じてアコーディオン初期状態を制御
+  useEffect(() => {
+    const handleResize = () => {
+      const isMobile = window.innerWidth <= 768;
+      setIsGenreSelectorExpanded(!isMobile);
+    };
+
+    // 初回実行
+    handleResize();
+    
+    // リサイズイベントリスナー追加
+    window.addEventListener('resize', handleResize);
+    
+    // クリーンアップ
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   // 選択ジャンル変更時: サブジャンル取得と書籍取得
   useEffect(() => {
     if (selectedGenre) {
@@ -209,6 +227,11 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
     setSelectedGenre(genre);
     setSelectedSubGenre(null); // 子ジャンル選択をリセット
     setCurrentPage(1); // ジャンル変更時はページを1にリセット
+    
+    // モバイルサイズの場合のみアコーディオンを閉じる
+    if (window.innerWidth <= 768) {
+      setIsGenreSelectorExpanded(false);
+    }
     
     // ジャンル変更時にページトップにスクロール
     window.scrollTo({
@@ -236,6 +259,11 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
   // 子ジャンル展開/折りたたみ切り替え
   const toggleSubGenres = () => {
     setIsSubGenresExpanded(!isSubGenresExpanded);
+  };
+
+  // ジャンル選択展開/折りたたみ切り替え
+  const toggleGenreSelector = () => {
+    setIsGenreSelectorExpanded(!isGenreSelectorExpanded);
   };
 
   // ページ変更
@@ -282,27 +310,46 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
 
         {/* ジャンル選択 */}
         <div className="genre-selector">
-          <h3>
-            <Category fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
-            ジャンルを選択
-          </h3>
-          {genresLoading ? (
-            <div className="loading-container">
-              <div className="loading-spinner"></div>
-              <p>ジャンル情報を読み込み中...</p>
+          <div className="genre-selector-header" onClick={toggleGenreSelector}>
+            <h3>
+              <Category fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              ジャンルを選択
+              {selectedGenre && (
+                <span className="selected-genre">
+                  （現在選択: {selectedGenre.name}）
+                </span>
+              )}
+            </h3>
+            <div className="expand-icon">
+              {isGenreSelectorExpanded ? (
+                <ExpandLess fontSize="small" />
+              ) : (
+                <ExpandMore fontSize="small" />
+              )}
             </div>
-          ) : (
-            <div className="genre-buttons">
-              {availableGenres.map((genre) => (
-                <button
-                  key={genre.id}
-                  className={`genre-button ${selectedGenre && selectedGenre.id === genre.id ? 'active' : ''}`}
-                  onClick={() => handleGenreChange(genre)}
-                >
-                  {genre.name}
-                </button>
-              ))}
-            </div>
+          </div>
+          
+          {isGenreSelectorExpanded && (
+            <>
+              {genresLoading ? (
+                <div className="loading-container">
+                  <div className="loading-spinner"></div>
+                  <p>ジャンル情報を読み込み中...</p>
+                </div>
+              ) : (
+                <div className="genre-buttons">
+                  {availableGenres.map((genre) => (
+                    <button
+                      key={genre.id}
+                      className={`genre-button ${selectedGenre && selectedGenre.id === genre.id ? 'active' : ''}`}
+                      onClick={() => handleGenreChange(genre)}
+                    >
+                      {genre.name}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </>
           )}
         </div>
 

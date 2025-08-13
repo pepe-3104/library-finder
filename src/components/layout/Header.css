@@ -194,6 +194,28 @@
   }
 }
 
+/* モバイル最適化 - ナビゲーションテキスト非表示 (560px以下) */
+@media (max-width: 560px) {
+  /* 距離フィルタ以外のナビゲーションテキストを非表示 */
+  .nav-link .nav-text {
+    display: none;
+  }
+  
+  .nav-link {
+    padding: 0.4rem;
+    min-width: 40px;
+    justify-content: center;
+  }
+  
+  .nav-link .nav-icon {
+    font-size: 1.2rem !important;
+  }
+  
+  .header-nav ul {
+    gap: 0.5rem;
+  }
+}
+
 /* 小画面専用最適化 (430px) */
 @media (max-width: 430px) {
   .header-container {
