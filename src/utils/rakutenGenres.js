@@ -43,7 +43,7 @@ export const getBookGenres = async (booksGenreId = '001') => {
     
     return genres;
 
-  } catch (error) {
+  } catch {
     return [];
   }
 };

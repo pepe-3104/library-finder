@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Whatshot, AutoStories, Category, ExpandMore, ExpandLess } from '@mui/icons-material';
-import { getPopularBooksByGenre, getBookGenres, getSubGenres, getGenreHierarchy, POPULAR_GENRES, isRakutenGenreAPIAvailable } from '../utils/rakutenGenres';
+import { getPopularBooksByGenre, getBookGenres, getSubGenres, isRakutenGenreAPIAvailable } from '../utils/rakutenGenres';
 import { searchLibraryBooks } from '../utils/calilApi';
 
 // カーリルAPIキー（環境変数から取得）
@@ -126,7 +126,7 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
       // カーリルAPIで蔵書検索（順次更新対応）
       await searchLibraryBooks(isbn, systemIds, handleProgressUpdate);
 
-    } catch (err) {
+    } catch {
       // エラー時は読み込み状態をリセット
       setBooks(prevBooks => {
         const newBooks = [...prevBooks];
@@ -149,7 +149,7 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
       setShowSubGenres(subGenresData.length > 0);
       setIsSubGenresExpanded(false); // 新しいジャンル選択時は子ジャンルを折りたたむ
       
-    } catch (error) {
+    } catch {
       setSubGenres([]);
       setShowSubGenres(false);
     }
@@ -180,7 +180,7 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
       });
       setCurrentPage(page);
       
-    } catch (err) {
+    } catch {
       setError('人気本の取得に失敗しました');
     } finally {
       setLoading(false);
@@ -210,7 +210,7 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
       } else {
         setError('ジャンル情報の取得に失敗しました');
       }
-    } catch (err) {
+    } catch {
       setError('ジャンル情報の取得に失敗しました');
     } finally {
       setGenresLoading(false);

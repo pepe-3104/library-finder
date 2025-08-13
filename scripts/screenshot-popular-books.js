@@ -1,5 +1,4 @@
 import puppeteer from 'puppeteer';
-import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
 
@@ -33,7 +32,7 @@ const screenshotPopularBooksPage = async () => {
     
     // スクリーンショット保存
     const timestamp = generateTimestamp();
-    const filename = `popular-books-final-2025-08-13T08-27-15.png`;
+    const filename = `popular-books-final-${timestamp}.png`;
     const screenshotPath = path.join(__dirname, '..', 'screenshots', filename);
     
     await page.screenshot({
