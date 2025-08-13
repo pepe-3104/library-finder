@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Whatshot, AutoStories, Category } from '@mui/icons-material';
 import { getPopularBooksByGenre, getBookGenres, POPULAR_GENRES, isRakutenGenreAPIAvailable } from '../utils/rakutenGenres';
-import { searchLibraryBooks, isCalilAPIAvailable } from '../utils/calilApi';
+import { searchLibraryBooks } from '../utils/calilApi';
 
 // カーリルAPIキー（環境変数から取得）
 const CALIL_API_KEY = import.meta.env.VITE_CALIL_API_KEY;
@@ -17,7 +17,7 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
   const [error, setError] = useState(null);
   const [totalCount, setTotalCount] = useState(0);
   const [pageInfo, setPageInfo] = useState(null);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [_currentPage, setCurrentPage] = useState(1);
 
   // ページング設定
   const ITEMS_PER_PAGE = 20;
