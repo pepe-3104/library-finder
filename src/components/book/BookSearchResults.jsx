@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useMemo } from "react";
 import {
   LibraryBooks,
   Business,
@@ -19,10 +19,14 @@ import {
   Phone,
 } from "@mui/icons-material";
 import { CircularProgress, Box, Typography } from "@mui/material";
+import Pagination from "../common/Pagination";
 import "./BookSearchResults.css";
 
 // 最大表示距離（km）
 const MAX_DISPLAY_DISTANCE = 10;
+
+// ページネーション設定
+const ITEMS_PER_PAGE = 10;
 
 // Haversine公式による距離計算関数（km単位）
 const calculateDistance = (lat1, lon1, lat2, lon2) => {
@@ -48,6 +52,9 @@ const BookSearchResults = ({
   onLoadLibraryData,
   userLocation,
   libraries,
+  totalCount,
+  pageInfo,
+  onPageChange,
 }) => {
   if (loading) {
     return (
@@ -123,7 +130,8 @@ const BookSearchResults = ({
           蔵書検索結果
         </h3>
         <p className="results-info">
-          "{searchQuery}" の検索結果: {results.length}冊
+          "{searchQuery}" の検索結果: 総数{totalCount || 0}冊中 {results.length}冊表示中
+          {pageInfo && ` (ページ ${pageInfo.page}/${pageInfo.pageCount || Math.ceil((totalCount || 0) / ITEMS_PER_PAGE)})`}
         </p>
       </div>
 
@@ -138,6 +146,18 @@ const BookSearchResults = ({
           />
         ))}
       </div>
+
+      {/* ページネーション（ISBN検索以外で複数ページがある場合のみ表示） */}
+      {searchType !== 'isbn' && totalCount > ITEMS_PER_PAGE && pageInfo && (
+        <Pagination
+          currentPage={pageInfo.page}
+          totalItems={totalCount}
+          itemsPerPage={ITEMS_PER_PAGE}
+          onPageChange={onPageChange}
+          showFirstLast={true}
+          showInfo={true}
+        />
+      )}
     </div>
   );
 };

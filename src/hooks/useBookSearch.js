@@ -1,6 +1,6 @@
 import { useState, useCallback } from 'react';
 import { searchISBNsByTitle, getBookInfoFromISBN, getAvailableTitles } from '../utils/openBD';
-import { searchBooksByTitle, searchBooksByAuthor, extractValidISBNs, isRakutenAPIAvailable, searchBookByISBN } from '../utils/rakutenBooks';
+import { searchBooksByTitle, searchBooksByAuthor, extractValidISBNs, isRakutenAPIAvailable, searchBookByISBN, searchBooksWithPaging } from '../utils/rakutenBooks';
 
 // カーリルAPIのアプリケーションキー（環境変数から取得）
 const CALIL_API_KEY = import.meta.env.VITE_CALIL_API_KEY;
@@ -11,6 +11,11 @@ export const useBookSearch = () => {
   const [error, setError] = useState(null);
   const [currentSession, setCurrentSession] = useState(null);
   const [cachedSystemIds, setCachedSystemIds] = useState([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [pageInfo, setPageInfo] = useState(null);
+  const [currentQuery, setCurrentQuery] = useState('');
+  const [currentSearchType, setCurrentSearchType] = useState('');
+  const [lastSearchedQuery, setLastSearchedQuery] = useState(''); // 最後に検索されたキーワード
 
   // 図書館システムIDからシステム名を取得するマッピング
   const getSystemName = (systemId) => {
@@ -30,27 +35,30 @@ export const useBookSearch = () => {
     return isbn.replace(/[-\s]/g, '');
   };
 
-  // キーワード検索の実装（楽天Books API統合版）
-  const searchByTitle = async (keyword, systemIds, searchType = 'title') => {
-    console.log(`🔍 ${searchType === 'title' ? 'タイトル' : '著者'}検索開始:`, keyword);
+  // キーワード検索の実装（楽天Books API統合版・ページング対応）
+  const searchByTitle = async (keyword, systemIds, searchType = 'title', page = 1) => {
+    console.log(`🔍 ${searchType === 'title' ? 'タイトル' : '著者'}検索開始:`, keyword, `ページ${page}`);
     
     try {
       let searchResults = [];
       
-      // 1. 楽天Books APIが利用可能な場合はAPIを使用
+      // 1. 楽天Books APIが利用可能な場合はページング付きで検索
       if (isRakutenAPIAvailable()) {
         console.log(`📚 楽天Books APIで${searchType === 'title' ? 'タイトル' : '著者'}検索中...`);
         
         try {
-          const rakutenBooks = searchType === 'title' 
-            ? await searchBooksByTitle(keyword, 15)
-            : await searchBooksByAuthor(keyword, 15);
+          // 指定されたページのみ取得（10件ずつ）
+          const rakutenResult = await searchBooksWithPaging(keyword, searchType, page, 10);
           
-          if (rakutenBooks.length > 0) {
-            console.log(`🎯 楽天Books APIで ${rakutenBooks.length} 件の書籍が見つかりました`);
+          if (rakutenResult.books.length > 0) {
+            console.log(`🎯 楽天Books APIで ${rakutenResult.books.length} 件の書籍が見つかりました（総数: ${rakutenResult.totalCount}件）`);
+            
+            // ページ情報を保存
+            setTotalCount(rakutenResult.totalCount);
+            setPageInfo(rakutenResult.pageInfo);
             
             // 複数の書籍の蔵書検索を並行実行
-            const validISBNs = extractValidISBNs(rakutenBooks);
+            const validISBNs = extractValidISBNs(rakutenResult.books);
             
             if (validISBNs.length === 0) {
               throw new Error('検索結果からISBNを取得できませんでした。');
@@ -60,7 +68,7 @@ export const useBookSearch = () => {
             
             // 楽天Books APIの結果をすべて表示用に変換（蔵書情報なし）
             const bookResults = validISBNs.map(isbn => {
-              const rakutenBook = rakutenBooks.find(book => {
+              const rakutenBook = rakutenResult.books.find(book => {
                 const normalizedIsbn = normalizeISBN(isbn);
                 const normalizedBookIsbn = normalizeISBN(book.isbn || '');
                 const normalizedBookIsbn13 = normalizeISBN(book.isbn13 || '');
@@ -366,8 +374,8 @@ export const useBookSearch = () => {
     return results;
   };
 
-  // メイン検索関数
-  const searchBooks = useCallback(async (query, searchType, systemIds) => {
+  // メイン検索関数（ページング対応）
+  const searchBooks = useCallback(async (query, searchType, systemIds, page = 1) => {
     if (!query.trim() || !systemIds || systemIds.length === 0) {
       setError('検索条件が正しくありません');
       return;
@@ -377,9 +385,12 @@ export const useBookSearch = () => {
     setError(null);
     setResults([]);
     setCurrentSession(null);
+    setCurrentQuery(query);
+    setCurrentSearchType(searchType);
+    setLastSearchedQuery(query); // 検索実行時にキーワードを保存
 
     try {
-      console.log('📚 蔵書検索開始:', { query, searchType, systemIds });
+      console.log('📚 蔵書検索開始:', { query, searchType, systemIds, page });
 
       let searchResults = [];
       
@@ -418,9 +429,19 @@ export const useBookSearch = () => {
         // システムIDをキャッシュ（個別読み込み用）
         setCachedSystemIds(systemIds);
         
+        // ISBN検索の場合はページング情報をクリア（1件のみの結果なので）
+        setTotalCount(1);
+        setPageInfo({
+          page: 1,
+          pageCount: 1,
+          hits: 1,
+          first: 1,
+          last: 1
+        });
+        
       } else {
-        // タイトル・著者検索は複数結果を返す可能性がある
-        const titleResults = await searchByTitle(query, systemIds, searchType);
+        // タイトル・著者検索は複数結果を返す可能性がある（ページング対応）
+        const titleResults = await searchByTitle(query, systemIds, searchType, page);
         searchResults = Array.isArray(titleResults) ? titleResults : [titleResults];
       }
 
@@ -473,12 +494,12 @@ export const useBookSearch = () => {
       if (libraryDataArray && libraryDataArray.length > 0) {
         const libraryData = libraryDataArray[0];
         
-        // 結果を更新
+        // 結果を更新（既存の書籍情報を保持してマージ）
         setResults(prevResults => {
           const newResults = [...prevResults];
           newResults[bookIndex] = { 
-            ...book, 
-            ...libraryData, 
+            ...book, // 既存の書籍情報（画像、著者、出版社等）を保持
+            systems: libraryData.systems || {}, // 蔵書情報のみ更新
             isLibraryDataLoaded: true, 
             isLibraryDataLoading: false 
           };
@@ -522,12 +543,27 @@ export const useBookSearch = () => {
     }
   }, [results, cachedSystemIds]);
 
+  // ページ切り替え検索
+  const searchBooksPage = useCallback(async (page) => {
+    if (!currentQuery || !currentSearchType || !cachedSystemIds.length) {
+      setError('検索状態が不正です');
+      return;
+    }
+    
+    await searchBooks(currentQuery, currentSearchType, cachedSystemIds, page);
+  }, [currentQuery, currentSearchType, cachedSystemIds, searchBooks]);
+
   // 検索結果クリア
   const clearResults = useCallback(() => {
     setResults([]);
     setError(null);
     setCurrentSession(null);
     setCachedSystemIds([]);
+    setTotalCount(0);
+    setPageInfo(null);
+    setCurrentQuery('');
+    setCurrentSearchType('');
+    setLastSearchedQuery('');
   }, []);
 
   return {
@@ -535,8 +571,12 @@ export const useBookSearch = () => {
     loading,
     error,
     searchBooks,
+    searchBooksPage,
     clearResults,
     currentSession,
-    loadLibraryDataForBook
+    loadLibraryDataForBook,
+    totalCount,
+    pageInfo,
+    lastSearchedQuery
   };
 };

@@ -102,7 +102,7 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
       <div className="library-list-header">
         <h4>
           <LocationOn fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
-          近隣の図書館 ({libraries.length}件)
+          近隣の図書館 ({libraries.length}件表示中)
         </h4>
         <p>距離の近い順に表示しています</p>
       </div>

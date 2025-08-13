@@ -9,7 +9,7 @@ const BookSearch = ({ libraries = [], userLocation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchType, setSearchType] = useState('title'); // 'title' or 'isbn'
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const { results, loading, error, searchBooks, loadLibraryDataForBook, clearResults } = useBookSearch();
+  const { results, loading, error, searchBooks, searchBooksPage, loadLibraryDataForBook, clearResults, totalCount, pageInfo, lastSearchedQuery } = useBookSearch();
   
   const suggestions = [];
 
@@ -42,6 +42,14 @@ const BookSearch = ({ libraries = [], userLocation }) => {
   const handleInputFocus = () => {
     if (searchType === 'title' && searchQuery.length >= 2) {
       setShowSuggestions(true);
+    }
+  };
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      // Enterキーでフォーカスを外す
+      e.target.blur();
     }
   };
 
@@ -79,6 +87,7 @@ const BookSearch = ({ libraries = [], userLocation }) => {
                 onChange={handleQueryChange}
                 onFocus={handleInputFocus}
                 onBlur={handleInputBlur}
+                onKeyDown={handleKeyDown}
                 placeholder={
                   searchType === 'isbn' 
                     ? 'ISBN (例: 9784334926946)' 
@@ -188,11 +197,14 @@ const BookSearch = ({ libraries = [], userLocation }) => {
       <BookSearchResults 
         results={results} 
         loading={loading}
-        searchQuery={searchQuery}
+        searchQuery={lastSearchedQuery || searchQuery} // 検索済みキーワードを優先表示
         searchType={searchType}
         onLoadLibraryData={loadLibraryDataForBook}
+        onPageChange={searchBooksPage}
         userLocation={userLocation}
         libraries={libraries}
+        totalCount={totalCount}
+        pageInfo={pageInfo}
       />
     </div>
   );

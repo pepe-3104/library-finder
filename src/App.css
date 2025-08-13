@@ -78,10 +78,46 @@ body {
   background-color: #f8f9fa;
   color: #333;
   line-height: 1.6;
+  /* iPhone 12対応のビューポート設定 */
+  -webkit-text-size-adjust: 100%;
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
 }
 
 #root {
   min-height: 100vh;
+  min-height: 100dvh; /* 動的ビューポートサポート */
+}
+
+/* 小画面専用最適化 */
+@media (max-width: 430px) {
+  body {
+    font-size: 16px; /* iOS Safariのズーム防止 */
+  }
+  
+  /* 安全領域を考慮したパディング */
+  #root {
+    padding: env(safe-area-inset-top, 0) 
+             env(safe-area-inset-right, 0) 
+             env(safe-area-inset-bottom, 0) 
+             env(safe-area-inset-left, 0);
+  }
+}
+
+/* タッチデバイス最適化 */
+@media (hover: none) and (pointer: coarse) {
+  /* タッチターゲット最小サイズ確保 */
+  button, 
+  .nav-link, 
+  .library-item, 
+  .book-result-item,
+  .distance-filter-btn {
+    min-height: 44px;
+    min-width: 44px;
+  }
 }
 
 /* 検索状態表示 */

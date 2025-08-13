@@ -4,9 +4,11 @@
 /**
  * 楽天Books APIでタイトル検索
  * @param {string} title - 検索タイトルキーワード
- * @returns {Promise<Object[]>} 書籍情報配列
+ * @param {number} hits - 1ページあたりの取得件数（デフォルト: 10）
+ * @param {number} page - ページ番号（1から開始、デフォルト: 1）
+ * @returns {Promise<{books: Object[], totalCount: number, pageInfo: Object}>} 書籍情報とページング情報
  */
-export const searchBooksByTitle = async (title) => {
+export const searchBooksByTitle = async (title, hits = 10, page = 1) => {
   try {
     // 楽天APIのアプリケーションID（環境変数から取得）
     const appId = import.meta.env.VITE_RAKUTEN_API_KEY;
@@ -15,11 +17,13 @@ export const searchBooksByTitle = async (title) => {
       throw new Error('楽天APIキーが設定されていません。.envファイルにVITE_RAKUTEN_API_KEYを追加してください。');
     }
 
-    // APIエンドポイント - 楽天Books API の必須パラメータのみ
+    // APIエンドポイント - 楽天Books API の必須パラメータ + ページング
     const params = new URLSearchParams({
       format: 'json',
       title: title,
-      applicationId: appId
+      applicationId: appId,
+      hits: hits, // 指定された件数
+      page: page
     });
     
     const apiUrl = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?${params.toString()}`;
@@ -43,7 +47,17 @@ export const searchBooksByTitle = async (title) => {
     }
 
     if (!data.Items || data.Items.length === 0) {
-      return [];
+      return {
+        books: [],
+        totalCount: data.count || 0,
+        pageInfo: {
+          page: data.page || page,
+          pageCount: data.pageCount || 0,
+          hits: data.hits || hits,
+          first: data.first || 1,
+          last: data.last || 1
+        }
+      };
     }
 
     // レスポンスデータを統一形式に変換
@@ -78,8 +92,19 @@ export const searchBooksByTitle = async (title) => {
       };
     });
 
-    console.log(`📖 楽天Books API結果: ${books.length}件の書籍が見つかりました`);
-    return books;
+    console.log(`📖 楽天Books API結果: ${books.length}件の書籍が見つかりました（総数: ${data.count}件）`);
+    
+    return {
+      books,
+      totalCount: data.count || 0,
+      pageInfo: {
+        page: data.page || page,
+        pageCount: data.pageCount || 0,
+        hits: data.hits || hits,
+        first: data.first || 1,
+        last: data.last || Math.ceil((data.count || 0) / hits)
+      }
+    };
 
   } catch (error) {
     console.error('❌ 楽天Books API エラー:', error);
@@ -90,9 +115,11 @@ export const searchBooksByTitle = async (title) => {
 /**
  * 楽天Books APIで著者検索
  * @param {string} author - 検索著者名
- * @returns {Promise<Object[]>} 書籍情報配列
+ * @param {number} hits - 1ページあたりの取得件数（デフォルト: 10）
+ * @param {number} page - ページ番号（1から開始、デフォルト: 1）
+ * @returns {Promise<{books: Object[], totalCount: number, pageInfo: Object}>} 書籍情報とページング情報
  */
-export const searchBooksByAuthor = async (author) => {
+export const searchBooksByAuthor = async (author, hits = 10, page = 1) => {
   try {
     // 楽天APIのアプリケーションID（環境変数から取得）
     const appId = import.meta.env.VITE_RAKUTEN_API_KEY;
@@ -101,11 +128,13 @@ export const searchBooksByAuthor = async (author) => {
       throw new Error('楽天APIキーが設定されていません。.envファイルにVITE_RAKUTEN_API_KEYを追加してください。');
     }
 
-    // APIエンドポイント - 楽天Books API の著者検索パラメータ
+    // APIエンドポイント - 楽天Books API の著者検索パラメータ + ページング
     const params = new URLSearchParams({
       format: 'json',
       author: author,
-      applicationId: appId
+      applicationId: appId,
+      hits: hits, // 指定された件数
+      page: page
     });
     
     const apiUrl = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?${params.toString()}`;
@@ -129,7 +158,17 @@ export const searchBooksByAuthor = async (author) => {
     }
 
     if (!data.Items || data.Items.length === 0) {
-      return [];
+      return {
+        books: [],
+        totalCount: data.count || 0,
+        pageInfo: {
+          page: data.page || page,
+          pageCount: data.pageCount || 0,
+          hits: data.hits || hits,
+          first: data.first || 1,
+          last: data.last || 1
+        }
+      };
     }
 
     // レスポンスデータを統一形式に変換
@@ -158,8 +197,19 @@ export const searchBooksByAuthor = async (author) => {
       };
     });
 
-    console.log(`👨‍💼 楽天Books API 著者検索結果: ${books.length}件の書籍が見つかりました`);
-    return books;
+    console.log(`👨‍💼 楽天Books API 著者検索結果: ${books.length}件の書籍が見つかりました（総数: ${data.count}件）`);
+    
+    return {
+      books,
+      totalCount: data.count || 0,
+      pageInfo: {
+        page: data.page || page,
+        pageCount: data.pageCount || 0,
+        hits: data.hits || hits,
+        first: data.first || 1,
+        last: data.last || Math.ceil((data.count || 0) / hits)
+      }
+    };
 
   } catch (error) {
     console.error('❌ 楽天Books API 著者検索エラー:', error);
@@ -280,6 +330,31 @@ export const extractValidISBNs = (books) => {
   const uniqueIsbns = [...new Set(isbns)]; // 重複除去
   console.log(`📚 有効なISBN抽出結果: ${uniqueIsbns.length}件`, uniqueIsbns);
   return uniqueIsbns;
+};
+
+/**
+ * 楽天Books APIの統一検索関数（ページング対応）
+ * @param {string} query - 検索クエリ
+ * @param {string} searchType - 検索タイプ（'title' または 'author'）
+ * @param {number} page - ページ番号（デフォルト: 1）
+ * @param {number} hits - 1ページあたりの件数（デフォルト: 10）
+ * @returns {Promise<{books: Object[], totalCount: number, pageInfo: Object}>} 書籍情報とページング情報
+ */
+export const searchBooksWithPaging = async (query, searchType, page = 1, hits = 10) => {
+  console.log(`📚 楽天Books API ${searchType}検索: "${query}" ページ${page}, ${hits}件ずつ`);
+  
+  try {
+    if (searchType === 'title') {
+      return await searchBooksByTitle(query, hits, page);
+    } else if (searchType === 'author') {
+      return await searchBooksByAuthor(query, hits, page);
+    } else {
+      throw new Error(`未対応の検索タイプ: ${searchType}`);
+    }
+  } catch (error) {
+    console.error(`❌ 楽天Books API検索エラー:`, error);
+    throw error;
+  }
 };
 
 /**

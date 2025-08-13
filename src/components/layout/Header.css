@@ -13,9 +13,9 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
-  display: grid;
-  grid-template-columns: 1fr 2fr 1fr;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
 }
 
@@ -31,31 +31,41 @@
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 1rem;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
+  display: flex;
   align-items: center;
+  justify-content: space-between;
   gap: 1rem;
 }
 
 .nav-left {
-  justify-self: start;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
 }
 
 .nav-right {
-  justify-self: end;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
 }
 
 .header-left {
-  justify-self: start;
+  flex: 1;
+  display: flex;
+  justify-content: flex-start;
 }
 
 .header-brand {
-  justify-self: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
   text-align: center;
 }
 
 .header-right {
-  justify-self: end;
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
 }
 
 .brand-link {
@@ -69,7 +79,10 @@
 }
 
 .header-nav {
-  text-align: center;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .header-brand h1 {
@@ -90,8 +103,8 @@
   margin: 0;
   padding: 0;
   display: flex;
-  justify-content: center;
-  gap: 2.5rem;
+  align-items: center;
+  gap: 1.5rem;
 }
 
 .nav-link {
@@ -106,6 +119,11 @@
   align-items: center;
   gap: 0.5rem;
   border: 2px solid transparent;
+}
+
+/* デスクトップではテキスト表示 */
+.nav-text {
+  display: inline;
 }
 
 .nav-link:hover {
@@ -126,7 +144,6 @@
 /* レスポンシブデザイン */
 @media (max-width: 768px) {
   .header-container {
-    grid-template-columns: auto 1fr auto;
     gap: 0.75rem;
     padding: 0 0.75rem;
   }
@@ -141,6 +158,7 @@
   
   .nav-container {
     padding: 0 0.75rem;
+    gap: 0.75rem;
   }
   
   .header-brand h1 {
@@ -152,30 +170,60 @@
   }
   
   .header-nav ul {
-    gap: 1.5rem;
+    gap: 1rem;
   }
   
   .nav-link {
-    font-size: 0.9rem;
-    padding: 0.5rem 1rem;
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  .distance-filter-btn-nav {
+    font-size: 0.85rem;
+    padding: 0.4rem 0.8rem;
+  }
+  
+  /* タブレットでもテキスト表示 */
+  .nav-text {
+    display: inline;
   }
 }
 
-@media (max-width: 480px) {
+/* 小画面専用最適化 (430px) */
+@media (max-width: 430px) {
   .header-container {
-    grid-template-columns: 1fr;
-    grid-template-rows: auto auto;
-    text-align: center;
-    gap: 0.75rem;
+    gap: 0.5rem;
+    padding: 0 0.5rem;
+    justify-content: center;
   }
   
-  .header-left,
+  .header-left {
+    order: 1;
+  }
+  
   .header-brand {
-    justify-self: center;
+    order: 2;
+    flex: none;
+    text-align: center;
+    padding-left: 0;
   }
   
   .header-right {
-    display: none;
+    order: 3;
+  }
+  
+  .header-brand h1 {
+    font-size: 1.2rem;
+    margin-bottom: 0.125rem;
+  }
+  
+  .header-brand p {
+    font-size: 0.7rem;
+    opacity: 0.8;
+  }
+  
+  .header-right {
+    display: flex; /* iPhone 12でも表示するが中身は空 */
   }
   
   .header-top {
@@ -183,17 +231,134 @@
   }
   
   .header-nav-section {
-    padding: 0.4rem 0;
+    padding: 0.5rem 0;
+  }
+  
+  .nav-container {
+    padding: 0 0.5rem;
+    gap: 0.5rem;
+    justify-content: space-between;
+  }
+  
+  .nav-left {
+    flex: 0 0 auto;
+  }
+  
+  .nav-right {
+    flex: 0 0 auto;
+    display: flex;
+  }
+  
+  .header-nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
   }
   
   .header-nav ul {
-    gap: 1rem;
-    flex-wrap: wrap;
+    gap: 0.25rem;
+    flex-wrap: nowrap;
+    align-items: center;
   }
   
   .nav-link {
-    font-size: 0.85rem;
-    padding: 0.4rem 0.8rem;
+    font-size: 0.7rem;
+    padding: 0.4rem;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 44px; /* タッチターゲット確保 */
+    justify-content: center;
+  }
+  
+  .distance-filter-btn-nav {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.7rem;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    min-width: 44px; /* タッチターゲット確保 */
+    justify-content: center;
+  }
+  
+  .distance-filter-btn-nav .filter-label {
+    margin-left: 0.1rem;
+    font-size: 0.7rem;
+  }
+  
+  /* 小画面でテキストを非表示 */
+  .nav-text {
+    display: none;
+  }
+  
+  .nav-icon {
+    font-size: 1.2rem !important;
+  }
+}
+
+/* 極小サイズ対応 */
+@media (max-width: 350px) {
+  .header-container {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 0.5rem;
+  }
+  
+  .header-left,
+  .header-brand {
+    justify-self: center;
+  }
+  
+  .header-brand {
+    text-align: center;
+    padding-left: 0;
+  }
+  
+  .header-brand h1 {
+    font-size: 1.1rem;
+  }
+  
+  .header-brand p {
+    font-size: 0.65rem;
+  }
+  
+  .nav-container {
+    justify-content: space-between;
+    text-align: center;
+  }
+  
+  .nav-left {
+    flex: 0 0 auto;
+  }
+  
+  .nav-right {
+    flex: 0 0 auto;
+    display: flex;
+  }
+  
+  .header-nav {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+  }
+  
+  .header-nav ul {
+    justify-content: center;
+  }
+  
+  .nav-link {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+  }
+  
+  .distance-filter-btn-nav {
+    font-size: 0.75rem;
+    padding: 0.35rem 0.6rem;
+  }
+  
+  /* 極小画面では距離表示も非表示 */
+  .distance-filter-btn-nav .filter-label {
+    display: none;
   }
 }
 

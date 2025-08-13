@@ -90,7 +90,7 @@ const Header = ({
                   className={`nav-link ${location.pathname === '/' ? 'active' : ''}`}
                 >
                   <LibraryBooks className="nav-icon" fontSize="small" />
-                  図書館検索
+                  <span className="nav-text">図書館検索</span>
                 </Link>
               </li>
               <li>
@@ -99,7 +99,7 @@ const Header = ({
                   className={`nav-link ${location.pathname === '/map' ? 'active' : ''}`}
                 >
                   <Map className="nav-icon" fontSize="small" />
-                  地図で見る
+                  <span className="nav-text">地図で見る</span>
                 </Link>
               </li>
               <li>
@@ -108,7 +108,7 @@ const Header = ({
                   className={`nav-link ${location.pathname === '/books' ? 'active' : ''}`}
                 >
                   <Search className="nav-icon" fontSize="small" />
-                  蔵書検索
+                  <span className="nav-text">蔵書検索</span>
                 </Link>
               </li>
             </ul>

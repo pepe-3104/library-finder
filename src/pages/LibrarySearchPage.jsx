@@ -1,8 +1,34 @@
-import React from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import LibraryList from '../components/library/LibraryList';
+import Pagination from '../components/common/Pagination';
 import { LocationOn, Assessment } from '@mui/icons-material';
 
+const ITEMS_PER_PAGE = 10;
+
 const LibrarySearchPage = ({ libraries, onLibrarySelect }) => {
+  const [currentPage, setCurrentPage] = useState(1);
+  
+  // 図書館データが変更されたら1ページ目に戻る
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [libraries]);
+  
+  // 現在のページに表示する図書館データを計算
+  const paginatedLibraries = useMemo(() => {
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = startIndex + ITEMS_PER_PAGE;
+    return libraries.slice(startIndex, endIndex);
+  }, [libraries, currentPage]);
+  
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    // ページ変更時にページトップまでスムーズにスクロール
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
   return (
     <div className="page-container">
       <div className="library-search-page-content">
@@ -23,11 +49,23 @@ const LibrarySearchPage = ({ libraries, onLibrarySelect }) => {
         </div>
         
         <LibraryList 
-          libraries={libraries}
+          libraries={paginatedLibraries}
           loading={false}
           error={null}
           onLibrarySelect={onLibrarySelect}
         />
+        
+        {/* ページング表示 */}
+        {libraries.length > 0 && (
+          <Pagination
+            currentPage={currentPage}
+            totalItems={libraries.length}
+            itemsPerPage={ITEMS_PER_PAGE}
+            onPageChange={handlePageChange}
+            showFirstLast={true}
+            showInfo={true}
+          />
+        )}
       </div>
     </div>
   );

@@ -36,7 +36,7 @@
   padding-bottom: 0.5rem;
 }
 
-/* レスポンシブ対応 */
+/* レスポンシブ対応 - タブレット */
 @media (max-width: 768px) {
   .main-content {
     padding: 1rem 0.5rem;
@@ -53,5 +53,65 @@
   
   .section-title {
     font-size: 1.1rem;
+  }
+}
+
+/* 小画面専用最適化 (430px) */
+@media (max-width: 430px) {
+  .main-content {
+    padding: 0.75rem 0.5rem;
+    margin-bottom: env(safe-area-inset-bottom, 0);
+  }
+  
+  .content-grid {
+    gap: 0.75rem;
+    min-height: auto;
+  }
+  
+  .content-section {
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+  }
+  
+  .section-title {
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: 0.25rem;
+  }
+  
+  /* ページ固有コンテナ */
+  .page-container {
+    min-height: calc(100vh - 140px); /* ヘッダー高さを考慮 */
+  }
+  
+  .library-search-page-content,
+  .book-search-page-content,
+  .map-page-content {
+    padding: 0;
+  }
+  
+  .page-description {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  
+  .page-description p {
+    margin: 0.5rem 0;
+  }
+}
+
+/* 極小画面サイズ対応 */
+@media (max-width: 320px) {
+  .main-content {
+    padding: 0.5rem 0.25rem;
+  }
+  
+  .content-section {
+    padding: 0.5rem;
+  }
+  
+  .section-title {
+    font-size: 0.95rem;
   }
 }

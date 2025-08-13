@@ -6,7 +6,7 @@ import { fileURLToPath } from 'url';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-async function takeAllPagesScreenshots() {
+async function takeMobileScreenshots() {
   const screenshotDir = path.join(__dirname, '..', 'screenshots');
   
   // ディレクトリ作成
@@ -17,19 +17,27 @@ async function takeAllPagesScreenshots() {
   const browser = await puppeteer.launch();
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
   
-  // 各ページのURLと名前
+  // 各ページのURLと名前（BrowserRouterのルート）
   const pages = [
-    { url: 'http://localhost:5174/', name: 'library-search', title: '図書館検索ページ' },
-    { url: 'http://localhost:5174/map', name: 'map-page', title: '地図表示ページ' },
-    { url: 'http://localhost:5174/books', name: 'book-search', title: '蔵書検索ページ' }
+    { url: 'http://localhost:5174/', name: 'library-search', title: '図書館検索ページ (Mobile)' },
+    { url: 'http://localhost:5174/map', name: 'map-page', title: '地図表示ページ (Mobile)' },
+    { url: 'http://localhost:5174/books', name: 'book-search', title: '蔵書検索ページ (Mobile)' }
   ];
 
   try {
     for (const pageInfo of pages) {
-      console.log(`\n📸 ${pageInfo.title}のスクリーンショット撮影中...`);
+      console.log(`\n📱 ${pageInfo.title}のスクリーンショット撮影中...`);
       
       const page = await browser.newPage();
-      await page.setViewport({ width: 1280, height: 800 });
+      
+      // iPhone 12のViewport設定
+      await page.setViewport({
+        width: 390,
+        height: 844,
+        deviceScaleFactor: 3,
+        isMobile: true,
+        hasTouch: true
+      });
       
       try {
         await page.goto(pageInfo.url, {
@@ -40,7 +48,7 @@ async function takeAllPagesScreenshots() {
         // ページコンテンツの完全ロードを待機
         await page.waitForSelector('main', { timeout: 10000 });
         
-        // モックデータ設定（全ページ共通）
+        // モックデータ設定（全ページ共通 - 15件で確実にページング表示）
         await page.evaluate((pageData) => {
           const mockLibraries = [
             {
@@ -231,7 +239,7 @@ async function takeAllPagesScreenshots() {
             accuracy: 10
           };
 
-          console.log(`📸 ${pageData.title}用モックデータ設定中...`);
+          console.log(`📱 ${pageData.title}用モックデータ設定中...`);
           
           const event = new CustomEvent('mockDataForScreenshot', {
             detail: { userLocation: mockUserLocation, libraries: mockLibraries }
@@ -248,10 +256,10 @@ async function takeAllPagesScreenshots() {
           await page.waitForSelector('.book-search-container', { timeout: 10000 });
         }
         
-        // レンダリング待機
-        await new Promise(resolve => setTimeout(resolve, 5000));
+        // レンダリング待機（モバイルはより長く待機）
+        await new Promise(resolve => setTimeout(resolve, 7000));
         
-        const filename = `${pageInfo.name}-${timestamp}.png`;
+        const filename = `${pageInfo.name}-mobile-${timestamp}.png`;
         const filepath = path.join(screenshotDir, filename);
         
         await page.screenshot({
@@ -275,4 +283,4 @@ async function takeAllPagesScreenshots() {
   }
 }
 
-takeAllPagesScreenshots();
+takeMobileScreenshots();
