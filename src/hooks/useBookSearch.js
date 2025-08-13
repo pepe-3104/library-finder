@@ -381,6 +381,14 @@ export const useBookSearch = () => {
       return;
     }
 
+    // 新しい検索の場合（page = 1）のみページトップにスクロール
+    if (page === 1) {
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+
     setLoading(true);
     setError(null);
     setResults([]);
@@ -549,6 +557,12 @@ export const useBookSearch = () => {
       setError('検索状態が不正です');
       return;
     }
+    
+    // ページ切り替え時にページトップにスクロール
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
     
     await searchBooks(currentQuery, currentSearchType, cachedSystemIds, page);
   }, [currentQuery, currentSearchType, cachedSystemIds, searchBooks]);

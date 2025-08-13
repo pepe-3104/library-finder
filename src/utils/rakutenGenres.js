@@ -197,6 +197,56 @@ export const POPULAR_GENRES = [
 ];
 
 /**
+ * 子ジャンルを取得する関数
+ * @param {string} parentGenreId - 親ジャンルID
+ * @returns {Promise<Object[]>} 子ジャンル情報配列
+ */
+export const getSubGenres = async (parentGenreId) => {
+  console.log(`🔍 子ジャンル取得開始: 親ジャンルID=${parentGenreId}`);
+  
+  try {
+    const subGenres = await getBookGenres(parentGenreId);
+    console.log(`✅ 子ジャンル取得完了: ${subGenres.length}件`, subGenres);
+    return subGenres;
+  } catch (error) {
+    console.error(`❌ 子ジャンル取得エラー (親ID: ${parentGenreId}):`, error);
+    return [];
+  }
+};
+
+/**
+ * ジャンル階層情報を取得する関数
+ * @param {string} genreId - ジャンルID
+ * @returns {Promise<{genre: Object, subGenres: Object[]}>} ジャンルと子ジャンルの情報
+ */
+export const getGenreHierarchy = async (genreId) => {
+  console.log(`🌳 ジャンル階層取得開始: ${genreId}`);
+  
+  try {
+    // 現在のジャンル情報を取得
+    const currentGenre = POPULAR_GENRES.find(g => g.id === genreId) || {
+      id: genreId,
+      name: `ジャンル (${genreId})`
+    };
+    
+    // 子ジャンルを取得
+    const subGenres = await getSubGenres(genreId);
+    
+    return {
+      genre: currentGenre,
+      subGenres: subGenres
+    };
+    
+  } catch (error) {
+    console.error(`❌ ジャンル階層取得エラー (${genreId}):`, error);
+    return {
+      genre: null,
+      subGenres: []
+    };
+  }
+};
+
+/**
  * 楽天Books APIの利用可能性をチェック
  * @returns {boolean} 利用可能かどうか
  */

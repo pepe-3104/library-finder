@@ -7,7 +7,7 @@
 2025-08-11
 
 ## 最終更新日
-2025-08-13 14:03
+2025-08-13 17:27
 
 ## 技術スタック
 - **フロントエンド**: React (Vite)
@@ -357,6 +357,98 @@
 - ポップアップベース距離フィルタ完全実装
 - 旧DistanceFilter.jsx、DistanceFilter.css削除
 - LocationStatus、Header、Layout、App.jsxの統合更新
+
+---
+
+## 2025-08-13 最新セッション - 人気の本機能とアコーディオンUI実装
+
+### 人気の本機能の完全実装
+#### 完了したタスク
+1. **楽天Books Genre API統合**
+   - `rakutenGenres.js` - 新しいユーティリティ作成
+   - `getPopularBooksByGenre()` - 売れ筋順での書籍取得
+   - `getSubGenres()` - 子ジャンル階層取得機能
+   - `POPULAR_GENRES` - 主要12ジャンルの定数定義
+
+2. **PopularBooksPageの実装**
+   - `PopularBooksPage.jsx` - 人気の本専用ページ
+   - ジャンル選択UI（12カテゴリのグリッド表示）
+   - BookSearchResultsコンポーネントとの完全統合
+   - ページング対応（20件ずつ、最大100件制限）
+
+3. **子ジャンル機能（アコーディオン式）**
+   - 楽天Genre APIから子ジャンル動的取得
+   - アコーディオンUI（展開/折りたたみ）
+   - Material-UI ExpandMore/ExpandLessアイコン使用
+   - 選択中の子ジャンル表示機能
+   - **サブジャンル選択時の自動折りたたみ**
+
+4. **ヘッダーナビゲーション拡張**
+   - 4つ目のナビゲーション項目「売れ筋の本」追加
+   - Whatshot アイコン使用
+   - レスポンシブ対応（4項目対応の調整）
+
+### プロダクト名変更
+#### 実装内容
+- **「Library Finder」→「としょみる」** へ改名
+- `package.json` - プロジェクト名更新
+- `index.html` - タイトル変更
+- `Header.jsx` - ブランド名更新
+- `README.md`、`CLAUDE.md` - ドキュメント更新
+
+### UX改善項目
+#### ページング関連
+1. **真のサーバーサイドページング**
+   - 楽天Books API の response.count活用
+   - 10件ずつ動的取得（従来の30件から変更）
+   - ページ切り替え時のAPI再取得
+
+2. **スクロール最適化**
+   - ページ/ジャンル変更時の自動ページトップスクロール
+   - smooth scrollingアニメーション
+
+3. **検索キーワード固定表示**
+   - `lastSearchedQuery` 状態管理
+   - テキストボックス編集中もキーワード表示維持
+
+#### バグ修正
+1. **ISBN検索ページング非表示**
+   - `searchType !== 'isbn'` 条件追加
+   - ISBN検索結果でのページング誤表示解決
+
+2. **データ保持改善**
+   - 蔵書情報読み込み時の既存データ保持
+   - 画像・著者・出版社情報の維持
+
+3. **Enter キー処理**
+   - タイトル検索でのフォーカス解除機能
+   - `e.target.blur()` 実装
+
+### 技術的詳細
+#### アコーディオンUI実装
+```css
+.sub-genre-selector {
+  background: #f8f9fa;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.sub-genre-header {
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+```
+
+#### 状態管理の改善
+- `isSubGenresExpanded` - アコーディオン展開状態
+- `selectedSubGenre` - 選択中の子ジャンル
+- ジャンル変更時の子ジャンル自動折りたたみ
+- サブジャンル選択時の自動折りたたみ追加
 
 ---
 

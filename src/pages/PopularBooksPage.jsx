@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Whatshot, AutoStories, Category } from '@mui/icons-material';
-import { getPopularBooksByGenre, getBookGenres, POPULAR_GENRES, isRakutenGenreAPIAvailable } from '../utils/rakutenGenres';
+import { Whatshot, AutoStories, Category, ExpandMore, ExpandLess } from '@mui/icons-material';
+import { getPopularBooksByGenre, getBookGenres, getSubGenres, getGenreHierarchy, POPULAR_GENRES, isRakutenGenreAPIAvailable } from '../utils/rakutenGenres';
 import { searchLibraryBooks } from '../utils/calilApi';
 
 // カーリルAPIキー（環境変数から取得）
@@ -11,6 +11,10 @@ import './PopularBooksPage.css';
 const PopularBooksPage = ({ libraries = [], userLocation }) => {
   const [availableGenres, setAvailableGenres] = useState([]);
   const [selectedGenre, setSelectedGenre] = useState(null);
+  const [subGenres, setSubGenres] = useState([]);
+  const [selectedSubGenre, setSelectedSubGenre] = useState(null);
+  const [showSubGenres, setShowSubGenres] = useState(false);
+  const [isSubGenresExpanded, setIsSubGenresExpanded] = useState(false);
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(false);
   const [genresLoading, setGenresLoading] = useState(true);
@@ -84,6 +88,34 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
         newBooks[bookIndex] = { ...book, isLibraryDataLoading: false };
         return newBooks;
       });
+    }
+  };
+
+  // 子ジャンルを取得する関数
+  const loadSubGenres = async (parentGenreId) => {
+    if (!isRakutenGenreAPIAvailable()) {
+      console.warn('楽天Books APIが利用できません');
+      return;
+    }
+
+    try {
+      console.log(`🔍 子ジャンル取得中: 親ジャンル=${parentGenreId}`);
+      const subGenresData = await getSubGenres(parentGenreId);
+      
+      setSubGenres(subGenresData);
+      setShowSubGenres(subGenresData.length > 0);
+      setIsSubGenresExpanded(false); // 新しいジャンル選択時は子ジャンルを折りたたむ
+      
+      if (subGenresData.length > 0) {
+        console.log(`✅ ${subGenresData.length}件の子ジャンルを取得`);
+      } else {
+        console.log('📭 子ジャンルが見つかりませんでした');
+      }
+      
+    } catch (error) {
+      console.error('❌ 子ジャンル取得エラー:', error);
+      setSubGenres([]);
+      setShowSubGenres(false);
     }
   };
 
@@ -163,20 +195,58 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
   // 選択ジャンル変更時: 書籍取得
   useEffect(() => {
     if (selectedGenre) {
-      loadPopularBooks(selectedGenre.id);
+      // 子ジャンルが選択されている場合は子ジャンルで検索、そうでなければメインジャンルで検索
+      const targetGenreId = selectedSubGenre ? selectedSubGenre.id : selectedGenre.id;
+      loadPopularBooks(targetGenreId);
     }
-  }, [selectedGenre]);
+  }, [selectedGenre, selectedSubGenre]);
 
-  // ジャンル変更
-  const handleGenreChange = (genre) => {
+  // メインジャンル変更
+  const handleGenreChange = async (genre) => {
     setSelectedGenre(genre);
+    setSelectedSubGenre(null); // 子ジャンル選択をリセット
     setCurrentPage(1); // ジャンル変更時はページを1にリセット
+    
+    // ジャンル変更時にページトップにスクロール
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+    
+    // 子ジャンルの取得を開始
+    await loadSubGenres(genre.id);
+  };
+
+  // 子ジャンル変更
+  const handleSubGenreChange = (subGenre) => {
+    setSelectedSubGenre(subGenre);
+    setCurrentPage(1); // 子ジャンル変更時もページを1にリセット
+    setIsSubGenresExpanded(false); // サブジャンル選択時にアコーディオンを折りたたむ
+    
+    // 子ジャンル変更時にページトップにスクロール
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  };
+
+  // 子ジャンル展開/折りたたみ切り替え
+  const toggleSubGenres = () => {
+    setIsSubGenresExpanded(!isSubGenresExpanded);
   };
 
   // ページ変更
   const handlePageChange = (page) => {
     if (selectedGenre) {
-      loadPopularBooks(selectedGenre.id, page);
+      const targetGenreId = selectedSubGenre ? selectedSubGenre.id : selectedGenre.id;
+      
+      // ページ切り替え時にページトップにスクロール
+      window.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+      
+      loadPopularBooks(targetGenreId, page);
     }
   };
 
@@ -197,7 +267,12 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
           {totalCount > 0 && selectedGenre && (
             <p>
               <AutoStories fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
-              「{selectedGenre.name}」ジャンルの人気本: <strong>{totalCount.toLocaleString()}</strong> 冊
+              「{selectedSubGenre ? selectedSubGenre.name : selectedGenre.name}」ジャンルの人気本: <strong>{totalCount.toLocaleString()}</strong> 冊
+              {selectedSubGenre && (
+                <span style={{ fontSize: '0.9em', color: '#666', marginLeft: '8px' }}>
+                  ({selectedGenre.name} &gt; {selectedSubGenre.name})
+                </span>
+              )}
             </p>
           )}
         </div>
@@ -227,6 +302,50 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
             </div>
           )}
         </div>
+
+        {/* 子ジャンル選択（アコーディオン式） */}
+        {showSubGenres && subGenres.length > 0 && (
+          <div className="sub-genre-selector">
+            <div className="sub-genre-header" onClick={toggleSubGenres}>
+              <h4>
+                <Category fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+                {selectedGenre.name}の詳細カテゴリ
+                {selectedSubGenre && (
+                  <span className="selected-sub-genre">
+                    （現在選択: {selectedSubGenre.name}）
+                  </span>
+                )}
+              </h4>
+              <div className="expand-icon">
+                {isSubGenresExpanded ? (
+                  <ExpandLess fontSize="small" />
+                ) : (
+                  <ExpandMore fontSize="small" />
+                )}
+              </div>
+            </div>
+            
+            {isSubGenresExpanded && (
+              <div className="sub-genre-buttons">
+                <button
+                  className={`sub-genre-button ${!selectedSubGenre ? 'active' : ''}`}
+                  onClick={() => handleSubGenreChange(null)}
+                >
+                  すべて
+                </button>
+                {subGenres.map((subGenre) => (
+                  <button
+                    key={subGenre.id}
+                    className={`sub-genre-button ${selectedSubGenre && selectedSubGenre.id === subGenre.id ? 'active' : ''}`}
+                    onClick={() => handleSubGenreChange(subGenre)}
+                  >
+                    {subGenre.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* エラー表示 */}
         {error && (
