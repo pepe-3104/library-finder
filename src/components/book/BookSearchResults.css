@@ -86,6 +86,31 @@
   position: relative; /* ランキングバッジの配置のため */
 }
 
+/* 未来日（発売前）の本用のスタイル */
+.book-result-item.future-release {
+  background-color: #f5f5f5;
+  opacity: 0.8;
+  border: 1px solid #ccc;
+}
+
+.book-result-item.future-release .book-title {
+  color: #666;
+}
+
+.book-result-item.future-release .book-image {
+  filter: grayscale(30%);
+}
+
+.future-release-notice {
+  display: flex;
+  align-items: center;
+  margin-top: 8px;
+  padding: 6px 8px;
+  background-color: #f9f9f9;
+  border-radius: 4px;
+  border-left: 3px solid #ccc;
+}
+
 /* ランキングバッジスタイル */
 .rank-badge {
   position: absolute;

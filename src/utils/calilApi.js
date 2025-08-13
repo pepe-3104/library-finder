@@ -13,12 +13,13 @@ export const normalizeISBN = (isbn) => {
 };
 
 /**
- * カーリルAPIで蔵書検索
+ * カーリルAPIで蔵書検索（順次更新対応）
  * @param {string} isbn - 検索するISBN
  * @param {string[]} systemIds - 検索対象の図書館システムID配列
+ * @param {Function} onProgressUpdate - 進捗更新コールバック関数
  * @returns {Promise<{isbn: string, systems: Object, title: string}>} 蔵書検索結果
  */
-export const searchLibraryBooks = async (isbn, systemIds) => {
+export const searchLibraryBooks = async (isbn, systemIds, onProgressUpdate = null) => {
   if (!CALIL_API_KEY) {
     throw new Error('カーリルAPIキーが設定されていません');
   }
@@ -31,14 +32,12 @@ export const searchLibraryBooks = async (isbn, systemIds) => {
   const systemIdParam = systemIds.join(',');
   
   const apiUrl = `https://api.calil.jp/check?appkey=${CALIL_API_KEY}&isbn=${normalizedISBN}&systemid=${systemIdParam}&format=json&callback=?`;
-  
-  console.log('🔍 カーリル蔵書検索API呼び出し:', apiUrl);
 
-  // タイムアウト処理（10秒）
+  // タイムアウト処理（30秒）
   const timeoutPromise = new Promise((_, reject) => {
     setTimeout(() => {
-      reject(new Error('蔵書検索がタイムアウトしました（10秒）'));
-    }, 10000);
+      reject(new Error('蔵書検索がタイムアウトしました（30秒）'));
+    }, 30000);
   });
 
   const searchPromise = new Promise((resolve, reject) => {
@@ -47,11 +46,31 @@ export const searchLibraryBooks = async (isbn, systemIds) => {
     window[callbackName] = (data) => {
       delete window[callbackName];
       
+      // 進捗更新コールバックがある場合、取得できた図書館情報を即座に通知
+      if (onProgressUpdate && data.books && data.books[normalizedISBN]) {
+        const currentSystems = data.books[normalizedISBN];
+        const systemKeys = Object.keys(currentSystems);
+        
+        console.log('カーリルAPI進捗更新 (初回):', {
+          isbn: normalizedISBN,
+          systemCount: systemKeys.length,
+          continue: data.continue,
+          systemKeys: systemKeys
+        });
+        
+        onProgressUpdate({
+          isbn: normalizedISBN,
+          systems: currentSystems,
+          title: isbn,
+          isComplete: data.continue !== 1
+        });
+      }
+      
       if (data.continue === 1) {
         // 継続検索が必要な場合
         setTimeout(() => {
-          pollForResults(data.session, isbn, systemIds, data.books, resolve, reject);
-        }, 500);
+          pollForResults(data.session, isbn, systemIds, data.books, resolve, reject, onProgressUpdate, normalizedISBN, 1);
+        }, 1000); // 間隔を500msから1000msに延長
       } else {
         // 検索完了
         resolve({
@@ -89,8 +108,25 @@ export const searchLibraryBooks = async (isbn, systemIds) => {
  * @param {Object} currentResults - 現在の結果
  * @param {Function} resolve - Promise resolve
  * @param {Function} reject - Promise reject
+ * @param {Function} onProgressUpdate - 進捗更新コールバック関数
+ * @param {string} normalizedISBN - 正規化されたISBN
+ * @param {number} pollCount - ポーリング回数
  */
-const pollForResults = async (sessionId, isbn, systemIds, currentResults, resolve, reject) => {
+const pollForResults = async (sessionId, isbn, systemIds, currentResults, resolve, reject, onProgressUpdate = null, normalizedISBN = null, pollCount = 0) => {
+  // 最大ポーリング回数制限（30回まで）
+  const MAX_POLL_COUNT = 30;
+  
+  if (pollCount >= MAX_POLL_COUNT) {
+    console.warn('カーリルAPIポーリング回数上限に達しました。現在の結果で完了します。');
+    const finalNormalizedISBN = normalizedISBN || normalizeISBN(isbn);
+    resolve({
+      isbn: finalNormalizedISBN,
+      systems: currentResults?.[finalNormalizedISBN] || {},
+      title: isbn
+    });
+    return;
+  }
+  
   const pollUrl = `https://api.calil.jp/check?appkey=${CALIL_API_KEY}&session=${sessionId}&format=json&callback=?`;
   
   const callbackName = `calil_poll_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
@@ -98,17 +134,39 @@ const pollForResults = async (sessionId, isbn, systemIds, currentResults, resolv
   window[callbackName] = (data) => {
     delete window[callbackName];
     
+    // 進捗更新コールバックがある場合、取得できた図書館情報を即座に通知
+    if (onProgressUpdate && data.books && normalizedISBN && data.books[normalizedISBN]) {
+      const currentSystems = data.books[normalizedISBN];
+      const systemKeys = Object.keys(currentSystems);
+      
+      console.log('カーリルAPIポーリング進捗更新:', {
+        isbn: normalizedISBN,
+        systemCount: systemKeys.length,
+        continue: data.continue,
+        systemKeys: systemKeys,
+        pollCount: pollCount + 1,
+        maxPollCount: MAX_POLL_COUNT
+      });
+      
+      onProgressUpdate({
+        isbn: normalizedISBN,
+        systems: currentSystems,
+        title: isbn,
+        isComplete: data.continue !== 1
+      });
+    }
+    
     if (data.continue === 1) {
       // まだ継続が必要
       setTimeout(() => {
-        pollForResults(sessionId, isbn, systemIds, data.books, resolve, reject);
-      }, 500);
+        pollForResults(sessionId, isbn, systemIds, data.books, resolve, reject, onProgressUpdate, normalizedISBN, pollCount + 1);
+      }, 1000); // 間隔を500msから1000msに延長
     } else {
       // 検索完了
-      const normalizedISBN = normalizeISBN(isbn);
+      const finalNormalizedISBN = normalizedISBN || normalizeISBN(isbn);
       resolve({
-        isbn: normalizedISBN,
-        systems: data.books?.[normalizedISBN] || {},
+        isbn: finalNormalizedISBN,
+        systems: data.books?.[finalNormalizedISBN] || {},
         title: isbn
       });
     }

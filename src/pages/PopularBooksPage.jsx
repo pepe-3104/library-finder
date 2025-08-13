@@ -25,32 +25,40 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
   const [_currentPage, setCurrentPage] = useState(1);
 
   // ページング設定
-  const ITEMS_PER_PAGE = 20;
+  const ITEMS_PER_PAGE = 10;
   const MAX_TOTAL_ITEMS = 100;
 
 
-  // 蔵書情報読み込み機能を実装
+  // 蔵書情報読み込み機能を実装（順次更新対応）
   const loadLibraryDataForBook = async (isbn) => {
     if (!libraries.length) {
-      console.warn('図書館情報がありません');
       return;
     }
 
     if (!CALIL_API_KEY) {
-      console.warn('カーリルAPIキーが設定されていません');
       return;
     }
-
-    console.log(`📚 人気の本 ISBN ${isbn} の蔵書情報読み込み開始`);
     
     // 該当する書籍を取得
     const bookIndex = books.findIndex(book => book.isbn === isbn);
     if (bookIndex === -1) {
-      console.error('書籍が見つかりません');
       return;
     }
 
     const book = books[bookIndex];
+    
+    console.log('蔵書情報読み込み開始:', {
+      isbn,
+      currentSystemsCount: Object.keys(book.systems || {}).length,
+      isLoaded: book.isLibraryDataLoaded,
+      isLoading: book.isLibraryDataLoading
+    });
+
+    // 既に読み込み済みまたは読み込み中の場合はスキップ
+    if (book.isLibraryDataLoaded || book.isLibraryDataLoading) {
+      console.log('蔵書情報は既に読み込み済みまたは読み込み中です');
+      return;
+    }
     
     // 書籍の読み込み状態を更新
     setBooks(prevBooks => {
@@ -62,27 +70,63 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
     try {
       // 図書館システムIDを取得
       const systemIds = [...new Set(libraries.map(lib => lib.systemid))];
-      console.log(`🏛️ 検索対象図書館システム: ${systemIds.length}件`);
 
-      // カーリルAPIで一括蔵書検索
-      const libraryData = await searchLibraryBooks(isbn, systemIds);
-      
-      // 書籍情報を更新（既存の情報を保持）
-      setBooks(prevBooks => {
-        const newBooks = [...prevBooks];
-        newBooks[bookIndex] = { 
-          ...book, // 既存の書籍情報（画像、著者、出版社等）を保持
-          systems: libraryData.systems || {}, // 蔵書情報のみ更新
-          isLibraryDataLoaded: true, 
-          isLibraryDataLoading: false 
-        };
-        return newBooks;
-      });
+      // ポーリングカウンターをリセット
+      window._pollCount = 0;
 
-      console.log(`✅ ISBN ${isbn} の蔵書情報読み込み完了`);
+      // 進捗更新コールバック関数
+      const handleProgressUpdate = (progressData) => {
+        setBooks(prevBooks => {
+          const newBooks = [...prevBooks];
+          const currentBook = newBooks[bookIndex];
+          
+          // 既存のsystems情報と新しい情報をマージ
+          const mergedSystems = {
+            ...(currentBook.systems || {}),
+            ...(progressData.systems || {})
+          };
+          
+          // 進捗情報を追加（何館中何館検索済みかを表示するため）
+          const totalLibraries = systemIds.length;
+          const completedLibraries = Object.keys(mergedSystems).length;
+          const currentCompletedLibraries = Object.keys(currentBook.systems || {}).length;
+          
+          // 実際に新しい図書館の情報が追加された場合のみ更新
+          if (completedLibraries > currentCompletedLibraries || progressData.isComplete !== currentBook.isLibraryDataLoaded) {
+            console.log('蔵書情報更新:', {
+              before: currentCompletedLibraries,
+              after: completedLibraries,
+              isComplete: progressData.isComplete
+            });
+            
+            newBooks[bookIndex] = {
+              ...currentBook,
+              systems: mergedSystems,
+              isLibraryDataLoading: !progressData.isComplete,
+              isLibraryDataLoaded: progressData.isComplete,
+              // 進捗情報を追加
+              librarySearchProgress: {
+                total: totalLibraries,
+                completed: completedLibraries,
+                isComplete: progressData.isComplete
+              }
+            };
+            
+            return newBooks;
+          } else {
+            console.log('蔵書情報更新スキップ（変更なし）:', {
+              completed: completedLibraries,
+              isComplete: progressData.isComplete
+            });
+            return prevBooks; // 変更なしの場合は元のstateを返す
+          }
+        });
+      };
+
+      // カーリルAPIで蔵書検索（順次更新対応）
+      await searchLibraryBooks(isbn, systemIds, handleProgressUpdate);
+
     } catch (err) {
-      console.error('❌ 蔵書情報読み込みエラー:', err);
-      
       // エラー時は読み込み状態をリセット
       setBooks(prevBooks => {
         const newBooks = [...prevBooks];
@@ -95,26 +139,17 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
   // 子ジャンルを取得する関数
   const loadSubGenres = async (parentGenreId) => {
     if (!isRakutenGenreAPIAvailable()) {
-      console.warn('楽天Books APIが利用できません');
       return;
     }
 
     try {
-      console.log(`🔍 子ジャンル取得中: 親ジャンル=${parentGenreId}`);
       const subGenresData = await getSubGenres(parentGenreId);
       
       setSubGenres(subGenresData);
       setShowSubGenres(subGenresData.length > 0);
       setIsSubGenresExpanded(false); // 新しいジャンル選択時は子ジャンルを折りたたむ
       
-      if (subGenresData.length > 0) {
-        console.log(`✅ ${subGenresData.length}件の子ジャンルを取得`);
-      } else {
-        console.log('📭 子ジャンルが見つかりませんでした');
-      }
-      
     } catch (error) {
-      console.error('❌ 子ジャンル取得エラー:', error);
       setSubGenres([]);
       setShowSubGenres(false);
     }
@@ -131,7 +166,6 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
     setError(null);
     
     try {
-      console.log(`🔥 ジャンル「${selectedGenre?.name || genreId}」の人気本を取得中... (ページ${page})`);
       const result = await getPopularBooksByGenre(genreId, ITEMS_PER_PAGE, page);
       
       // 最大100件制限を適用
@@ -146,9 +180,7 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
       });
       setCurrentPage(page);
       
-      console.log(`✅ ${result.books.length}件の人気本を取得しました (総数: ${limitedTotalCount}件, ページ${page})`);
     } catch (err) {
-      console.error('❌ 人気本取得エラー:', err);
       setError('人気本の取得に失敗しました');
     } finally {
       setLoading(false);
@@ -164,7 +196,6 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
     }
 
     try {
-      console.log('📂 楽天Books APIからジャンル情報を取得中...');
       const genres = await getBookGenres('001');
       
       if (genres.length > 0) {
@@ -176,12 +207,10 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
         
         setAvailableGenres(popularGenres.length > 0 ? popularGenres : genres.slice(0, 12));
         setSelectedGenre(popularGenres[0] || genres[0]);
-        console.log('✅ ジャンル情報取得完了:', popularGenres.length || genres.length, '件');
       } else {
         setError('ジャンル情報の取得に失敗しました');
       }
     } catch (err) {
-      console.error('❌ ジャンル取得エラー:', err);
       setError('ジャンル情報の取得に失敗しました');
     } finally {
       setGenresLoading(false);

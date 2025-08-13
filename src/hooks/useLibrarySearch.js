@@ -65,16 +65,10 @@ export const useLibrarySearch = () => {
             .sort((a, b) => (a.distance || 0) - (b.distance || 0));
 
           setLibraries(formattedLibraries);
-          console.log(
-            `📚 ${maxDistance}km以内で${formattedLibraries.length}件の図書館が見つかりました:`,
-            formattedLibraries
-          );
         } else {
           setLibraries([]);
-          console.log("🔍 該当する図書館が見つかりませんでした");
         }
       } catch (err) {
-        console.error("図書館検索エラー:", err);
         setError(err.message || "図書館の検索中にエラーが発生しました。");
         setLibraries([]);
       } finally {
