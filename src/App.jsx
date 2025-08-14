@@ -11,10 +11,6 @@ import { getDefaultCategoryFilter, filterLibrariesByCategory } from './utils/lib
 import './App.css';
 import './pages/Pages.css';
 
-// 開発環境でのみコンソールテスト機能を読み込み
-if (import.meta.env.DEV) {
-  import('./utils/consoleTest.js');
-}
 
 function App() {
   const [userLocation, setUserLocation] = useState(null);
@@ -36,7 +32,6 @@ function App() {
   // 位置情報が更新されたら自動的に図書館検索を実行
   useEffect(() => {
     if (location) {
-      console.log('🔍 App: 位置情報取得、図書館検索を開始:', location);
       // 距離フィルタの現在値で検索（デフォルト10km）
       searchNearbyLibraries(location.latitude, location.longitude, maxDistance);
     }
@@ -45,7 +40,6 @@ function App() {
   // 図書館検索結果をallLibrariesに保存し、フィルタリングして表示
   useEffect(() => {
     if (searchedLibraries && searchedLibraries.length > 0) {
-      console.log('📚 App: 図書館検索結果を更新:', searchedLibraries.length, '件');
       setAllLibraries(searchedLibraries);
     }
   }, [searchedLibraries]);
@@ -54,7 +48,6 @@ function App() {
   useEffect(() => {
     if (allLibraries.length > 0) {
       const filteredLibraries = filterLibrariesByCategory(allLibraries, categoryFilter);
-      console.log('🔍 App: カテゴリフィルタ適用:', filteredLibraries.length, '/', allLibraries.length, '件');
       setLibraries(filteredLibraries);
     }
   }, [allLibraries, categoryFilter]);
@@ -67,7 +60,6 @@ function App() {
   // スクリーンショット用モックデータのイベントリスナー
   useEffect(() => {
     const handleMockDataForScreenshot = (event) => {
-      console.log('📸 スクリーンショット用モックデータを適用中...', event.detail);
       setUserLocation(event.detail.userLocation);
       setLibraries(event.detail.libraries);
     };
@@ -94,7 +86,6 @@ function App() {
     setMaxDistance(newDistance);
     // 現在位置がある場合は新しい距離で再検索
     if (userLocation) {
-      console.log(`🔄 距離フィルタ変更: ${newDistance}km で図書館を再検索`);
       searchNearbyLibraries(userLocation.latitude, userLocation.longitude, newDistance);
     }
   };

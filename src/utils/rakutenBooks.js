@@ -34,7 +34,6 @@ export const searchBooksByTitle = async (title, hits = 10, page = 1) => {
     
     const apiUrl = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?${params.toString()}`;
 
-    console.log('📚 楽天Books API呼び出し:', apiUrl);
 
     const response = await fetch(apiUrl);
     const data = await response.json();
@@ -67,14 +66,9 @@ export const searchBooksByTitle = async (title, hits = 10, page = 1) => {
     }
 
     // レスポンスデータを統一形式に変換
-    const books = data.Items.map((item, index) => {
+    const books = data.Items.map((item) => {
       const book = item.Item;
       
-      // デバッグ用：最初の3冊のISBN情報をログ出力
-      if (index < 3) {
-        console.log(`📖 書籍[${index}]: ${book.title}`);
-        console.log(`   isbn: ${book.isbn}, jan: ${book.jan}`);
-      }
       
       return {
         isbn: book.jan || book.isbn, // ISBN-13を優先、なければISBN-10
@@ -98,7 +92,6 @@ export const searchBooksByTitle = async (title, hits = 10, page = 1) => {
       };
     });
 
-    console.log(`📖 楽天Books API結果: ${books.length}件の書籍が見つかりました（総数: ${data.count}件）`);
     
     return {
       books,
@@ -147,7 +140,6 @@ export const searchBooksByAuthor = async (author, hits = 10, page = 1) => {
     
     const apiUrl = `https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404?${params.toString()}`;
 
-    console.log('👨‍💼 楽天Books API 著者検索:', apiUrl);
 
     const response = await fetch(apiUrl);
     const data = await response.json();
@@ -205,7 +197,6 @@ export const searchBooksByAuthor = async (author, hits = 10, page = 1) => {
       };
     });
 
-    console.log(`👨‍💼 楽天Books API 著者検索結果: ${books.length}件の書籍が見つかりました（総数: ${data.count}件）`);
     
     return {
       books,
@@ -235,7 +226,6 @@ export const searchBookByISBN = async (isbn) => {
   }
 
   try {
-    console.log(`🔍 楽天Books API - ISBN検索: ${isbn}`);
     
     const apiUrl = 'https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404';
     const params = new URLSearchParams({
@@ -252,10 +242,8 @@ export const searchBookByISBN = async (isbn) => {
     }
 
     const data = await response.json();
-    console.log('📚 楽天Books API - ISBN検索応答:', data);
 
     if (!data.Items || data.Items.length === 0) {
-      console.log('📭 ISBN検索結果が見つかりませんでした');
       return null;
     }
 
@@ -281,7 +269,6 @@ export const searchBookByISBN = async (isbn) => {
       isbn13: book.jan      // ISBN-13 (JAN/EAN)
     };
 
-    console.log(`✅ 楽天Books API - ISBN検索成功:`, bookInfo);
     return bookInfo;
 
   } catch (error) {
@@ -302,14 +289,12 @@ export const extractValidISBNs = (books) => {
   const isbns = [];
   
   books.forEach(book => {
-    console.log('📖 ISBN抽出対象書籍:', { title: book.title, isbn10: book.isbn10, isbn13: book.isbn13 });
     
     // まずisbn10フィールドをチェック（実際は10桁または13桁の可能性）
     if (book.isbn10) {
       const normalized = normalizeISBN(book.isbn10);
       if (normalized.length === 10 || normalized.length === 13) {
         isbns.push(normalized);
-        console.log(`✅ ISBN追加 (${normalized.length}桁):`, normalized);
         return;
       }
     }
@@ -319,16 +304,13 @@ export const extractValidISBNs = (books) => {
       const normalized = normalizeISBN(book.isbn13);
       if (normalized.length === 10 || normalized.length === 13) {
         isbns.push(normalized);
-        console.log(`✅ ISBN追加 (${normalized.length}桁):`, normalized);
         return;
       }
     }
     
-    console.log('⚠️ 有効なISBNなし:', book.title);
   });
   
   const uniqueIsbns = [...new Set(isbns)]; // 重複除去
-  console.log(`📚 有効なISBN抽出結果: ${uniqueIsbns.length}件`, uniqueIsbns);
   return uniqueIsbns;
 };
 
@@ -341,7 +323,6 @@ export const extractValidISBNs = (books) => {
  * @returns {Promise<{books: Object[], totalCount: number, pageInfo: Object}>} 書籍情報とページング情報
  */
 export const searchBooksWithPaging = async (query, searchType, page = 1, hits = 10) => {
-  console.log(`📚 楽天Books API ${searchType}検索: "${query}" ページ${page}, ${hits}件ずつ`);
   
   try {
     if (searchType === 'title') {

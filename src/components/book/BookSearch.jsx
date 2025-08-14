@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { useBookSearch } from '../../hooks/useBookSearch';
+import { useBookSearchRefactored as useBookSearch } from '../../hooks/book-search';
 import BookSearchResults from './BookSearchResults';
 import { Search, MenuBook, Business, Error, Close } from '@mui/icons-material';
 import { CircularProgress } from '@mui/material';
@@ -59,7 +59,6 @@ const BookSearch = ({ libraries = [], userLocation }) => {
     
     // フォーカスが外れた時点で自動検索
     if (searchQuery.trim() && libraries.length > 0) {
-      console.log('🔍 フォーカスアウト時の自動検索開始:', { searchQuery, searchType });
       
       // 図書館システムIDを抽出
       let systemIds = libraries.map(lib => lib.systemid).filter(Boolean);

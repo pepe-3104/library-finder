@@ -35,11 +35,56 @@ const { searchByISBN } = useISBNSearch(); // 必要な機能のみ使用
 const LibrarySearchService = () => { /* 具体実装ではなく抽象的なAPIに依存 */ };
 ```
 
+### **DRY原則（Don't Repeat Yourself）の実装**
+```javascript
+// ✅ Before: 重複していたコード（80行削除）
+// src/hooks/useBookSearch.js（592行）内で重複
+const normalizeISBN1 = (isbn) => isbn.replace(/[-\s]/g, ''); // 重複1
+const normalizeISBN2 = (isbn) => isbn.replace(/[-\s]/g, ''); // 重複2
+const normalizeISBN3 = (isbn) => isbn.replace(/[-\s]/g, ''); // 重複3
+
+// ✅ After: 共通ユーティリティに統合
+// src/utils/common.js
+export const normalizeISBN = (isbn) => {
+  if (!isbn) return '';
+  return isbn.replace(/[-\s]/g, '');
+};
+
+// ✅ DRY実装例: 距離計算の統一
+// Before: 3箇所で同じロジックが重複
+// After: 1つの関数で全体をカバー
+export const calculateDistance = (lat1, lon1, lat2, lon2) => {
+  const R = 6371; // 地球の半径 (km)
+  const dLat = ((lat2 - lat1) * Math.PI) / 180;
+  const dLon = ((lon2 - lon1) * Math.PI) / 180;
+  const a = 
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) *
+    Math.sin(dLon / 2) * Math.sin(dLon / 2);
+  return parseFloat((R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a))).toFixed(2));
+};
+
+// ✅ APIキー管理の統一（重複削除）
+// Before: 各ファイルでAPIキー取得ロジックが重複
+// After: src/config/apiConfig.js で一元管理
+export const getApiKey = {
+  rakuten: () => validateAndGetKey('VITE_RAKUTEN_API_KEY'),
+  calil: () => validateAndGetKey('VITE_CALIL_API_KEY')
+};
+```
+
+### **DRY適用の成果**
+- **削減された重複コード**: 約80行
+- **統一された関数**: normalizeISBN, calculateDistance, makeJsonpRequest, generateCallbackName
+- **一元管理**: APIキー設定、エラーハンドリング、共通設定
+- **メンテナンス性向上**: 1箇所の変更で全体に反映
+
 ### **採用デザインパターン**
 - **Repository Pattern**: データアクセス層の抽象化（APIサービス層）
 - **Strategy Pattern**: 複数API間の切り替え戦略（楽天→OpenBDフォールバック）
 - **Facade Pattern**: 複雑なAPIを統一インターフェースで隠蔽（LibrarySearchService）
 - **Observer Pattern**: 進捗更新の通知システム（カーリル蔵書検索）
+- **DRY Principle**: 重複コード排除による保守性向上
 
 ### **ファイル構成ルール**
 ```

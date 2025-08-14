@@ -13,7 +13,6 @@ export const getBookInfoFromISBN = async (isbn) => {
     const normalizedISBN = normalizeISBN(isbn);
     const apiUrl = `https://api.openbd.jp/v1/get?isbn=${normalizedISBN}`;
     
-    console.log('📖 OpenBD API呼び出し:', apiUrl);
     
     const response = await fetch(apiUrl);
     const data = await response.json();
@@ -48,7 +47,6 @@ export const getBooksInfoFromISBNs = async (isbns) => {
     const normalizedISBNs = isbns.map(isbn => normalizeISBN(isbn));
     const apiUrl = `https://api.openbd.jp/v1/get?isbn=${normalizedISBNs.join(',')}`;
     
-    console.log('📚 OpenBD API 一括呼び出し:', apiUrl);
     
     const response = await fetch(apiUrl);
     const data = await response.json();

@@ -3,7 +3,7 @@
  * 分割された専用フックを組み合わせたクリーンな実装
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 import { useISBNSearch } from './useISBNSearch';
 import { useTitleSearch } from './useTitleSearch';
 import { useLibraryDataLoader } from './useLibraryDataLoader';
@@ -278,12 +278,6 @@ export const useBookSearchRefactored = () => {
   // 統合されたerror状態
   const currentError = error || titleSearch.error || isbnSearch.error;
 
-  // 開発環境でのデバッグ出力
-  useEffect(() => {
-    if (import.meta.env.DEV && results.length > 0) {
-      console.log('📚 Search Results:', getDiagnosticInfo());
-    }
-  }, [results, getDiagnosticInfo]);
 
   return {
     // 基本状態

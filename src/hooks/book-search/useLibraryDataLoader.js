@@ -29,7 +29,6 @@ export const useLibraryDataLoader = () => {
 
     // 既に読み込み中かチェック
     if (loadingBooks.has(isbn)) {
-      console.log(`📚 ISBN ${isbn} は既に読み込み中です`);
       return;
     }
 

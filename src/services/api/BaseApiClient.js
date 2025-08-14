@@ -5,13 +5,14 @@
 
 import { createError, withTimeout } from '../../utils/errors';
 import { makeJsonpRequest } from '../../utils/common';
+import { API_TIMEOUTS, RETRY_CONFIG } from '../../constants';
 
 export class BaseApiClient {
   constructor(config) {
     this.config = {
-      timeout: 15000,
-      retryCount: 3,
-      retryDelay: 1000,
+      timeout: API_TIMEOUTS.DEFAULT,
+      retryCount: RETRY_CONFIG.MAX_RETRIES.DEFAULT,
+      retryDelay: RETRY_CONFIG.RETRY_DELAY.DEFAULT,
       ...config
     };
     this.requestCount = 0;
@@ -110,7 +111,7 @@ export class BaseApiClient {
         }
 
         // リトライ前の待機
-        await this.delay(this.config.retryDelay * Math.pow(2, attempt));
+        await this.delay(this.config.retryDelay * Math.pow(RETRY_CONFIG.RETRY_DELAY.EXPONENTIAL_BASE, attempt));
       }
     }
 

@@ -4,6 +4,7 @@
  */
 
 import { createError } from '../utils/errors';
+import { API_TIMEOUTS, RETRY_CONFIG, LIMITS, CACHE_DURATIONS } from '../constants';
 
 /**
  * APIキー取得結果の型定義
@@ -32,25 +33,25 @@ const API_CONFIGS = {
     name: '楽天Books',
     envKey: 'VITE_RAKUTEN_API_KEY',
     baseUrl: 'https://app.rakuten.co.jp/services/api',
-    timeout: 15000,
-    retryCount: 3,
-    rateLimit: 100
+    timeout: API_TIMEOUTS.RAKUTEN_BOOKS,
+    retryCount: RETRY_CONFIG.MAX_RETRIES.RAKUTEN,
+    rateLimit: LIMITS.RATE_LIMITS.RAKUTEN
   },
   CALIL: {
     name: 'カーリル',
     envKey: 'VITE_CALIL_API_KEY',
     baseUrl: 'https://api.calil.jp',
-    timeout: 30000,
-    retryCount: 2,
-    rateLimit: 60
+    timeout: API_TIMEOUTS.CALIL_SEARCH,
+    retryCount: RETRY_CONFIG.MAX_RETRIES.CALIL,
+    rateLimit: LIMITS.RATE_LIMITS.CALIL
   },
   OPENBD: {
     name: 'openBD',
     envKey: null, // APIキー不要
     baseUrl: 'https://api.openbd.jp',
-    timeout: 10000,
-    retryCount: 3,
-    rateLimit: 100
+    timeout: API_TIMEOUTS.OPENBD,
+    retryCount: RETRY_CONFIG.MAX_RETRIES.OPENBD,
+    rateLimit: LIMITS.RATE_LIMITS.OPENBD
   }
 };
 
@@ -61,7 +62,7 @@ class ApiKeyManager {
   constructor() {
     this._cache = new Map();
     this._lastValidated = new Map();
-    this._validationInterval = 5 * 60 * 1000; // 5分
+    this._validationInterval = CACHE_DURATIONS.API_KEY_VALIDATION;
   }
 
   /**

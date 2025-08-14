@@ -43,7 +43,6 @@ const LibraryList = ({ libraries, loading, error, onRetry, onLibrarySelect }) =>
 
   // 地図表示機能
   const handleShowOnMap = (library) => {
-    console.log('🗺️ 地図で表示:', library);
     // 図書館を選択状態にする
     if (onLibrarySelect) {
       onLibrarySelect(library);

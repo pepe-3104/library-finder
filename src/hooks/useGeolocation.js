@@ -1,5 +1,6 @@
 import { useState, useCallback, useEffect } from 'react';
 import { createError, errorLogger } from '../utils/errors';
+import { API_TIMEOUTS, CACHE_DURATIONS } from '../constants';
 
 /**
  * 位置情報取得用のカスタムフック
@@ -23,8 +24,8 @@ export const useGeolocation = () => {
     // 位置情報取得のオプション
     const options = {
       enableHighAccuracy: true,  // 高精度モード
-      timeout: 10000,           // 10秒でタイムアウト
-      maximumAge: 300000        // 5分間キャッシュを利用
+      timeout: API_TIMEOUTS.GEOLOCATION,
+      maximumAge: CACHE_DURATIONS.GEOLOCATION
     };
 
     navigator.geolocation.getCurrentPosition(
@@ -40,11 +41,6 @@ export const useGeolocation = () => {
         });
         setLoading(false);
         
-        console.log('📍 位置情報取得成功:', {
-          latitude: latitude.toFixed(6),
-          longitude: longitude.toFixed(6),
-          accuracy: `${Math.round(accuracy)}m`
-        });
       },
       
       // エラー時のコールバック

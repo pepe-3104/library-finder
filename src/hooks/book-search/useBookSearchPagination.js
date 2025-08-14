@@ -3,7 +3,7 @@
  * ページネーションの状態管理と操作を提供
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
 export const useBookSearchPagination = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -233,12 +233,6 @@ export const useBookSearchPagination = () => {
     getVisiblePages
   ]);
 
-  // 開発環境でのデバッグ情報出力
-  useEffect(() => {
-    if (import.meta.env.DEV && pageInfo) {
-      console.log('📄 Pagination Info:', getDebugInfo());
-    }
-  }, [pageInfo, currentPage, getDebugInfo]);
 
   return {
     // 状態

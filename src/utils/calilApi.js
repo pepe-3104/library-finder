@@ -49,14 +49,6 @@ export const searchLibraryBooks = async (isbn, systemIds, onProgressUpdate = nul
       // 進捗更新コールバックがある場合、取得できた図書館情報を即座に通知
       if (onProgressUpdate && data.books && data.books[normalizedISBN]) {
         const currentSystems = data.books[normalizedISBN];
-        const systemKeys = Object.keys(currentSystems);
-        
-        console.log('カーリルAPI進捗更新 (初回):', {
-          isbn: normalizedISBN,
-          systemCount: systemKeys.length,
-          continue: data.continue,
-          systemKeys: systemKeys
-        });
         
         onProgressUpdate({
           isbn: normalizedISBN,
@@ -138,16 +130,6 @@ const pollForResults = async (sessionId, isbn, systemIds, currentResults, resolv
     // 進捗更新コールバックがある場合、取得できた図書館情報を即座に通知
     if (onProgressUpdate && data.books && normalizedISBN && data.books[normalizedISBN]) {
       const currentSystems = data.books[normalizedISBN];
-      const systemKeys = Object.keys(currentSystems);
-      
-      console.log('カーリルAPIポーリング進捗更新:', {
-        isbn: normalizedISBN,
-        systemCount: systemKeys.length,
-        continue: data.continue,
-        systemKeys: systemKeys,
-        pollCount: pollCount + 1,
-        maxPollCount: MAX_POLL_COUNT
-      });
       
       onProgressUpdate({
         isbn: normalizedISBN,

@@ -52,16 +52,9 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
 
     const book = books[bookIndex];
     
-    console.log('蔵書情報読み込み開始:', {
-      isbn,
-      currentSystemsCount: Object.keys(book.systems || {}).length,
-      isLoaded: book.isLibraryDataLoaded,
-      isLoading: book.isLibraryDataLoading
-    });
 
     // 既に読み込み済みまたは読み込み中の場合はスキップ
     if (book.isLibraryDataLoaded || book.isLibraryDataLoading) {
-      console.log('蔵書情報は既に読み込み済みまたは読み込み中です');
       return;
     }
     
@@ -98,11 +91,6 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
           
           // 実際に新しい図書館の情報が追加された場合のみ更新
           if (completedLibraries > currentCompletedLibraries || progressData.isComplete !== currentBook.isLibraryDataLoaded) {
-            console.log('蔵書情報更新:', {
-              before: currentCompletedLibraries,
-              after: completedLibraries,
-              isComplete: progressData.isComplete
-            });
             
             newBooks[bookIndex] = {
               ...currentBook,
@@ -119,10 +107,6 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
             
             return newBooks;
           } else {
-            console.log('蔵書情報更新スキップ（変更なし）:', {
-              completed: completedLibraries,
-              isComplete: progressData.isComplete
-            });
             return prevBooks; // 変更なしの場合は元のstateを返す
           }
         });

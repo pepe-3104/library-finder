@@ -3,6 +3,8 @@
  * アプリケーション全体で使用される汎用的な関数を定義
  */
 
+import { API_TIMEOUTS } from '../constants';
+
 /**
  * ISBNを正規化（ハイフンとスペースを除去）
  * @param {string} isbn - ISBN文字列
@@ -51,7 +53,7 @@ export const generateCallbackName = (prefix = 'callback') => {
  * @returns {Promise} JSONPリクエストのPromise
  */
 export const makeJsonpRequest = (url, options = {}) => {
-  const { timeout = 15000, callbackPrefix = 'jsonp_callback' } = options;
+  const { timeout = API_TIMEOUTS.DEFAULT, callbackPrefix = 'jsonp_callback' } = options;
   
   return new Promise((resolve, reject) => {
     const callbackName = generateCallbackName(callbackPrefix);
