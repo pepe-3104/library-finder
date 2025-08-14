@@ -128,6 +128,7 @@ const pollForResults = async (sessionId, isbn, systemIds, currentResults, resolv
     return;
   }
   
+  const CALIL_API_KEY = getCalilApiKey();
   const pollUrl = `https://api.calil.jp/check?appkey=${CALIL_API_KEY}&session=${sessionId}&format=json&callback=?`;
   
   const callbackName = `calil_poll_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
