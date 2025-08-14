@@ -1,4 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
+import { createError, errorLogger } from '../utils/errors';
 
 /**
  * 位置情報取得用のカスタムフック
@@ -48,26 +49,11 @@ export const useGeolocation = () => {
       
       // エラー時のコールバック
       (err) => {
-        let errorMessage = '位置情報の取得に失敗しました';
+        const geoError = createError.geolocation(err.message, err.code);
+        errorLogger.log(geoError, { getCurrentPosition: true });
         
-        switch (err.code) {
-          case err.PERMISSION_DENIED:
-            errorMessage = '位置情報の利用が許可されていません。ブラウザの設定を確認してください。';
-            break;
-          case err.POSITION_UNAVAILABLE:
-            errorMessage = '位置情報を取得できませんでした。GPS信号を確認してください。';
-            break;
-          case err.TIMEOUT:
-            errorMessage = '位置情報の取得がタイムアウトしました。しばらく待ってから再試行してください。';
-            break;
-          default:
-            errorMessage = `位置情報取得エラー: ${err.message}`;
-        }
-        
-        setError(errorMessage);
+        setError(geoError.userMessage);
         setLoading(false);
-        
-        console.error('❌ 位置情報取得エラー:', err);
       },
       
       options

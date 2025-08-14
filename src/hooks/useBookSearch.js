@@ -2,6 +2,7 @@ import { useState, useCallback } from 'react';
 import { searchISBNsByTitle, getBookInfoFromISBN, getAvailableTitles } from '../utils/openBD';
 import { extractValidISBNs, isRakutenAPIAvailable, searchBookByISBN, searchBooksWithPaging } from '../utils/rakutenBooks';
 import { searchLibraryBooks } from '../utils/calilApi';
+import { normalizeISBN, makeJsonpRequest, generateCallbackName } from '../utils/common';
 
 // カーリルAPIのアプリケーションキー（環境変数から取得）
 const CALIL_API_KEY = import.meta.env.VITE_CALIL_API_KEY;
@@ -31,10 +32,7 @@ export const useBookSearch = () => {
     return systemNames[systemId] || systemId;
   };
 
-  // ISBNを正規化（ハイフン除去）
-  const normalizeISBN = (isbn) => {
-    return isbn.replace(/[-\s]/g, '');
-  };
+  // ISBNを正規化（ハイフン除去） - 共通ユーティリティから使用
 
   // キーワード検索の実装（楽天Books API統合版・ページング対応）
   const searchByTitle = async (keyword, systemIds, searchType = 'title', page = 1) => {

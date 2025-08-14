@@ -23,6 +23,7 @@ import {
 } from "@mui/icons-material";
 import { CircularProgress, Box, Typography } from "@mui/material";
 import Pagination from "../common/Pagination";
+import { calculateDistance } from "../../utils/common";
 import "./BookSearchResults.css";
 
 // 最大表示距離（km）
@@ -119,21 +120,7 @@ const getBranchStatusList = (systems, libraries) => {
   return branchStatusList;
 };
 
-// Haversine公式による距離計算関数（km単位）
-const calculateDistance = (lat1, lon1, lat2, lon2) => {
-  const R = 6371; // 地球の半径 (km)
-  const dLat = ((lat2 - lat1) * Math.PI) / 180;
-  const dLon = ((lon2 - lon1) * Math.PI) / 180;
-  const a =
-    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-    Math.cos((lat1 * Math.PI) / 180) *
-      Math.cos((lat2 * Math.PI) / 180) *
-      Math.sin(dLon / 2) *
-      Math.sin(dLon / 2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-  const distance = R * c;
-  return parseFloat(distance.toFixed(2)); // 小数点以下2桁で四捨五入
-};
+// 距離計算関数は共通ユーティリティ（../../utils/common.js）から使用
 
 const BookSearchResults = ({
   results,

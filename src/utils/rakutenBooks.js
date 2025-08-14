@@ -1,6 +1,9 @@
 // 楽天Books API統合ユーティリティ
 // キーワード検索で書籍情報とISBNを取得
 
+import { normalizeISBN } from './common';
+import { createError, handleError, withTimeout } from './errors';
+
 /**
  * 楽天Books APIでタイトル検索
  * @param {string} title - 検索タイトルキーワード
@@ -14,7 +17,7 @@ export const searchBooksByTitle = async (title, hits = 10, page = 1) => {
     const appId = import.meta.env.VITE_RAKUTEN_API_KEY;
     
     if (!appId) {
-      throw new Error('楽天APIキーが設定されていません。.envファイルにVITE_RAKUTEN_API_KEYを追加してください。');
+      throw createError.apiKeyMissing('楽天Books');
     }
 
     // APIエンドポイント - 楽天Books API の必須パラメータ + ページング
@@ -36,14 +39,14 @@ export const searchBooksByTitle = async (title, hits = 10, page = 1) => {
     if (!response.ok) {
       console.error('❌ 楽天API HTTPエラー:', response.status, response.statusText);
       console.error('❌ レスポンスデータ:', data);
-      throw new Error(`楽天API エラー (${response.status}): ${data.error || data.message || response.statusText}`);
+      throw createError.apiRequestFailed('楽天Books', response.status);
     }
 
     // APIエラーレスポンスのチェック
     if (data.error) {
       console.error('❌ 楽天API レスポンスエラー:', data.error);
       console.error('❌ エラー詳細:', data.error_description || 'エラー詳細なし');
-      throw new Error(`楽天API エラー: ${data.error} - ${data.error_description || 'パラメータを確認してください'}`);
+      throw createError.apiRequestFailed('楽天Books', 400, new Error(data.error));
     }
 
     if (!data.Items || data.Items.length === 0) {
@@ -125,7 +128,7 @@ export const searchBooksByAuthor = async (author, hits = 10, page = 1) => {
     const appId = import.meta.env.VITE_RAKUTEN_API_KEY;
     
     if (!appId) {
-      throw new Error('楽天APIキーが設定されていません。.envファイルにVITE_RAKUTEN_API_KEYを追加してください。');
+      throw createError.apiKeyMissing('楽天Books');
     }
 
     // APIエンドポイント - 楽天Books API の著者検索パラメータ + ページング
@@ -147,14 +150,14 @@ export const searchBooksByAuthor = async (author, hits = 10, page = 1) => {
     if (!response.ok) {
       console.error('❌ 楽天API HTTPエラー:', response.status, response.statusText);
       console.error('❌ レスポンスデータ:', data);
-      throw new Error(`楽天API エラー (${response.status}): ${data.error || data.message || response.statusText}`);
+      throw createError.apiRequestFailed('楽天Books', response.status);
     }
 
     // APIエラーレスポンスのチェック
     if (data.error) {
       console.error('❌ 楽天API レスポンスエラー:', data.error);
       console.error('❌ エラー詳細:', data.error_description || 'エラー詳細なし');
-      throw new Error(`楽天API エラー: ${data.error} - ${data.error_description || 'パラメータを確認してください'}`);
+      throw createError.apiRequestFailed('楽天Books', 400, new Error(data.error));
     }
 
     if (!data.Items || data.Items.length === 0) {
@@ -283,15 +286,7 @@ export const searchBookByISBN = async (isbn) => {
 };
 
 
-/**
- * ISBN正規化（ハイフン除去）
- * @param {string} isbn - ISBN文字列
- * @returns {string} 正規化されたISBN
- */
-export const normalizeISBN = (isbn) => {
-  if (!isbn) return '';
-  return isbn.replace(/[-\s]/g, '');
-};
+// ISBN正規化関数は共通ユーティリティ（./common.js）から使用
 
 /**
  * 楽天Books検索結果から有効なISBNのみを抽出

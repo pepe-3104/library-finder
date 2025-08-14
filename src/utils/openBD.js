@@ -1,6 +1,8 @@
 // OpenBD API 統合ユーティリティ
 // 国立国会図書館の書誌データを活用した書籍情報取得
 
+import { normalizeISBN } from './common';
+
 /**
  * ISBNから書籍情報を取得
  * @param {string} isbn - ISBN（10桁または13桁）
@@ -8,7 +10,7 @@
  */
 export const getBookInfoFromISBN = async (isbn) => {
   try {
-    const normalizedISBN = isbn.replace(/[-\s]/g, '');
+    const normalizedISBN = normalizeISBN(isbn);
     const apiUrl = `https://api.openbd.jp/v1/get?isbn=${normalizedISBN}`;
     
     console.log('📖 OpenBD API呼び出し:', apiUrl);
@@ -43,7 +45,7 @@ export const getBookInfoFromISBN = async (isbn) => {
  */
 export const getBooksInfoFromISBNs = async (isbns) => {
   try {
-    const normalizedISBNs = isbns.map(isbn => isbn.replace(/[-\s]/g, ''));
+    const normalizedISBNs = isbns.map(isbn => normalizeISBN(isbn));
     const apiUrl = `https://api.openbd.jp/v1/get?isbn=${normalizedISBNs.join(',')}`;
     
     console.log('📚 OpenBD API 一括呼び出し:', apiUrl);
