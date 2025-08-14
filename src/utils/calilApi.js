@@ -1,8 +1,7 @@
 // カーリルAPI ユーティリティ
 
-import { normalizeISBN, makeJsonpRequest, generateCallbackName } from './common';
-import { createError, handleError, withTimeout } from './errors';
-import { getApiKey, getApiConfig } from '../config/apiConfig';
+import { normalizeISBN } from './common';
+import { getApiKey } from '../config/apiConfig';
 
 // カーリルAPIのアプリケーションキー（一元化された設定から取得）
 const getCalilApiKey = () => {
@@ -194,5 +193,6 @@ const pollForResults = async (sessionId, isbn, systemIds, currentResults, resolv
  * @returns {boolean} 利用可能かどうか
  */
 export const isCalilAPIAvailable = () => {
-  return !!CALIL_API_KEY;
+  const result = getApiKey.calil();
+  return result.isAvailable;
 };

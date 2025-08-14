@@ -2,8 +2,8 @@
 // キーワード検索で書籍情報とISBNを取得
 
 import { normalizeISBN } from './common';
-import { createError, handleError, withTimeout } from './errors';
-import { getApiKey, getApiConfig } from '../config/apiConfig';
+import { createError } from './errors';
+import { getApiKey } from '../config/apiConfig';
 
 /**
  * 楽天Books APIでタイトル検索

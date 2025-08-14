@@ -2,7 +2,7 @@ import { useState, useCallback } from 'react';
 import { searchISBNsByTitle, getBookInfoFromISBN, getAvailableTitles } from '../utils/openBD';
 import { extractValidISBNs, isRakutenAPIAvailable, searchBookByISBN, searchBooksWithPaging } from '../utils/rakutenBooks';
 import { searchLibraryBooks } from '../utils/calilApi';
-import { normalizeISBN, makeJsonpRequest, generateCallbackName } from '../utils/common';
+import { normalizeISBN } from '../utils/common';
 import { getApiKey } from '../config/apiConfig';
 
 // カーリルAPIのアプリケーションキー（一元化された設定から取得）
