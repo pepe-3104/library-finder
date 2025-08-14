@@ -213,11 +213,14 @@ npm test:run
 # ESLint によるコード品質チェック
 npm run lint
 
-# 全ページスクリーンショット生成
+# 全ページスクリーンショット生成（4ページ対応）
 npm run screenshot:all
 
-# レスポンシブ対応スクリーンショット
+# レスポンシブ対応スクリーンショット（3サイズ対応）
 npm run screenshot:responsive
+
+# 統合スクリーンショットシステム
+node scripts/screenshot-system.js
 ```
 
 ## 📝 開発ログ・ドキュメント
