@@ -20,7 +20,9 @@
       "WebFetch(domain:app.rakuten.co.jp)",
       "Bash(git commit:*)",
       "Bash(mkdir:*)",
-      "Bash(curl:*)"
+      "Bash(curl:*)",
+      "Bash(ipconfig)",
+      "WebFetch(domain:library-finder-mocha.vercel.app)"
     ],
     "deny": [],
     "ask": []

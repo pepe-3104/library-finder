@@ -45,6 +45,60 @@ const MapSection = ({ userLocation, libraries, selectedLibrary, onLibrarySelect,
           </p>
         )}
         
+        {/* 地図の凡例 */}
+        {!fullscreen && libraries.length > 0 && (
+          <div className="map-legend-section">
+            <h4>
+              <LocationOn fontSize="small" style={{ marginRight: '6px', verticalAlign: 'text-bottom' }} />
+              凡例
+            </h4>
+            <div className="legend-grid">
+              <div className="legend-item">
+                <div className="legend-marker location">
+                  <LocationOn fontSize="small" style={{ color: '#d32f2f' }} />
+                </div>
+                <span>現在位置</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-marker library-marker" style={{ backgroundColor: '#007bff', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+                </div>
+                <span>大規模図書館</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-marker library-marker" style={{ backgroundColor: '#28a745', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+                </div>
+                <span>中規模図書館</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-marker library-marker" style={{ backgroundColor: '#ffc107', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+                </div>
+                <span>小規模図書館</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-marker library-marker" style={{ backgroundColor: '#6f42c1', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+                </div>
+                <span>大学図書館</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-marker library-marker" style={{ backgroundColor: '#fd7e14', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+                </div>
+                <span>専門図書館</span>
+              </div>
+              <div className="legend-item">
+                <div className="legend-marker library-marker" style={{ backgroundColor: '#6c757d', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+                </div>
+                <span>その他</span>
+              </div>
+            </div>
+          </div>
+        )}
+        
         <LibraryMap
           userLocation={userLocation}
           libraries={libraries}
