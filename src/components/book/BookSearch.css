@@ -4,8 +4,8 @@
 }
 
 .search-form-container {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background: var(--pale-green);
+  border: 1px solid var(--gray-200);
   border-radius: 8px;
   padding: 1.5rem;
   margin-bottom: 1rem;
@@ -31,7 +31,7 @@
 .search-input {
   width: 100%;
   padding: 0.75rem 1rem;
-  border: 2px solid #dee2e6;
+  border: 2px solid var(--gray-200);
   border-radius: 6px;
   font-size: 1rem;
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
@@ -39,12 +39,12 @@
 
 .search-input:focus {
   outline: none;
-  border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  border-color: var(--primary-green-light);
+  box-shadow: 0 0 0 0.2rem rgba(45, 88, 48, 0.25);
 }
 
 .search-input:disabled {
-  background-color: #e9ecef;
+  background-color: var(--gray-100);
   opacity: 0.6;
 }
 
@@ -68,7 +68,7 @@
 }
 
 .search-type-option:hover {
-  color: #007bff;
+  color: var(--accent-green);
 }
 
 .search-buttons {
@@ -91,25 +91,25 @@
 }
 
 .search-button {
-  background-color: #007bff;
+  background-color: var(--primary-green);
   color: white;
   flex: 1;
   min-width: 140px;
 }
 
 .search-button:hover:not(:disabled) {
-  background-color: #0056b3;
+  background-color: var(--primary-green-light);
   transform: translateY(-1px);
 }
 
 .search-button:disabled {
-  background-color: #6c757d;
+  background-color: var(--gray-500);
   cursor: not-allowed;
   opacity: 0.6;
 }
 
 .clear-button {
-  background-color: #6c757d;
+  background-color: var(--gray-500);
   color: white;
   flex: 0 0 auto;
 }
@@ -155,7 +155,7 @@
 }
 
 .library-chip.more {
-  background: #007bff;
+  background: var(--accent-green);
   color: white;
 }
 
@@ -439,7 +439,7 @@
   .search-type-option {
     justify-content: flex-start;
     padding: 0.5rem;
-    background: rgba(0, 123, 255, 0.05);
+    background: rgba(45, 88, 48, 0.05);
     border-radius: 4px;
   }
   

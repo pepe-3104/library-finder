@@ -108,7 +108,7 @@ export const useBookSearch = () => {
 
           }
           
-        } catch (rakutenError) {
+        } catch {
 
         }
       }
@@ -143,7 +143,7 @@ export const useBookSearch = () => {
 
       return searchResults;
       
-    } catch (error) {
+    } catch {
 
       throw error;
     }
@@ -184,7 +184,7 @@ export const useBookSearch = () => {
 
             resolve(processedResults);
           }
-        } catch (error) {
+        } catch {
 
           reject(error);
         } finally {
@@ -209,7 +209,7 @@ export const useBookSearch = () => {
           if (timeoutId) {
             clearTimeout(timeoutId);
           }
-        } catch (cleanupError) {
+        } catch {
 
         }
       };
@@ -237,7 +237,7 @@ export const useBookSearch = () => {
       try {
         document.head.appendChild(script);
 
-      } catch (appendError) {
+      } catch {
 
         cleanupScript();
         reject(new Error('APIリクエストの初期化に失敗しました'));
@@ -264,7 +264,7 @@ export const useBookSearch = () => {
             if (window[callbackName]) {
               delete window[callbackName];
             }
-          } catch (cleanupError) {
+          } catch {
 
           }
         };
@@ -283,7 +283,7 @@ export const useBookSearch = () => {
             cleanup();
             resolve(updatedResults);
           }
-        } catch (error) {
+        } catch {
           cleanup();
           reject(error);
         }
@@ -301,7 +301,7 @@ export const useBookSearch = () => {
           if (window[callbackName]) {
             delete window[callbackName];
           }
-        } catch (cleanupError) {
+        } catch {
 
         }
         reject(new Error('継続検索でエラーが発生しました'));
@@ -312,7 +312,7 @@ export const useBookSearch = () => {
         script.src = pollUrl.replace('callback=?', `callback=${callbackName}`);
         document.head.appendChild(script);
 
-      } catch (appendError) {
+      } catch {
 
         reject(new Error('継続検索の初期化に失敗しました'));
       }
@@ -408,7 +408,7 @@ export const useBookSearch = () => {
 
           try {
             rakutenBookInfo = await searchBookByISBN(query);
-          } catch (error) {
+          } catch {
 
           }
         }
@@ -530,7 +530,7 @@ export const useBookSearch = () => {
       // searchLibraryBooksを使用して順次更新対応の検索を実行
       await searchLibraryBooks(isbn, cachedSystemIds, handleProgressUpdate);
       
-    } catch (error) {
+    } catch {
       // エラー状態を更新
       setResults(prevResults => {
         const newResults = [...prevResults];

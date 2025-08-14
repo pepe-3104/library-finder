@@ -19,17 +19,17 @@
   height: 40px;
   border: none;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   color: white;
   font-size: 1.2rem;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(102, 126, 234, 0.3);
+  box-shadow: 0 2px 8px rgba(45, 88, 48, 0.3);
 }
 
 .location-refresh-btn:hover:not(:disabled) {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
+  box-shadow: 0 4px 12px rgba(45, 88, 48, 0.4);
 }
 
 .location-refresh-btn:active {
@@ -43,7 +43,7 @@
 }
 
 .location-refresh-btn.loading {
-  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+  background: linear-gradient(135deg, var(--gray-500) 0%, var(--gray-600) 100%);
 }
 
 .distance-filter-btn {
@@ -55,18 +55,18 @@
   padding: 0 12px;
   border: none;
   border-radius: 20px;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  background: var(--gradient-secondary);
   color: white;
   font-size: 0.75rem;
   font-weight: 600;
   cursor: pointer;
   transition: all 0.2s ease;
-  box-shadow: 0 2px 8px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 2px 8px rgba(45, 88, 48, 0.3);
 }
 
 .distance-filter-btn:hover {
   transform: scale(1.05);
-  box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4);
+  box-shadow: 0 4px 12px rgba(45, 88, 48, 0.4);
 }
 
 .distance-filter-btn:active {
@@ -106,43 +106,47 @@
 .location-label {
   font-size: 0.75rem;
   font-weight: 600;
-  color: #495057;
+  color: var(--gray-700);
   line-height: 1.2;
 }
 
 .location-detail {
   font-size: 0.7rem;
-  color: #6c757d;
+  color: var(--gray-800);
   line-height: 1.2;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  font-weight: 500;
 }
 
 /* 状態別スタイル */
 .success-text .location-label {
-  color: #28a745;
+  color: var(--primary-green-dark);
+  font-weight: 700;
 }
 
 .success-text .location-detail {
-  color: #155724;
-  font-weight: 500;
+  color: var(--gray-900);
+  font-weight: 600;
 }
 
 .loading-text .location-label {
-  color: #6c757d;
+  color: var(--gray-500);
 }
 
 .loading-text .location-detail {
-  color: #adb5bd;
+  color: var(--gray-400);
 }
 
 .error-text .location-label {
   color: #dc3545;
+  font-weight: 600;
 }
 
 .error-text .location-detail {
   color: #721c24;
+  font-weight: 600;
 }
 
 /* レスポンシブデザイン */

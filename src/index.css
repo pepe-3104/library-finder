@@ -3,6 +3,46 @@
   line-height: 1.5;
   font-weight: 400;
 
+  /* 緑系カラーパレット */
+  --primary-green: #2d5830;
+  --primary-green-light: #4a8b5c;
+  --primary-green-dark: #1e3d20;
+  --secondary-green: #5cb85c;
+  --accent-green: #28a745;
+  --success-green: #198754;
+  --light-green: #d4edda;
+  --pale-green: #f8f9fa;
+  
+  /* 補色・対照色（緑の補色：赤系、対照色：青系、橙系） */
+  --complement-red: #d73502;
+  --complement-red-light: #e94e2a;
+  --complement-red-dark: #b82d01;
+  --contrast-orange: #ff6b35;
+  --contrast-orange-light: #ff8a5c;
+  --contrast-orange-dark: #e5551e;
+  --contrast-blue: #1976d2;
+  --contrast-blue-light: #42a5f5;
+  --contrast-blue-dark: #0d47a1;
+  
+  /* グラデーション */
+  --gradient-primary: linear-gradient(135deg, #4a8b5c 0%, #2d5830 100%);
+  --gradient-secondary: linear-gradient(135deg, #5cb85c 0%, #4a8b5c 100%);
+  --gradient-light: linear-gradient(135deg, #e8f5e8 0%, #d4edda 100%);
+  --gradient-orange: linear-gradient(135deg, #ff8a5c 0%, #ff6b35 100%);
+  --gradient-blue: linear-gradient(135deg, #42a5f5 0%, #1976d2 100%);
+  
+  /* ニュートラルカラー */
+  --gray-50: #f8f9fa;
+  --gray-100: #e9ecef;
+  --gray-200: #dee2e6;
+  --gray-300: #ced4da;
+  --gray-400: #adb5bd;
+  --gray-500: #6c757d;
+  --gray-600: #495057;
+  --gray-700: #343a40;
+  --gray-800: #212529;
+  --gray-900: #1a1d20;
+
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
@@ -15,11 +55,11 @@
 
 a {
   font-weight: 500;
-  color: #646cff;
+  color: var(--primary-green-light);
   text-decoration: inherit;
 }
 a:hover {
-  color: #535bf2;
+  color: var(--primary-green);
 }
 
 body {
@@ -27,7 +67,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  background: var(--gradient-light);
 }
 
 h1 {
@@ -42,12 +82,16 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--primary-green);
+  color: white;
   cursor: pointer;
-  transition: border-color 0.25s;
+  transition: all 0.25s ease;
 }
 button:hover {
-  border-color: #646cff;
+  background-color: var(--primary-green-light);
+  border-color: var(--primary-green);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(45, 88, 48, 0.3);
 }
 button:focus,
 button:focus-visible {
@@ -77,13 +121,14 @@ button:focus-visible {
 
 @media (prefers-color-scheme: light) {
   :root {
-    color: #213547;
+    color: var(--gray-700);
     background-color: #ffffff;
   }
   a:hover {
-    color: #747bff;
+    color: var(--primary-green-dark);
   }
   button {
-    background-color: #f9f9f9;
+    background-color: var(--primary-green);
+    color: white;
   }
 }

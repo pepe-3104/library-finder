@@ -101,21 +101,22 @@
 }
 
 .library-tel a {
-  color: #007bff;
+  color: var(--contrast-blue);
   text-decoration: none;
 }
 
 .library-tel a:hover {
   text-decoration: underline;
+  color: var(--contrast-blue-light);
 }
 
 .category-tag {
-  background: #f8f9fa;
-  color: #6c757d;
+  background: rgba(25, 118, 210, 0.1);
+  color: var(--contrast-blue);
   padding: 0.25rem 0.5rem;
   border-radius: 12px;
   font-size: 0.8rem;
-  border: 1px solid #dee2e6;
+  border: 1px solid rgba(25, 118, 210, 0.2);
 }
 
 /* アクション */
@@ -142,24 +143,29 @@
 }
 
 .library-link {
-  background: #007bff;
+  background: var(--gradient-orange);
   color: white;
+  box-shadow: 0 2px 8px rgba(255, 107, 53, 0.3);
 }
 
 .library-link:hover {
-  background: #0056b3;
+  background: linear-gradient(135deg, var(--contrast-orange-dark) 0%, var(--contrast-orange) 100%);
+  color: white;
   text-decoration: none;
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(255, 107, 53, 0.4);
 }
 
 .map-button {
-  background: #28a745;
+  background: var(--gradient-blue);
   color: white;
+  box-shadow: 0 2px 8px rgba(25, 118, 210, 0.3);
 }
 
 .map-button:hover {
-  background: #1e7e34;
+  background: linear-gradient(135deg, var(--contrast-blue-dark) 0%, var(--contrast-blue) 100%);
   transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(25, 118, 210, 0.4);
 }
 
 /* ローディング状態 */

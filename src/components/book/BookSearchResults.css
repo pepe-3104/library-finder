@@ -116,7 +116,7 @@
   position: absolute;
   top: 0.75rem;
   right: 0.75rem;
-  background: linear-gradient(135deg, #ff6b35, #ff8a65);
+  background: var(--gradient-orange);
   color: white;
   padding: 0.25rem 0.6rem;
   border-radius: 12px;
@@ -248,8 +248,8 @@
 }
 
 .available-libraries {
-  background: #d4edda;
-  color: #155724;
+  background: var(--light-green);
+  color: var(--primary-green-dark);
 }
 
 .library-systems {
@@ -293,7 +293,7 @@
 .reserve-link {
   display: inline-block;
   margin-bottom: 1rem;
-  color: #007bff;
+  color: var(--accent-green);
   text-decoration: none;
   font-size: 0.9rem;
   font-weight: 500;
@@ -303,7 +303,7 @@
 }
 
 .reserve-link:hover {
-  border-bottom-color: #007bff;
+  border-bottom-color: var(--accent-green);
 }
 
 .library-branches {
@@ -430,7 +430,7 @@
   align-items: center;
   gap: 0.5rem;
   padding: 0.75rem 1.5rem;
-  background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+  background: var(--gradient-secondary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -438,20 +438,20 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease-in-out;
-  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+  box-shadow: 0 2px 4px rgba(45, 88, 48, 0.2);
 }
 
 .load-more-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #0056b3 0%, #004085 100%);
+  background: var(--gradient-primary);
   transform: translateY(-1px);
-  box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+  box-shadow: 0 4px 8px rgba(45, 88, 48, 0.3);
 }
 
 .load-more-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+  box-shadow: 0 2px 4px rgba(45, 88, 48, 0.2);
 }
 
 .load-more-description {
@@ -467,28 +467,28 @@
   gap: 0.25rem;
   margin-top: 0.5rem;
   padding: 0.5rem 1rem;
-  background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+  background: var(--gradient-secondary);
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   font-size: 0.8rem;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.15s ease-in-out;
-  box-shadow: 0 1px 3px rgba(40, 167, 69, 0.2);
+  box-shadow: 0 1px 3px rgba(45, 88, 48, 0.2);
 }
 
 .load-library-data-button:hover:not(:disabled) {
-  background: linear-gradient(135deg, #218838 0%, #1e7e34 100%);
+  background: var(--gradient-primary);
   transform: translateY(-1px);
-  box-shadow: 0 2px 6px rgba(40, 167, 69, 0.3);
+  box-shadow: 0 2px 6px rgba(45, 88, 48, 0.3);
 }
 
 .load-library-data-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
   transform: none;
-  box-shadow: 0 1px 3px rgba(40, 167, 69, 0.2);
+  box-shadow: 0 1px 3px rgba(45, 88, 48, 0.2);
 }
 
 .loading-library-data {

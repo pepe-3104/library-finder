@@ -43,7 +43,7 @@
   align-items: center;
   padding: 20px 24px 16px;
   border-bottom: 1px solid #e0e0e0;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: var(--gradient-primary);
   color: white;
 }
 
@@ -143,16 +143,16 @@
 }
 
 .distance-option:hover {
-  border-color: #667eea;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.15);
+  border-color: var(--primary-green-light);
+  box-shadow: 0 4px 12px rgba(45, 88, 48, 0.15);
   transform: translateY(-2px);
 }
 
 .distance-option.selected {
-  border-color: #4CAF50;
-  background: #f8fff8;
-  color: #2E7D32;
-  box-shadow: 0 4px 12px rgba(76, 175, 80, 0.2);
+  border-color: var(--secondary-green);
+  background: var(--light-green);
+  color: var(--primary-green-dark);
+  box-shadow: 0 4px 12px rgba(45, 88, 48, 0.2);
 }
 
 .option-icon {
@@ -167,7 +167,7 @@
 }
 
 .distance-option.selected .option-icon {
-  color: #2E7D32;
+  color: var(--primary-green-dark);
 }
 
 /* レスポンシブデザイン */
@@ -226,7 +226,7 @@
   font-weight: 600;
   color: #333;
   margin-bottom: 0.75rem;
-  border-bottom: 2px solid #ff6b35;
+  border-bottom: 2px solid var(--accent-green);
   padding-bottom: 0.4rem;
 }
 
@@ -278,8 +278,8 @@
 }
 
 .category-option:hover {
-  border-color: #ff6b35;
-  background: #fff5f2;
+  border-color: var(--contrast-blue);
+  background: rgba(25, 118, 210, 0.1);
 }
 
 .category-option.enabled {
@@ -339,7 +339,7 @@
 
 .apply-button {
   padding: 0.6rem 1.2rem;
-  background: linear-gradient(135deg, #28a745, #20c997);
+  background: var(--gradient-secondary);
   color: white;
   border: none;
   border-radius: 6px;
@@ -350,13 +350,13 @@
 }
 
 .apply-button:hover {
-  background: linear-gradient(135deg, #218838, #1ea085);
+  background: var(--gradient-primary);
   transform: translateY(-1px);
 }
 
 .reset-button {
   padding: 0.6rem 1.2rem;
-  background: #6c757d;
+  background: var(--gray-500);
   color: white;
   border: none;
   border-radius: 6px;
@@ -367,7 +367,7 @@
 }
 
 .reset-button:hover {
-  background: #5a6268;
+  background: var(--gray-600);
   transform: translateY(-1px);
 }
 

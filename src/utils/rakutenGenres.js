@@ -118,7 +118,7 @@ export const getPopularBooksByGenre = async (genreId = '001', hits = 20, page = 
               isFutureRelease = true;
             }
           }
-        } catch (error) {
+        } catch {
           // 発売日の解析に失敗した場合は未来日ではないとみなす
         }
       }
@@ -168,7 +168,7 @@ export const getPopularBooksByGenre = async (genreId = '001', hits = 20, page = 
       }
     };
 
-  } catch (error) {
+  } catch {
     return { books: [], totalCount: 0, pageInfo: null };
   }
 };
@@ -200,7 +200,7 @@ export const getSubGenres = async (parentGenreId) => {
   try {
     const subGenres = await getBookGenres(parentGenreId);
     return subGenres;
-  } catch (error) {
+  } catch {
     return [];
   }
 };
@@ -226,7 +226,7 @@ export const getGenreHierarchy = async (genreId) => {
       subGenres: subGenres
     };
     
-  } catch (error) {
+  } catch {
     return {
       genre: null,
       subGenres: []
