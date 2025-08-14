@@ -91,22 +91,30 @@ Infrastructure Layer (Utils/Config)
 - **Facade Pattern**: 複雑なAPI操作の統一インターフェース
 - **Observer Pattern**: 進捗更新の通知システム
 
+### [2025-08-14 追記] console.logクリーンアップ完了
+- ✅ **完了**: デバッグ用console.logの完全削除（27件→3件）
+- ✅ **完了**: 不要開発ファイル削除（consoleTest.js、useBookSearch.js）
+- ✅ **完了**: ESLintエラー部分修正（未使用変数・import削除）
+
 ### 次セッションの作業予定
 
-#### 🎯 高優先度
+#### 🎯 高優先度（即座に対応すべき項目）
+- [ ] **残存ESLintエラー22件の修正**（テストファイル、スクリプトファイル中心）
+- [ ] **useISBNSearch.js依存関係警告の修正**（react-hooks/exhaustive-deps）
 - [ ] 既存コンポーネントの新サービス層への段階的移行
 - [ ] 統合テストの拡充とE2Eテスト追加
-- [ ] TypeScript導入検討（型安全性のさらなる向上）
 
-#### 📈 中優先度  
+#### 📈 中優先度（品質向上項目）
+- [ ] TypeScript導入検討（型安全性のさらなる向上）
 - [ ] パフォーマンス測定とボトルネック分析
 - [ ] PWA機能の強化（オフライン対応）
 - [ ] アクセシビリティ改善（WCAG準拠）
 
-#### 🔍 調査・検討項目
+#### 🔍 調査・検討項目（将来的な改善）
 - [ ] React 18の新機能活用（Concurrent Features）
 - [ ] Viteプラグインの最適化
 - [ ] CI/CD パイプライン強化
+- [ ] Windows環境LF/CRLF変換問題の解決
 
 ---
 
