@@ -3,9 +3,16 @@ import { searchISBNsByTitle, getBookInfoFromISBN, getAvailableTitles } from '../
 import { extractValidISBNs, isRakutenAPIAvailable, searchBookByISBN, searchBooksWithPaging } from '../utils/rakutenBooks';
 import { searchLibraryBooks } from '../utils/calilApi';
 import { normalizeISBN, makeJsonpRequest, generateCallbackName } from '../utils/common';
+import { getApiKey } from '../config/apiConfig';
 
-// カーリルAPIのアプリケーションキー（環境変数から取得）
-const CALIL_API_KEY = import.meta.env.VITE_CALIL_API_KEY;
+// カーリルAPIのアプリケーションキー（一元化された設定から取得）
+const getCalilApiKey = () => {
+  const result = getApiKey.calil();
+  if (!result.isAvailable) {
+    throw result.error;
+  }
+  return result.key;
+};
 
 export const useBookSearch = () => {
   const [results, setResults] = useState([]);
@@ -153,6 +160,7 @@ export const useBookSearch = () => {
     const systemIdParam = systemIds.join(',');
     
     // カーリルAPI呼び出し
+    const CALIL_API_KEY = getCalilApiKey();
     const apiUrl = `https://api.calil.jp/check?appkey=${CALIL_API_KEY}&isbn=${normalizedISBN}&systemid=${systemIdParam}&format=json&callback=?`;
     
     return new Promise((resolve, reject) => {
@@ -245,6 +253,7 @@ export const useBookSearch = () => {
 
   // 継続検索のポーリング
   const pollForResults = async (sessionId, isbn, systemIds, currentResults, bookTitle, resolve, reject, rakutenBookInfo = null, searchedISBN = null) => {
+    const CALIL_API_KEY = getCalilApiKey();
     const pollUrl = `https://api.calil.jp/check?appkey=${CALIL_API_KEY}&session=${sessionId}&format=json&callback=?`;
     
     const poll = () => {

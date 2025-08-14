@@ -2,9 +2,16 @@
 
 import { normalizeISBN, makeJsonpRequest, generateCallbackName } from './common';
 import { createError, handleError, withTimeout } from './errors';
+import { getApiKey, getApiConfig } from '../config/apiConfig';
 
-// カーリルAPIのアプリケーションキー（環境変数から取得）
-const CALIL_API_KEY = import.meta.env.VITE_CALIL_API_KEY;
+// カーリルAPIのアプリケーションキー（一元化された設定から取得）
+const getCalilApiKey = () => {
+  const result = getApiKey.calil();
+  if (!result.isAvailable) {
+    throw result.error;
+  }
+  return result.key;
+};
 
 // ISBN正規化関数は共通ユーティリティ（./common.js）から使用
 
@@ -16,9 +23,7 @@ const CALIL_API_KEY = import.meta.env.VITE_CALIL_API_KEY;
  * @returns {Promise<{isbn: string, systems: Object, title: string}>} 蔵書検索結果
  */
 export const searchLibraryBooks = async (isbn, systemIds, onProgressUpdate = null) => {
-  if (!CALIL_API_KEY) {
-    throw createError.apiKeyMissing('カーリル');
-  }
+  const CALIL_API_KEY = getCalilApiKey();
 
   if (!systemIds || systemIds.length === 0) {
     return { isbn: normalizeISBN(isbn), systems: {}, title: isbn };

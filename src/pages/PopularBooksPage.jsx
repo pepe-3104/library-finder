@@ -2,9 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Whatshot, AutoStories, Category, ExpandMore, ExpandLess } from '@mui/icons-material';
 import { getPopularBooksByGenre, getBookGenres, getSubGenres, isRakutenGenreAPIAvailable } from '../utils/rakutenGenres';
 import { searchLibraryBooks } from '../utils/calilApi';
+import { getApiKey } from '../config/apiConfig';
 
-// カーリルAPIキー（環境変数から取得）
-const CALIL_API_KEY = import.meta.env.VITE_CALIL_API_KEY;
+// カーリルAPIキー（一元化された設定から取得）
+const getCalilApiKey = () => {
+  const result = getApiKey.calil();
+  return result.isAvailable ? result.key : null;
+};
 import BookSearchResults from '../components/book/BookSearchResults';
 import './PopularBooksPage.css';
 
@@ -35,6 +39,7 @@ const PopularBooksPage = ({ libraries = [], userLocation }) => {
       return;
     }
 
+    const CALIL_API_KEY = getCalilApiKey();
     if (!CALIL_API_KEY) {
       return;
     }

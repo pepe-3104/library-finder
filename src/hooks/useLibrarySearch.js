@@ -1,5 +1,6 @@
 import { useState, useCallback } from "react";
 import { calculateDistance } from "../utils/common";
+import { getApiKey } from "../config/apiConfig";
 
 export const useLibrarySearch = () => {
   const [libraries, setLibraries] = useState([]);
@@ -13,13 +14,12 @@ export const useLibrarySearch = () => {
       setLibraries([]);
 
       try {
-        // APIキーの確認
-        const apiKey = import.meta.env.VITE_CALIL_API_KEY;
-        if (!apiKey || apiKey === "your-api-key-here") {
-          throw new Error(
-            "カーリルAPIキーが設定されていません。.envファイルでVITE_CALIL_API_KEYを設定してください。"
-          );
+        // APIキーの確認（一元化された設定から取得）
+        const apiKeyResult = getApiKey.calil();
+        if (!apiKeyResult.isAvailable) {
+          throw apiKeyResult.error;
         }
+        const apiKey = apiKeyResult.key;
 
         // カーリルAPIの図書館検索エンドポイント（位置情報ベース）
         // 距離ベース制限のため、大きめのlimitで取得してから距離でフィルタリング

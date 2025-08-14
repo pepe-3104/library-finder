@@ -1,14 +1,16 @@
 // 楽天Books API ジャンル管理ユーティリティ
 
+import { getApiKey } from '../config/apiConfig';
+
 /**
  * 楽天Books APIのジャンル検索
  * @param {string} booksGenreId - ジャンルID（'001'でルート取得）
  * @returns {Promise<Object[]>} ジャンル情報配列
  */
 export const getBookGenres = async (booksGenreId = '001') => {
-  const RAKUTEN_API_KEY = import.meta.env.VITE_RAKUTEN_API_KEY;
+  const apiKeyResult = getApiKey.rakuten();
   
-  if (!RAKUTEN_API_KEY) {
+  if (!apiKeyResult.isAvailable) {
     return [];
   }
 
@@ -16,7 +18,7 @@ export const getBookGenres = async (booksGenreId = '001') => {
     const apiUrl = 'https://app.rakuten.co.jp/services/api/BooksGenre/Search/20121128';
     const params = new URLSearchParams({
       format: 'json',
-      applicationId: RAKUTEN_API_KEY,
+      applicationId: apiKeyResult.key,
       booksGenreId: booksGenreId
     });
     
@@ -56,9 +58,9 @@ export const getBookGenres = async (booksGenreId = '001') => {
  * @returns {Promise<{books: Object[], totalCount: number, pageInfo: Object}>} 書籍情報とページング情報
  */
 export const getPopularBooksByGenre = async (genreId = '001', hits = 20, page = 1) => {
-  const RAKUTEN_API_KEY = import.meta.env.VITE_RAKUTEN_API_KEY;
+  const apiKeyResult = getApiKey.rakuten();
   
-  if (!RAKUTEN_API_KEY) {
+  if (!apiKeyResult.isAvailable) {
     return { books: [], totalCount: 0, pageInfo: null };
   }
 
@@ -66,7 +68,7 @@ export const getPopularBooksByGenre = async (genreId = '001', hits = 20, page = 
     const apiUrl = 'https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404';
     const params = new URLSearchParams({
       format: 'json',
-      applicationId: RAKUTEN_API_KEY,
+      applicationId: apiKeyResult.key,
       booksGenreId: genreId,
       sort: 'sales', // 売れ筋順
       hits: Math.min(hits, 30), // 必要な件数のみ取得
@@ -239,5 +241,5 @@ export const getGenreHierarchy = async (genreId) => {
  * @returns {boolean} 利用可能かどうか
  */
 export const isRakutenGenreAPIAvailable = () => {
-  return !!import.meta.env.VITE_RAKUTEN_API_KEY;
+  return getApiKey.rakuten().isAvailable;
 };

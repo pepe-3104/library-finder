@@ -3,6 +3,7 @@
 
 import { normalizeISBN } from './common';
 import { createError, handleError, withTimeout } from './errors';
+import { getApiKey, getApiConfig } from '../config/apiConfig';
 
 /**
  * 楽天Books APIでタイトル検索
@@ -13,12 +14,14 @@ import { createError, handleError, withTimeout } from './errors';
  */
 export const searchBooksByTitle = async (title, hits = 10, page = 1) => {
   try {
-    // 楽天APIのアプリケーションID（環境変数から取得）
-    const appId = import.meta.env.VITE_RAKUTEN_API_KEY;
+    // 楽天APIのアプリケーションID（一元化された設定から取得）
+    const apiKeyResult = getApiKey.rakuten();
     
-    if (!appId) {
-      throw createError.apiKeyMissing('楽天Books');
+    if (!apiKeyResult.isAvailable) {
+      throw apiKeyResult.error;
     }
+    
+    const appId = apiKeyResult.key;
 
     // APIエンドポイント - 楽天Books API の必須パラメータ + ページング
     const params = new URLSearchParams({
@@ -124,12 +127,14 @@ export const searchBooksByTitle = async (title, hits = 10, page = 1) => {
  */
 export const searchBooksByAuthor = async (author, hits = 10, page = 1) => {
   try {
-    // 楽天APIのアプリケーションID（環境変数から取得）
-    const appId = import.meta.env.VITE_RAKUTEN_API_KEY;
+    // 楽天APIのアプリケーションID（一元化された設定から取得）
+    const apiKeyResult = getApiKey.rakuten();
     
-    if (!appId) {
-      throw createError.apiKeyMissing('楽天Books');
+    if (!apiKeyResult.isAvailable) {
+      throw apiKeyResult.error;
     }
+    
+    const appId = apiKeyResult.key;
 
     // APIエンドポイント - 楽天Books API の著者検索パラメータ + ページング
     const params = new URLSearchParams({
@@ -222,9 +227,9 @@ export const searchBooksByAuthor = async (author, hits = 10, page = 1) => {
 
 // ISBN検索専用関数
 export const searchBookByISBN = async (isbn) => {
-  const RAKUTEN_API_KEY = import.meta.env.VITE_RAKUTEN_API_KEY;
+  const apiKeyResult = getApiKey.rakuten();
   
-  if (!RAKUTEN_API_KEY) {
+  if (!apiKeyResult.isAvailable) {
     console.warn('⚠️ 楽天Books APIキーが設定されていません');
     return null;
   }
@@ -235,7 +240,7 @@ export const searchBookByISBN = async (isbn) => {
     const apiUrl = 'https://app.rakuten.co.jp/services/api/BooksBook/Search/20170404';
     const params = new URLSearchParams({
       format: 'json',
-      applicationId: RAKUTEN_API_KEY,
+      applicationId: apiKeyResult.key,
       isbn: isbn.replace(/[-\s]/g, ''), // ハイフンと空白を削除
       hits: '1' // ISBN検索は通常1件のみ
     });
@@ -357,5 +362,5 @@ export const searchBooksWithPaging = async (query, searchType, page = 1, hits = 
  * @returns {boolean} 利用可能かどうか
  */
 export const isRakutenAPIAvailable = () => {
-  return !!import.meta.env.VITE_RAKUTEN_API_KEY;
+  return getApiKey.rakuten().isAvailable;
 };
