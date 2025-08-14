@@ -51,37 +51,49 @@ const MapSection = ({ userLocation, libraries, selectedLibrary, onLibrarySelect,
         </div>
         <div className="legend-item" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#495057', padding: '0.25rem 0' }}>
           <div className="legend-marker library-marker" style={{ backgroundColor: '#007bff', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="white">
+              <path d="M12 11.55C9.64 9.35 6.48 8 3 8v11c3.48 0 6.64 1.35 9 3.55 2.36-2.19 5.52-3.55 9-3.55V8c-3.48 0-6.64 1.35-9 3.55zM12 8c1.66 0 3-1.34 3-3S13.66 2 12 2 9 3.34 9 5s1.34 3 3 3z"/>
+            </svg>
           </div>
           <span>大規模図書館</span>
         </div>
         <div className="legend-item" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#495057', padding: '0.25rem 0' }}>
           <div className="legend-marker library-marker" style={{ backgroundColor: '#28a745', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="white">
+              <path d="M12 11.55C9.64 9.35 6.48 8 3 8v11c3.48 0 6.64 1.35 9 3.55 2.36-2.19 5.52-3.55 9-3.55V8c-3.48 0-6.64 1.35-9 3.55zM12 8c1.66 0 3-1.34 3-3S13.66 2 12 2 9 3.34 9 5s1.34 3 3 3z"/>
+            </svg>
           </div>
           <span>中規模図書館</span>
         </div>
         <div className="legend-item" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#495057', padding: '0.25rem 0' }}>
           <div className="legend-marker library-marker" style={{ backgroundColor: '#ffc107', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="white">
+              <path d="M12 11.55C9.64 9.35 6.48 8 3 8v11c3.48 0 6.64 1.35 9 3.55 2.36-2.19 5.52-3.55 9-3.55V8c-3.48 0-6.64 1.35-9 3.55zM12 8c1.66 0 3-1.34 3-3S13.66 2 12 2 9 3.34 9 5s1.34 3 3 3z"/>
+            </svg>
           </div>
           <span>小規模図書館</span>
         </div>
         <div className="legend-item" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#495057', padding: '0.25rem 0' }}>
           <div className="legend-marker library-marker" style={{ backgroundColor: '#6f42c1', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="white">
+              <path d="M12 11.55C9.64 9.35 6.48 8 3 8v11c3.48 0 6.64 1.35 9 3.55 2.36-2.19 5.52-3.55 9-3.55V8c-3.48 0-6.64 1.35-9 3.55zM12 8c1.66 0 3-1.34 3-3S13.66 2 12 2 9 3.34 9 5s1.34 3 3 3z"/>
+            </svg>
           </div>
           <span>大学図書館</span>
         </div>
         <div className="legend-item" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#495057', padding: '0.25rem 0' }}>
           <div className="legend-marker library-marker" style={{ backgroundColor: '#fd7e14', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="white">
+              <path d="M12 11.55C9.64 9.35 6.48 8 3 8v11c3.48 0 6.64 1.35 9 3.55 2.36-2.19 5.52-3.55 9-3.55V8c-3.48 0-6.64 1.35-9 3.55zM12 8c1.66 0 3-1.34 3-3S13.66 2 12 2 9 3.34 9 5s1.34 3 3 3z"/>
+            </svg>
           </div>
           <span>専門図書館</span>
         </div>
         <div className="legend-item" style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.85rem', color: '#495057', padding: '0.25rem 0' }}>
           <div className="legend-marker library-marker" style={{ backgroundColor: '#6c757d', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-            <LibraryBooks fontSize="small" style={{ color: 'white', fontSize: '10px' }} />
+            <svg viewBox="0 0 24 24" width="10" height="10" fill="white">
+              <path d="M12 11.55C9.64 9.35 6.48 8 3 8v11c3.48 0 6.64 1.35 9 3.55 2.36-2.19 5.52-3.55 9-3.55V8c-3.48 0-6.64 1.35-9 3.55zM12 8c1.66 0 3-1.34 3-3S13.66 2 12 2 9 3.34 9 5s1.34 3 3 3z"/>
+            </svg>
           </div>
           <span>その他</span>
         </div>
