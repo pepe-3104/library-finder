@@ -18,7 +18,8 @@
       "Bash(find:*)",
       "Bash(sed:*)",
       "WebFetch(domain:app.rakuten.co.jp)",
-      "Bash(git commit:*)"
+      "Bash(git commit:*)",
+      "Bash(mkdir:*)"
     ],
     "deny": [],
     "ask": []
