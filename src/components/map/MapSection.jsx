@@ -136,7 +136,7 @@ const MapSection = ({ userLocation, libraries, selectedLibrary, onLibrarySelect,
         )}
         
         {/* 地図の凡例 - 常に表示 */}
-        {!fullscreen && <LegendSection />}
+        <LegendSection />
         
         <LibraryMap
           userLocation={userLocation}
