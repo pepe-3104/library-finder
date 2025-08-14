@@ -40,8 +40,8 @@ export default defineConfig({
         ]
       },
       manifest: {
-        name: '図書館検索アプリ',
-        short_name: '図書館検索',
+        name: 'としょみる - 図書館検索アプリ',
+        short_name: 'としょみる',
         description: '現在位置から最寄りの図書館を検索し、蔵書情報を調べることができるアプリです',
         theme_color: '#007bff',
         background_color: '#ffffff',
@@ -49,22 +49,24 @@ export default defineConfig({
         orientation: 'portrait',
         scope: '/',
         start_url: '/',
+        id: 'toshomiru-library-finder',
         icons: [
           {
-            src: 'vite.svg',
+            src: 'icon.svg',
+            sizes: '48x48 72x72 96x96 144x144 192x192 256x256 384x384 512x512',
+            type: 'image/svg+xml'
+          },
+          {
+            src: 'icon.svg',
             sizes: '192x192',
-            type: 'image/svg+xml'
+            type: 'image/svg+xml',
+            purpose: 'any'
           },
           {
-            src: 'vite.svg',
-            sizes: '512x512',
-            type: 'image/svg+xml'
-          },
-          {
-            src: 'vite.svg',
+            src: 'icon.svg',
             sizes: '512x512',
             type: 'image/svg+xml',
-            purpose: 'any maskable'
+            purpose: 'maskable'
           }
         ]
       }
